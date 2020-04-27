@@ -103,10 +103,10 @@ if (strstr($_SERVER['HTTP_HOST'], 'whitelabel.projectspreview.net')) {
 
   $db['default'] = array(
       'dsn' => '',
-      'hostname' => '192.168.34.181',
-      'username' => 'cit',
-      'password' => 'cit123',
-      'database' => 'cit_appineers',
+      'hostname' => 'localhost',
+      'username' => 'root',
+      'password' => '',
+      'database' => 'appineers_v2',
       'port' => '',
       'dbdriver' => 'mysqli',
       'dbprefix' => '',
