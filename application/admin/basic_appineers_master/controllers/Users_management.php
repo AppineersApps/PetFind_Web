@@ -148,7 +148,21 @@ class Users_management extends Cit_Controller
             "u_one_time_transaction" => array(
                 "type" => "phpfn",
                 "function" => "",
-            )
+            ),
+            "u_log_status_updated" => array(
+                "type" => "enum",
+                "default" => "Yes",
+                "values" => array(
+                    array(
+                        'id' => 'Active',
+                        'val' => $this->lang->line('USERS_MANAGEMENT_LOG_ACTIVE')
+                    ),
+                    array(
+                        'id' => 'Inactive',
+                        'val' => $this->lang->line('USERS_MANAGEMENT_LOG_INACTIVE')
+                    )
+                )
+            ),
         );
         $this->parMod = $this->params_arr["parMod"];
         $this->parID = $this->params_arr["parID"];
@@ -977,6 +991,7 @@ class Users_management extends Cit_Controller
             $u_one_time_transaction = $params_arr["u_one_time_transaction"];
             $u_device_model = $params_arr["u_device_model"];
             $u_device_os = $params_arr["u_device_os"];
+            $u_log_status_updated = $params_arr["u_log_status_updated"];
 
             $data = $save_data_arr = $file_data = array();
             $data["vProfileImage"] = $u_profile_image;
@@ -1012,6 +1027,7 @@ class Users_management extends Cit_Controller
             $data["eOneTimeTransaction"] = $u_one_time_transaction;
             $data["vDeviceModel"] = $u_device_model;
             $data["vDeviceOS"] = $u_device_os;
+            $data["eLogStatus"] = $u_log_status_updated;
 
             $save_data_arr["u_profile_image"] = $data["vProfileImage"];
             $save_data_arr["u_first_name"] = $data["vFirstName"];
@@ -1046,6 +1062,7 @@ class Users_management extends Cit_Controller
             $save_data_arr["u_one_time_transaction"] = $data["eOneTimeTransaction"];
             $save_data_arr["u_device_model"] = $data["vDeviceModel"];
             $save_data_arr["u_device_os"] = $data["vDeviceOS"];
+            $save_data_arr["u_log_status_updated"] = $data["eLogStatus"];
             if ($mode == 'Add')
             {
                 $id = $this->users_management_model->insert($data);

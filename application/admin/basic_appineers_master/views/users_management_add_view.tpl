@@ -168,6 +168,14 @@
                                             <span class="frm-data-label"><strong><%$this->general->displayKeyValueData($data['u_status'], $opt_arr['u_status'])%></strong></span>
                                         </div>
                                     </div>
+                                     <div class="form-row row-fluid " id="cc_sh_u_status">
+                                        <label class="form-label span3">
+                                            <%$form_config['u_log_status_updated']['label_lang']%>
+                                        </label> 
+                                        <div class="form-right-div frm-elements-div ">
+                                            <span class="frm-data-label"><strong><%$this->general->displayKeyValueData($data['u_log_status_updated'], $opt_arr['u_log_status_updated'])%></strong></span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
