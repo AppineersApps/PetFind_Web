@@ -150,6 +150,7 @@ class Get_config_paramaters extends Cit_Controller
             'version_check_message',
             'privacy_policy_updated',
             'terms_conditions_updated',
+            'log_status_updated',
         );
         $output_keys = array(
             'get_config_params',

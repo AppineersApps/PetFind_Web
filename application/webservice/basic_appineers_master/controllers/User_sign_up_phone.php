@@ -722,6 +722,7 @@ class User_sign_up_phone extends Cit_Controller
             'u_push_notify',
             'u_terms_conditions_version',
             'u_privacy_policy_version',
+            'u_log_status_updated',
         );
         $output_keys = array(
             'get_user_details_v1',
@@ -756,7 +757,7 @@ class User_sign_up_phone extends Cit_Controller
             "u_social_login_id" => "social_login_id",
             "u_push_notify" => "push_notify",
             "u_terms_conditions_version" => "terms_conditions_version",
-            "u_privacy_policy_version" => "privacy_policy_version",
+            "u_log_status_updated" => "log_status_updated",
         );
 
         $output_array["settings"] = $setting_fields;

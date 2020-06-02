@@ -547,6 +547,7 @@ class User_login_phone extends Cit_Controller
             't_one_time_transaction',
             'u_terms_conditions_version',
             'u_privacy_policy_version',
+            'u_log_status_updated',
         );
         $output_keys = array(
             'get_user_login_details_v1',
@@ -584,6 +585,7 @@ class User_login_phone extends Cit_Controller
             "t_one_time_transaction" => "purchase_receipt_data",
             "u_terms_conditions_version" => "terms_conditions_version",
             "u_privacy_policy_version" => "privacy_policy_version",
+            "u_log_status_updated" => "log_status_updated",
         );
 
         $output_array["settings"] = $setting_fields;

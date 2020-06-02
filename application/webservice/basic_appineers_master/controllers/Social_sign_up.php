@@ -725,6 +725,7 @@ class Social_sign_up extends Cit_Controller
             'u_push_notify',
             'terms_conditions_version',
             'privacy_policy_version',
+            'u_log_status_updated',
         );
         $output_keys = array(
             'get_user_details_v1_v1',
@@ -758,6 +759,7 @@ class Social_sign_up extends Cit_Controller
             "e_one_time_transaction" => "purchase_status",
             "t_one_time_transaction" => "purchase_receipt_data",
             "u_push_notify" => "push_notify",
+            "u_log_status_updated" => "log_status_updated",
         );
 
         $output_array["settings"] = $setting_fields;

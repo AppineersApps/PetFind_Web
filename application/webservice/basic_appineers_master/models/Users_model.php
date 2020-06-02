@@ -561,6 +561,7 @@ class Users_model extends CI_Model
             $this->db->select("u.vZipCode AS u_zip_code");
             $this->db->select("u.eStatus AS u_status");
             $this->db->select("(concat(u.vFirstName,' ',u.vLastName)) AS email_user_name", FALSE);
+            $this->db->select("u.eLogStatus AS u_log_status_updated");
             if (isset($insert_id) && $insert_id != "")
             {
                 $this->db->where("u.iUserId =", $insert_id);
@@ -758,6 +759,7 @@ class Users_model extends CI_Model
             $this->db->select("u.ePushNotify AS u_push_notify");
             $this->db->select("u.vTermsConditionsVersion AS u_terms_conditions_version");
             $this->db->select("u.vPrivacyPolicyVersion AS u_privacy_policy_version");
+            $this->db->select("u.eLogStatus AS u_log_status_updated");
             if (isset($insert_id) && $insert_id != "")
             {
                 $this->db->where("u.iUserId =", $insert_id);
@@ -960,6 +962,7 @@ class Users_model extends CI_Model
             $this->db->select("u.ePushNotify AS u_push_notify");
             $this->db->select("u.vTermsConditionsVersion AS terms_conditions_version");
             $this->db->select("u.vPrivacyPolicyVersion AS privacy_policy_version");
+            $this->db->select("u.eLogStatus AS u_log_status_updated");
             if (isset($insert_id) && $insert_id != "")
             {
                 $this->db->where("u.iUserId =", $insert_id);
@@ -1134,6 +1137,7 @@ class Users_model extends CI_Model
             $this->db->select("u.tOneTimeTransaction AS t_one_time_transaction");
             $this->db->select("u.vTermsConditionsVersion AS u_terms_conditions_version");
             $this->db->select("u.vPrivacyPolicyVersion AS u_privacy_policy_version");
+            $this->db->select("u.eLogStatus AS u_log_status_updated");
             $this->db->where("".$where_clause."", FALSE, FALSE);
 
             $this->db->limit(1);
@@ -1266,6 +1270,7 @@ class Users_model extends CI_Model
             $this->db->select("u.tOneTimeTransaction AS t_one_time_transaction");
             $this->db->select("u.vTermsConditionsVersion AS u_terms_conditions_version");
             $this->db->select("u.vPrivacyPolicyVersion AS u_privacy_policy_version");
+            $this->db->select("u.eLogStatus AS u_log_status_updated");
             $this->db->where("".$where_clause."", FALSE, FALSE);
 
             $this->db->limit(1);
@@ -1398,6 +1403,7 @@ class Users_model extends CI_Model
             $this->db->select("u.tOneTimeTransaction AS t_one_time_transaction");
             $this->db->select("u.vTermsConditionsVersion AS u_terms_conditions_version");
             $this->db->select("u.vPrivacyPolicyVersion AS u_privacy_policy_version");
+            $this->db->select("u.eLogStatus AS u_log_status_updated");
             $this->db->where("".$where_clause."", FALSE, FALSE);
 
             $this->db->limit(1);
@@ -1963,6 +1969,7 @@ class Users_model extends CI_Model
             $this->db->select("u.tOneTimeTransaction AS t_one_time_transaction");
             $this->db->select("u.vTermsConditionsVersion AS u_terms_conditions_version");
             $this->db->select("u.vPrivacyPolicyVersion AS u_privacy_policy_version");
+            $this->db->select("u.eLogStatus AS u_log_status_updated");
             if (isset($user_id) && $user_id != "")
             {
                 $this->db->where("u.iUserId =", $user_id);
