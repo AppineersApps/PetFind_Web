@@ -138,7 +138,6 @@ class CI_Router {
 			empty($routing['controller']) OR $this->set_class($routing['controller']);
 			empty($routing['function'])   OR $this->set_method($routing['function']);
 		}
-
 		log_message('info', 'Router Class Initialized');
 	}
 
@@ -179,6 +178,7 @@ class CI_Router {
 		// Are query strings enabled in the config file? Normally CI doesn't utilize query strings
 		// since URI segments are more search-engine friendly, but they can optionally be used.
 		// If this feature is enabled, we will gather the directory/class/method a little differently
+
 		if ($this->enable_query_strings)
 		{
 			// If the directory is set at this time, it means an override exists, so skip the checks
@@ -221,7 +221,6 @@ class CI_Router {
 			// directories, so we're done here
 			return;
 		}
-
 		// Is there anything to parse?
 		if ($this->uri->uri_string !== '')
 		{

@@ -4548,6 +4548,14 @@ Class General
             );
             Modules::$locations = $narr;
             return TRUE;
+        }elseif(is_array($marr) && !array_key_exists(APPPATH . 'v1/', $marr)) {
+            $this->_hmvc_module_paths[] = $marr;
+            $narr = array(
+                APPPATH . 'v1/' => '../v1/'
+            );
+            Modules::$locations = $narr;
+            return TRUE;
+
         } else {
             return FALSE;
         }
@@ -4560,7 +4568,11 @@ Class General
             $narr = end($this->_hmvc_module_paths);
             Modules::$locations = $narr;
             return TRUE;
-        } else {
+        } elseif (is_array($marr) && array_key_exists(APPPATH . 'v1/', $marr)) {
+            $narr = end($this->_hmvc_module_paths);
+            Modules::$locations = $narr;
+            return TRUE;
+        }else {
             return FALSE;
         }
     }

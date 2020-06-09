@@ -14,14 +14,16 @@ class Cit_Router extends MX_Router
 
     protected function _parse_routes()
     {
+      
         // Turn the segment array into a URI string
         $uri = implode('/', $this->uri->segments);
 
         // Get HTTP verb
         $http_verb = isset($_SERVER['REQUEST_METHOD']) ? strtolower($_SERVER['REQUEST_METHOD']) : 'cli';
-
         // Is there a literal match?  If so we're done
+
         if (isset($this->routes[$uri])) {
+
             // Check default routes format
             if (is_string($this->routes[$uri])) {
                 $this->_set_request(explode('/', $this->routes[$uri]));
