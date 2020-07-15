@@ -49,7 +49,6 @@ defined('BASEPATH') || exit('No direct script access allowed');
   | Examples:	my-controller/index	-> my_controller/index
   |		my-controller/my-method	-> my_controller/my_method
  */
-  $route['api/:any'] = "api";
 $route['default_controller'] = "content/content/index";
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
@@ -78,7 +77,6 @@ $route['auth_verify.html'] = "user/user/verify_google_auth";
 $route['WS'] = "wsengine/wscontroller/listWSMethods";
 $route['WS/(:any)'] = "wsengine/wscontroller/WSExecuter/$1";
 $route['WS/(:any)/(:any)'] = "wsengine/wscontroller/WSExecuter/$1/$2";
-$route['WS/V1'] = "v1/wscontroller/listWSMethods";
 $route['WS/execute'] = "rest/restcontroller/execute_notify_schedule";
 $route['WS/savelog'] = "rest/restcontroller/process_access_log";
 $route['WS/image_resize'] = "rest/restcontroller/image_resize";
@@ -87,10 +85,6 @@ $route['WS/inactive_token'] = "rest/restcontroller/inactive_token";
 $route['WS/get_push_notification'] = "rest/restcontroller/get_push_notification";
 $route['WS/regenerate_token'] = "wsengine/wscontroller/regenerateJWTToken";
 
-// webservices
-/*$route['V1'] = "wsengine/vscontroller/listWSMethods";
-$route['V1/(:any)'] = "wsengine/vscontroller/WSExecuter/$1";
-$route['V1/(:any)/(:any)'] = "wsengine/vscontroller/WSExecuter/$1/$2";*/
 
 
 // third-party login

@@ -499,9 +499,7 @@ $config["user_sign_up_phone"] = array(
     "payload" => array(
     ),
     "target" => ""
-);
-
-#####GENERATED_CONFIG_SETTINGS_END#####
+);#####GENERATED_CONFIG_SETTINGS_END#####
 
 /* End of file cit_webservices.php */
 /* Location: ./application/config/cit_webservices.php */

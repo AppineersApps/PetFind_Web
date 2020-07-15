@@ -73,14 +73,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $active_group = 'default';
 $query_builder = TRUE;
 
-if (strstr($_SERVER['HTTP_HOST'], 'whitelabel.projectspreview.net')) {
+if (strstr($_SERVER['HTTP_HOST'], '18.211.58.235')) {
 
   $db['default'] = array(
       'dsn' => '',
-      'hostname' => 'localhost',
-      'username' => 'root',
-      'password' => 'root',
-      'database' => 'cit_appineers',
+      'hostname' => 'database-1.cubyuiyvifow.us-east-1.rds.amazonaws.com',
+      'username' => 'admin',
+      'password' => 'success2020!!',
+      'database' => 'appineers_v2',
       'port' => '',
       'dbdriver' => 'mysqli',
       'dbprefix' => '',

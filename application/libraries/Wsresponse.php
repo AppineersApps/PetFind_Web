@@ -575,7 +575,7 @@ class Wsresponse
     public function setOptionsResponse()
     {
         $method = $this->CI->input->method(TRUE);
-        if ($method == "GET") {
+        if ($method == "OPTIONS") {
             $api_key_name = $this->CI->config->item('REST_KEY_NAME');
             $api_version_name = $this->CI->config->item('REST_VERSION_NAME');
             $api_auth_token_name = $this->CI->config->item('REST_AUTHTOKEN_NAME');

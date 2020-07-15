@@ -215,7 +215,7 @@ $config['directory_trigger'] = 'd';
   | your log files will fill up very fast.
   |
  */
-$config['log_threshold'] = 0;
+$config['log_threshold'] = 1;
 
 /*
   |--------------------------------------------------------------------------
@@ -557,12 +557,6 @@ if ((!empty($_SERVER['PHP_SELF']) && stripos($_SERVER['PHP_SELF'], '/index.php/a
     (!empty($_SERVER['REQUEST_URI']) && substr($_SERVER['REQUEST_URI'], 0, 4) == '/WS/')
 ) {
     $config['is_webservice'] = TRUE;
-} elseif ((!empty($_SERVER['PHP_SELF']) && stripos($_SERVER['PHP_SELF'], '/index.php/V1') !== FALSE) ||
-    (!empty($_SERVER['PATH_INFO']) && stripos(trim($_SERVER['PATH_INFO']), '/V1/') === 0) ||
-    (!empty($_SERVER['ORIG_PATH_INFO']) && stripos(trim($_SERVER['ORIG_PATH_INFO']), '/V1/') === 0) ||
-    (!empty($_SERVER['REQUEST_URI']) && substr($_SERVER['REQUEST_URI'], 0, 4) == '/V1/')
-) {
-    $config['is_webservice_v1'] = TRUE;
 } elseif ((!empty($_SERVER['PHP_SELF']) && stripos($_SERVER['PHP_SELF'], '/index.php/NS') !== FALSE) ||
     (!empty($_SERVER['PATH_INFO']) && stripos(trim($_SERVER['PATH_INFO']), '/NS/') === 0) ||
     (!empty($_SERVER['ORIG_PATH_INFO']) && stripos(trim($_SERVER['ORIG_PATH_INFO']), '/NS/') === 0) ||
@@ -583,8 +577,6 @@ if ((!empty($_SERVER['PHP_SELF']) && stripos($_SERVER['PHP_SELF'], '/index.php/a
  * Configration for the MX Modulary Library to make CI - HMVC
  * 
  */
-//echo $config['is_webservice_v1'];exit;
-
 if ($config['is_admin'] === TRUE) {
     $config['modules_locations'] = array(
         APPPATH . 'admin/' => '../admin/',
@@ -596,11 +588,6 @@ if ($config['is_admin'] === TRUE) {
         APPPATH . 'webservice/' => '../webservice/',
     );
     $config['webservice_folder'] = 'webservice';
-} elseif ($config['is_webservice_v1'] === TRUE) {
-    $config['modules_locations'] = array(
-        APPPATH . 'v1/' => '../v1/',
-    );
-    $config['webservice_folder'] = 'v1';
 } elseif ($config['is_notification'] === TRUE) {
     $config['modules_locations'] = array(
         APPPATH . 'notification/' => '../notification/',

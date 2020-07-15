@@ -92,7 +92,7 @@ class Authenticate
                     exit;
                 }
             }
-        } elseif ($this->CI->config->item('is_webservice') == 1 || $this->CI->config->item('is_webservice_v1') == 1 || $this->CI->config->item('is_notification') == 1) {
+        } elseif ($this->CI->config->item('is_webservice') == 1 || $this->CI->config->item('is_notification') == 1) {
             
             return;
         } elseif ($this->CI->config->item('is_citparseapi') == 1) {

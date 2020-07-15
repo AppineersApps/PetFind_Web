@@ -47,14 +47,7 @@ class Cit_api_model extends CI_Model
             );
             Modules::$locations = $narr;
             return TRUE;
-        } elseif (is_array($marr) && !array_key_exists(APPPATH . 'v1/', $marr)) {
-            $this->unset_paths = $marr;
-            $narr = array(
-                APPPATH . 'v1/' => '../v1/'
-            );
-            Modules::$locations = $narr;
-            return TRUE;
-        }else {
+        } else {
             return FALSE;
         }
     }
@@ -72,13 +65,7 @@ class Cit_api_model extends CI_Model
                 Modules::$locations = $narr;
             }
             return TRUE;
-        } elseif (is_array($marr) && array_key_exists(APPPATH . 'v1/', $marr)) {
-            if(!empty($this->unset_paths)){
-                $narr = $this->unset_paths;
-                Modules::$locations = $narr;
-            }
-            return TRUE;
-        }else {
+        } else {
             return FALSE;
         }
     }
