@@ -22,7 +22,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
  *
  * @since 01.08.2016
  */
-class Wscontroller extends Cit_Controller
+class V1controller extends Cit_Controller
 {
 
     protected $_debug_loop = array();
@@ -50,14 +50,13 @@ class Wscontroller extends Cit_Controller
     public function listWSMethods()
     {
         if ($_ENV['debug_action']) {
-            $this->config->load('cit_webservices_v1', TRUE);
-            $all_methods = $this->config->item('cit_webservices_v1');
+            $this->config->load('cit_webservices', TRUE);
+            $all_methods = $this->config->item('cit_webservices');
         }
         $all_methods = empty($all_methods) ? array() : $all_methods;
-        print_r($all_methods);exit;
         $render_arr = array(
             'all_methods' => $all_methods,
-            'ws_url' => $this->config->item('site_url') . "WS/v1"
+            'ws_url' => $this->config->item('site_url') . "V1/"
         );
         $this->smarty->assign($render_arr);
     }

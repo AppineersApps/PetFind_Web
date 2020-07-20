@@ -5323,7 +5323,9 @@ EOD;
 
         if ($this->CI->config->item('is_webservice') === true) {
             $log_folder = $this->CI->config->item('ws_query_log_path');
-        } elseif ($this->CI->config->item('is_notification') === true) {
+        } elseif ($this->CI->config->item('is_old_webservice') === true) {
+            $log_folder = $this->CI->config->item('ws_query_log_path');
+        }elseif ($this->CI->config->item('is_notification') === true) {
             $log_folder = $this->CI->config->item('ns_query_log_path');
         } elseif ($this->CI->config->item('is_citparseapi') === true) {
             $log_folder = $this->CI->config->item('parse_query_log_path');

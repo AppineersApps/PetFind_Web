@@ -119,8 +119,10 @@ class MX_Router extends CI_Router
 		{
 			$segments = $routes;
 		}
+		
 		/* get the segments array elements */
 		list($module, $directory, $controller) = array_pad($segments, 3, NULL);
+
 		/* check modules */
 		foreach (Modules::$locations as $location => $offset)
 		{
@@ -177,7 +179,7 @@ class MX_Router extends CI_Router
 		/* application sub-directory controller exists? */
 		if($directory)
 		{
-			echo __LINE__;exit;
+			
 			if(is_file(APPPATH.'controllers/'.$module.'/'.ucfirst($directory).$ext))
 			{
 				$this->directory = $module.'/';

@@ -135,6 +135,8 @@ class Cit_Controller extends MX_Controller
                     $module_str = $this->config->item('admin_folder');
                 } elseif ($this->config->item('is_webservice') === true) {
                     $module_str = $this->config->item('webservice_folder');
+                } elseif ($this->config->item('is_old_webservice') === true) {
+                    $module_str = $this->config->item('webservice_old_folder');
                 } elseif ($this->config->item('is_notification') === true) {
                     $module_str = $this->config->item('notification_folder');
                 } else {
