@@ -393,13 +393,6 @@ class Cit_Parser extends CI_Parser
                 APPPATH . 'webservice/' . $this->_module . '/views/',
                 APPPATH . 'webservice/views/',
             );
-        } elseif (config_item('is_old_webservice')) {
-            $this->_template_locations = array(
-                APPPATH . 'v1/' . $this->_module . '/views/cit/',
-                APPPATH . 'v1/views/cit/',
-                APPPATH . 'v1/' . $this->_module . '/views/',
-                APPPATH . 'v1/views/',
-            );
         } elseif (config_item('is_notification')) {
             $this->_template_locations = array(
                 APPPATH . 'notification/' . $this->_module . '/views/cit/',

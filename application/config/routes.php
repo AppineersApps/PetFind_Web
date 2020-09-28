@@ -85,17 +85,8 @@ $route['WS/inactive_token'] = "rest/restcontroller/inactive_token";
 $route['WS/get_push_notification'] = "rest/restcontroller/get_push_notification";
 $route['WS/regenerate_token'] = "wsengine/wscontroller/regenerateJWTToken";
 
-//Old_webservice
-$route['V1'] = "wsengine/v1controller/listWSMethods";
-$route['V1/(:any)'] = "wsengine/v1controller/WSExecuter/$1";
-$route['V1/(:any)/(:any)'] = "wsengine/v1controller/WSExecuter/$1/$2";
-$route['V1/execute'] = "rest/restcontroller/execute_notify_schedule";
-$route['V1/savelog'] = "rest/restcontroller/process_access_log";
-$route['V1/image_resize'] = "rest/restcontroller/image_resize";
-$route['V1/create_token'] = "rest/restcontroller/create_token";
-$route['V1/inactive_token'] = "rest/restcontroller/inactive_token";
-$route['V1/get_push_notification'] = "rest/restcontroller/get_push_notification";
-$route['V1/regenerate_token'] = "wsengine/v1controller/regenerateJWTToken";
+
+
 // third-party login
 $route['WS/facebook/login'] = "wsengine/third_party/facebook";
 $route['WS/twitter/login'] = "wsengine/third_party/twitter";
@@ -150,7 +141,7 @@ require_once 'routes_custom.php';
 
 require_once 'routes_front.php';
 
-if (($this->uri->segments[1] == "WS" && $this->uri->segments[1] == "V1" && $this->uri->segments[2] == "image_resize") ||
+if (($this->uri->segments[1] == "WS" && $this->uri->segments[2] == "image_resize") ||
     ($this->uri->segments[1] == "error.html")) {
     //skip for image resize and database connection errors
     $GLOBALS['_DB_LIBRARY_NOT_REQ_'] = TRUE;

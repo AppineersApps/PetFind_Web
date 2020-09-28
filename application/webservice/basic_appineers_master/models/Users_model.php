@@ -478,6 +478,10 @@ class Users_model extends CI_Model
             {
                 $this->db->set("iStateId", $params_arr["state_id"]);
             }
+            if (isset($params_arr["state_name"]))
+            {
+                $this->db->set("vStateName", $params_arr["state_name"]);
+            }
             if (isset($params_arr["zipcode"]))
             {
                 $this->db->set("vZipCode", $params_arr["zipcode"]);
@@ -558,6 +562,7 @@ class Users_model extends CI_Model
             $this->db->select("u.dLatitude AS u_latitude");
             $this->db->select("u.dLongitude AS u_longitude");
             $this->db->select("u.iStateId AS u_state_id");
+            $this->db->select("u.vStateName AS u_state_name");
             $this->db->select("u.vZipCode AS u_zip_code");
             $this->db->select("u.eStatus AS u_status");
             $this->db->select("(concat(u.vFirstName,' ',u.vLastName)) AS email_user_name", FALSE);
@@ -659,6 +664,10 @@ class Users_model extends CI_Model
             {
                 $this->db->set("iStateId", $params_arr["state_id"]);
             }
+            if (isset($params_arr["state_name"]))
+            {
+                $this->db->set("vStateName", $params_arr["state_name"]);
+            }
             if (isset($params_arr["zipcode"]))
             {
                 $this->db->set("vZipCode", $params_arr["zipcode"]);
@@ -727,7 +736,7 @@ class Users_model extends CI_Model
             $result_arr = array();
 
             $this->db->from("users AS u");
-            $this->db->join("mod_state AS ms", "u.iStateId = ms.iStateId", "left");
+            //$this->db->join("mod_state AS ms", "u.iStateId = ms.iStateId", "left");
 
             $this->db->select("u.vFirstName AS u_first_name");
             $this->db->select("u.vLastName AS u_last_name");
@@ -741,6 +750,7 @@ class Users_model extends CI_Model
             $this->db->select("u.dLatitude AS u_latitude");
             $this->db->select("u.dLongitude AS u_longitude");
             $this->db->select("u.iStateId AS u_state_id");
+            $this->db->select("u.vStateName AS u_state_name");
             $this->db->select("u.vZipCode AS u_zip_code");
             $this->db->select("u.eStatus AS u_status");
             $this->db->select("(concat(u.vFirstName,' ',u.vLastName)) AS email_user_name", FALSE);
@@ -751,7 +761,7 @@ class Users_model extends CI_Model
             $this->db->select("u.vDeviceOS AS u_device_os");
             $this->db->select("u.vDeviceToken AS u_device_token");
             $this->db->select("u.dtAddedAt AS u_added_at");
-            $this->db->select("ms.vState AS ms_state");
+            //$this->db->select("ms.vState AS ms_state");
             $this->db->select("u.eOneTimeTransaction AS e_one_time_transaction");
             $this->db->select("u.tOneTimeTransaction AS t_one_time_transaction");
             $this->db->select("u.eSocialLoginType AS u_social_login_type");
@@ -853,6 +863,10 @@ class Users_model extends CI_Model
             {
                 $this->db->set("iStateId", $params_arr["state_id"]);
             }
+            if (isset($params_arr["state_name"]))
+            {
+                $this->db->set("vStateName", $params_arr["state_name"]);
+            }
             if (isset($params_arr["zipcode"]))
             {
                 $this->db->set("vZipCode", $params_arr["zipcode"]);
@@ -930,7 +944,7 @@ class Users_model extends CI_Model
             $result_arr = array();
 
             $this->db->from("users AS u");
-            $this->db->join("mod_state AS ms", "u.iStateId = ms.iStateId", "left");
+            //$this->db->join("mod_state AS ms", "u.iStateId = ms.iStateId", "left");
 
             $this->db->select("u.vFirstName AS u_first_name");
             $this->db->select("u.vLastName AS u_last_name");
@@ -944,6 +958,7 @@ class Users_model extends CI_Model
             $this->db->select("u.dLatitude AS u_latitude");
             $this->db->select("u.dLongitude AS u_longitude");
             $this->db->select("u.iStateId AS u_state_id");
+            $this->db->select("u.vStateName AS u_state_name");
             $this->db->select("u.vZipCode AS u_zip_code");
             $this->db->select("u.eStatus AS u_status");
             $this->db->select("(concat(u.vFirstName,' ',u.vLastName)) AS email_user_name", FALSE);
@@ -956,7 +971,7 @@ class Users_model extends CI_Model
             $this->db->select("u.dtAddedAt AS u_added_at");
             $this->db->select("u.eSocialLoginType AS u_social_login_type");
             $this->db->select("u.vSocialLoginId AS u_social_login_id");
-            $this->db->select("ms.vState AS ms_state");
+            //$this->db->select("ms.vState AS ms_state");
             $this->db->select("u.eOneTimeTransaction AS e_one_time_transaction");
             $this->db->select("u.tOneTimeTransaction AS t_one_time_transaction");
             $this->db->select("u.ePushNotify AS u_push_notify");
@@ -1104,7 +1119,7 @@ class Users_model extends CI_Model
             $result_arr = array();
 
             $this->db->from("users AS u");
-            $this->db->join("mod_state AS ms", "u.iStateId = ms.iStateId", "left");
+            //$this->db->join("mod_state AS ms", "u.iStateId = ms.iStateId", "left");
 
             $this->db->select("u.iUserId AS u_user_id");
             $this->db->select("u.vFirstName AS u_first_name");
@@ -1119,6 +1134,7 @@ class Users_model extends CI_Model
             $this->db->select("u.dLatitude AS u_latitude");
             $this->db->select("u.dLongitude AS u_longitude");
             $this->db->select("u.iStateId AS u_state_id");
+            $this->db->select("u.vStateName AS u_state_name");
             $this->db->select("u.vZipCode AS u_zip_code");
             $this->db->select("u.eEmailVerified AS u_email_verified");
             $this->db->select("u.eDeviceType AS u_device_type");
@@ -1132,7 +1148,7 @@ class Users_model extends CI_Model
             $this->db->select("u.eSocialLoginType AS u_social_login_type");
             $this->db->select("u.vSocialLoginId AS u_social_login_id");
             $this->db->select("u.ePushNotify AS u_push_notify");
-            $this->db->select("ms.vState AS ms_state");
+            //$this->db->select("ms.vState AS ms_state");
             $this->db->select("u.eOneTimeTransaction AS e_one_time_transaction");
             $this->db->select("u.tOneTimeTransaction AS t_one_time_transaction");
             $this->db->select("u.vTermsConditionsVersion AS u_terms_conditions_version");
@@ -1237,7 +1253,7 @@ class Users_model extends CI_Model
             $result_arr = array();
 
             $this->db->from("users AS u");
-            $this->db->join("mod_state AS ms", "u.iStateId = ms.iStateId", "left");
+            //$this->db->join("mod_state AS ms", "u.iStateId = ms.iStateId", "left");
 
             $this->db->select("u.iUserId AS u_user_id");
             $this->db->select("u.vFirstName AS u_first_name");
@@ -1252,6 +1268,7 @@ class Users_model extends CI_Model
             $this->db->select("u.dLatitude AS u_latitude");
             $this->db->select("u.dLongitude AS u_longitude");
             $this->db->select("u.iStateId AS u_state_id");
+            $this->db->select("u.vStateName AS u_state_name");
             $this->db->select("u.vZipCode AS u_zip_code");
             $this->db->select("u.eEmailVerified AS u_email_verified");
             $this->db->select("u.eDeviceType AS u_device_type");
@@ -1265,7 +1282,7 @@ class Users_model extends CI_Model
             $this->db->select("u.eSocialLoginType AS u_social_login_type");
             $this->db->select("u.vSocialLoginId AS u_social_login_id");
             $this->db->select("u.ePushNotify AS u_push_notify");
-            $this->db->select("ms.vState AS ms_state");
+            //$this->db->select("ms.vState AS ms_state");
             $this->db->select("u.eOneTimeTransaction AS e_one_time_transaction");
             $this->db->select("u.tOneTimeTransaction AS t_one_time_transaction");
             $this->db->select("u.vTermsConditionsVersion AS u_terms_conditions_version");
@@ -1370,7 +1387,7 @@ class Users_model extends CI_Model
             $result_arr = array();
 
             $this->db->from("users AS u");
-            $this->db->join("mod_state AS ms", "u.iStateId = ms.iStateId", "left");
+            //$this->db->join("mod_state AS ms", "u.iStateId = ms.iStateId", "left");
 
             $this->db->select("u.iUserId AS u_user_id");
             $this->db->select("u.vFirstName AS u_first_name");
@@ -1385,6 +1402,7 @@ class Users_model extends CI_Model
             $this->db->select("u.dLatitude AS u_latitude");
             $this->db->select("u.dLongitude AS u_longitude");
             $this->db->select("u.iStateId AS u_state_id");
+            $this->db->select("u.vStateName AS u_state_name");
             $this->db->select("u.vZipCode AS u_zip_code");
             $this->db->select("u.eEmailVerified AS u_email_verified");
             $this->db->select("u.eDeviceType AS u_device_type");
@@ -1398,7 +1416,7 @@ class Users_model extends CI_Model
             $this->db->select("u.eSocialLoginType AS u_social_login_type");
             $this->db->select("u.vSocialLoginId AS u_social_login_id");
             $this->db->select("u.ePushNotify AS u_push_notify");
-            $this->db->select("ms.vState AS ms_state");
+            //$this->db->select("ms.vState AS ms_state");
             $this->db->select("u.eOneTimeTransaction AS e_one_time_transaction");
             $this->db->select("u.tOneTimeTransaction AS t_one_time_transaction");
             $this->db->select("u.vTermsConditionsVersion AS u_terms_conditions_version");
@@ -1885,6 +1903,10 @@ class Users_model extends CI_Model
             {
                 $this->db->set("iStateId", $params_arr["state_id"]);
             }
+            if (isset($params_arr["state_name"]))
+            {
+                $this->db->set("vStateName", $params_arr["state_name"]);
+            }
             if (isset($params_arr["zipcode"]))
             {
                 $this->db->set("vZipCode", $params_arr["zipcode"]);
@@ -1936,7 +1958,7 @@ class Users_model extends CI_Model
             $result_arr = array();
 
             $this->db->from("users AS u");
-            $this->db->join("mod_state AS ms", "u.iStateId = ms.iStateId", "left");
+            //$this->db->join("mod_state AS ms", "u.iStateId = ms.iStateId", "left");
 
             $this->db->select("u.iUserId AS u_user_id");
             $this->db->select("u.vFirstName AS u_first_name");
@@ -1953,6 +1975,7 @@ class Users_model extends CI_Model
             $this->db->select("u.dLatitude AS u_latitude");
             $this->db->select("u.dLongitude AS u_longitude");
             $this->db->select("u.iStateId AS u_state_id");
+            $this->db->select("u.vStateName AS u_state_name");
             $this->db->select("u.vZipCode AS u_zip_code");
             $this->db->select("u.ePushNotify AS u_push_notify");
             $this->db->select("u.vAccessToken AS u_access_token");
@@ -1964,7 +1987,7 @@ class Users_model extends CI_Model
             $this->db->select("u.dtAddedAt AS u_added_at");
             $this->db->select("u.dtUpdatedAt AS u_updated_at");
             $this->db->select("u.eEmailVerified AS u_email_verified");
-            $this->db->select("ms.vState AS ms_state");
+            //$this->db->select("ms.vState AS ms_state");
             $this->db->select("u.eOneTimeTransaction AS e_one_time_transaction");
             $this->db->select("u.tOneTimeTransaction AS t_one_time_transaction");
             $this->db->select("u.vTermsConditionsVersion AS u_terms_conditions_version");

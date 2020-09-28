@@ -484,10 +484,12 @@ class Listing
                     $file_found = $this->CI->general->checkFileExistsOnAWSObject($folder_arr['bucket_files'], $file_name, $folder_arr['bucket_name'], $bucket_folder);
                     if ($file_found) {
                         $original_file_path = $original_url . $file_name;
-                        $original_file_data = file_get_contents($original_file_path);
+
+                        $original_file_data = $this->CI->general->getFileFromAWS($folder_arr['bucket_name'],$bucket_folder,$file_name);
                         $temp_file_name = $this->CI->config->item('admin_upload_temp_path') . $file_name;
+                       // echo $temp_file_name; exit;
                         $fp = fopen($temp_file_name, 'w+');
-                        fwrite($fp, $original_file_data);
+                        fwrite($fp, $original_file_data['Body']);
                         fclose($fp);
                         $file_path = $temp_file_name;
                     }

@@ -39,6 +39,7 @@ Class Front
         $all_methods = $this->CI->config->item('cit_frontauth');
         $final_result = 1;
         $redirection_url = '';
+        echo $this->CI->config->item('enable_frontauth'); exit;
         if ((is_array($allow_modules) && in_array($current_folder, $allow_modules)) || !$this->CI->config->item('enable_frontauth')) {
             $final_result = -1;
         } else if (is_array($all_methods) && count($all_methods) > 0) {

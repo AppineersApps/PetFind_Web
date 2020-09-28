@@ -363,6 +363,10 @@ class Edit_profile extends Cit_Controller
             {
                 $params_arr["state_id"] = $input_params["state_id"];
             }
+            if (isset($input_params["state_name"]))
+            {
+                $params_arr["state_name"] = $input_params["state_name"];
+            }
             if (isset($input_params["zipcode"]))
             {
                 $params_arr["zipcode"] = $input_params["zipcode"];
@@ -386,17 +390,11 @@ class Edit_profile extends Cit_Controller
             if (!empty($images_arr["user_profile"]["name"]))
             {
 
-                $dest_path = "user_profile";
-                $folder_name = $this->general->getImageNestedFolders($dest_path);
-                $file_path = $upload_path.$folder_name.DS;
-                $this->general->createUploadFolderIfNotExists($folder_name);
-                $file_name = $images_arr["user_profile"]["name"];
-                $file_tmp_path = $_FILES["user_profile"]["tmp_name"];
-                $file_tmp_size = $_FILES["user_profile"]["size"];
-                $valid_extensions = $images_arr["user_profile"]["ext"];
-                $valid_max_size = $images_arr["user_profile"]["size"];
-                $upload_arr = $this->general->file_upload($file_path, $file_tmp_path, $file_name, $valid_extensions, $file_tmp_size, $valid_max_size);
-                if ($upload_arr[0] == "")
+                 $folder_name = "whitelable_v2/user_profile";             
+                
+                $temp_file = $_FILES["user_profile"]["tmp_name"];
+                $res = $this->general->uploadAWSData($temp_file, $folder_name, $images_arr["user_profile"]["name"]);
+                if (!$res)
                 {
                     //file upload failed
 
@@ -482,11 +480,11 @@ class Edit_profile extends Cit_Controller
                     $image_arr["ext"] = implode(",", $this->config->item("IMAGE_EXTENSION_ARR"));
                     $image_arr["color"] = "FFFFFF";
                     $image_arr["no_img"] = FALSE;
-                    $dest_path = "user_profile";
-                    $image_arr["path"] = $this->general->getImageNestedFolders($dest_path);
-                    $data = $this->general->get_image($image_arr);
-
-                    $result_arr[$data_key]["u_profile_image"] = $data;
+                    $image_arr["path"] = "whitelable_v2/user_profile";
+                    //$image_arr["path"] = $this->general->getImageNestedFolders($dest_path);
+                    $data = $this->general->get_image_aws($image_arr);
+                    //print_r($data); exit;
+                    $result_arr[$data_key]["u_profile_image"] = (false == empty($data)) ? $data : "";
 
                     $i++;
                 }
@@ -569,6 +567,7 @@ class Edit_profile extends Cit_Controller
             'u_latitude',
             'u_longitude',
             'u_state_id',
+            'u_state_name',
             'u_zip_code',
             'u_push_notify',
             'u_access_token',
@@ -606,6 +605,7 @@ class Edit_profile extends Cit_Controller
             "u_latitude" => "latitude",
             "u_longitude" => "longitude",
             "u_state_id" => "state_id",
+            "u_state_name" => "state_name",
             "u_zip_code" => "zip_code",
             "u_push_notify" => "push_notify",
             "u_access_token" => "access_token",

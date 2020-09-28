@@ -540,7 +540,6 @@ $config['is_admin'] = FALSE;
 $config['is_front'] = FALSE;
 
 $config['is_webservice'] = FALSE;
-$config['is_old_webservice'] = FALSE;
 
 $config['is_notification'] = FALSE;
 
@@ -558,13 +557,7 @@ if ((!empty($_SERVER['PHP_SELF']) && stripos($_SERVER['PHP_SELF'], '/index.php/a
     (!empty($_SERVER['REQUEST_URI']) && substr($_SERVER['REQUEST_URI'], 0, 4) == '/WS/')
 ) {
     $config['is_webservice'] = TRUE;
-} elseif ((!empty($_SERVER['PHP_SELF']) && stripos($_SERVER['PHP_SELF'], '/index.php/V1') !== FALSE) ||
-    (!empty($_SERVER['PATH_INFO']) && stripos(trim($_SERVER['PATH_INFO']), '/V1/') === 0) ||
-    (!empty($_SERVER['ORIG_PATH_INFO']) && stripos(trim($_SERVER['ORIG_PATH_INFO']), '/V1/') === 0) ||
-    (!empty($_SERVER['REQUEST_URI']) && substr($_SERVER['REQUEST_URI'], 0, 4) == '/V1/')
-) {
-    $config['is_old_webservice']  = TRUE;
-}elseif ((!empty($_SERVER['PHP_SELF']) && stripos($_SERVER['PHP_SELF'], '/index.php/NS') !== FALSE) ||
+} elseif ((!empty($_SERVER['PHP_SELF']) && stripos($_SERVER['PHP_SELF'], '/index.php/NS') !== FALSE) ||
     (!empty($_SERVER['PATH_INFO']) && stripos(trim($_SERVER['PATH_INFO']), '/NS/') === 0) ||
     (!empty($_SERVER['ORIG_PATH_INFO']) && stripos(trim($_SERVER['ORIG_PATH_INFO']), '/NS/') === 0) ||
     (!empty($_SERVER['REQUEST_URI']) && substr($_SERVER['REQUEST_URI'], 0, 4) == '/NS/')
@@ -595,12 +588,7 @@ if ($config['is_admin'] === TRUE) {
         APPPATH . 'webservice/' => '../webservice/',
     );
     $config['webservice_folder'] = 'webservice';
-} elseif ($config['is_old_webservice'] === TRUE) {
-    $config['modules_locations'] = array(
-        APPPATH . 'v1/' => '../v1/',
-    );
-    $config['webservice_old_folder'] = 'v1';
-}elseif ($config['is_notification'] === TRUE) {
+} elseif ($config['is_notification'] === TRUE) {
     $config['modules_locations'] = array(
         APPPATH . 'notification/' => '../notification/',
     );
@@ -832,7 +820,7 @@ $config['ENABLE_ROLES_CAPABILITIES'] = FALSE;
 $config['DISABLE_LIST_EXPORT_ALL'] = TRUE;
 
 $config['ACCOUNT_CHECK_ENABLE'] = FALSE;
-$config['AWS_CHECK_BUCKET_STATUS'] = FALSE;
+$config['AWS_CHECK_BUCKET_STATUS'] = TRUE;
 
 //admin related params
 $config["ADMIN_USER_NAME"] = 'admin';

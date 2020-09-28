@@ -25,9 +25,10 @@ Class Cit_Get_config_paramaters extends Get_config_paramaters {
     parent::__construct();
 }
 public function returnConfigParams(&$input_params=array()){
-     $return_arr['terms_conditions_updated']='';
-     $return_arr['privacy_policy_updated']  ='';
-     $return_arr['log_status_updated']  ='';
+    $return_arr['terms_conditions_updated']='';
+    $return_arr['privacy_policy_updated']  ='';
+    $return_arr['log_status_updated']  ='';
+ 
     //check for login user 
     
     $auth_header = $this->input->get_request_header('AUTHTOKEN');
@@ -59,6 +60,7 @@ public function returnConfigParams(&$input_params=array()){
         $terms_conditions_version=$version_data['vTermsConditionsVersion'];
         $privacy_policy_version  =$version_data['vPrivacyPolicyVersion'];
         $return_arr['log_status_updated']=$version_data['eLogStatus']; 
+       
     }
    //terms and conditions
     $this->db->select('vVersion,vPageCode');

@@ -796,9 +796,11 @@ Class General
 
     public function get_file_attributes($vphoto_name = '')
     {
-        if (trim($vphoto_name) == "") {
+       if (trim($vphoto_name) == "") {
             $extension = "jpg";
-            $file_name = "base-image-" . date("YmdHis") . rand(100000, 999999) . "." . $extension;
+
+            //$file_name = "base-image-" . date("YmdHis") . rand(100000, 999999) . "." . $extension;
+            $file_name = "base-image-" . uniqid() . "." . $extension;
             return array($file_name, $extension);
         }
         $file_arr = explode(".", $vphoto_name);
@@ -810,7 +812,7 @@ Class General
         $file = str_replace(" ", "_", $file);
         $file = preg_replace('/[^A-Za-z0-9@.-_]/', '', $file);
         $extension = $file_arr[count($file_arr) - 1];
-        $file_name = $file . "-" . date("YmdHis") . rand(100000, 999999) . "." . $extension;
+        $file_name = $file . "-" . uniqid() . "." . $extension;
         return array($file_name, $extension);
     }
 
@@ -893,6 +895,7 @@ Class General
     {
         $folder_name = trim($folder_name);
         $ret_arr['status'] = FALSE;
+        $this->_aws_avail_buckets = "";
         if ($folder_name == "") {
             $ret_arr['status'] = FALSE;
         } else {
@@ -955,7 +958,7 @@ Class General
                     $result = $s3->headBucket($get_bucket_config);
                     $list_objects_config = array(
                         'Bucket' => $bucket_name,
-                        'Prefix' => $folder_name . '/'
+                        'Prefix' => $folder_name
                     );
                     $result = $s3->listObjects($list_objects_config);
                     if (!empty($result['Contents'])) {
@@ -1033,6 +1036,34 @@ Class General
         return $res;
     }
 
+    public function getFileFromAWS($bucket_name='', $folder_name = '', $file_name = '')
+    {
+        $bucket_name = $this->CI->config->item('AWS_BUCKET_NAME');
+        try {
+            $s3 = $this->getAWSConnectionObject();
+            if (version_compare(PHP_VERSION, '5.5', '>=')) {
+                try {
+                    $object_config = array(
+                        'Bucket' => $bucket_name,
+                        'Key' => $folder_name . "/" . $file_name
+                    );
+                    $res = $s3->getObject($object_config);
+                    //$res = $s3->headObject($object_config);
+                } catch (\Aws\S3\Exception\S3Exception $e) {
+                    $res = FALSE;
+                } catch (Exception $e) {
+                    
+                }
+            } else {
+                $object_fodler = $bucket_name . "/" . $folder_name;
+                $res = $s3->getObjectInfo($object_fodler, $file_name);
+            }
+        } catch (Exception $e) {
+            
+        }
+        return $res;
+    }
+
     public function checkFileExistsOnAWSObject($object_arr = array(), $file_name = '', $bucket_name = '', $folder_name = '')
     {
         if (!$this->CI->config->item('AWS_CHECK_BUCKET_STATUS')) {
@@ -1061,23 +1092,55 @@ Class General
             $s3 = $this->getAWSConnectionObject();
             if (version_compare(PHP_VERSION, '5.5', '>=')) {
                 try {
+                    $arrExp = explode('.', $file_name);
+                    $ext = strtolower(end($arrExp));
+                    if($ext == 'jpg' || $ext == 'jpeg'){
+                        $content_type = "image/jpeg";
+                    }
+                    if($ext == 'png'){
+                         $content_type = "image/png";
+                    }
+                    if($ext == 'log'){
+                         $content_type = "text/plain";
+                    }
+                    if($ext == 'zip'){
+                         $content_type = "application/zip";
+                    }
+                    if($ext == 'mp3'){
+                         $content_type = "audio/mpeg";
+                    }
+                    if($ext == 'mp4'){
+                         $content_type = "audio/mp4";
+                    }
+                    if($ext == 'wav'){
+                         $content_type = "audio/wav";
+                    }
+                    if($ext == 'webm'){
+                         $content_type = "audio/webm";
+                    }
+                    if($ext == 'pdf'){
+                         $content_type = "application/pdf";
+                    }
                     $object_config = array(
                         'ACL' => 'public-read',
                         'Bucket' => $bucket_name,
                         'Key' => $folder_name . '/' . $file_name,
-                        'SourceFile' => $temp_file
+                        'SourceFile' => $temp_file,
+                        'ContentType'=>$content_type
                     );
                     $response = $s3->putObject($object_config);
                 } catch (\Aws\S3\Exception\S3Exception $e) {
+                    log_message('error', $e->getMessage());               
                     
                 } catch (Exception $e) {
-                    
+                    log_message('error', $e->getMessage());                   
                 }
             } else {
                 $object_folder = $bucket_name . "/" . $folder_name;
                 $response = $s3->putObjectFile($temp_file, $object_folder, $file_name, S3::ACL_PUBLIC_READ);
             }
         } catch (Exception $e) {
+            log_message('error', $e->getMessage());
             
         }
         return $response;
@@ -5323,9 +5386,7 @@ EOD;
 
         if ($this->CI->config->item('is_webservice') === true) {
             $log_folder = $this->CI->config->item('ws_query_log_path');
-        } elseif ($this->CI->config->item('is_old_webservice') === true) {
-            $log_folder = $this->CI->config->item('ws_query_log_path');
-        }elseif ($this->CI->config->item('is_notification') === true) {
+        } elseif ($this->CI->config->item('is_notification') === true) {
             $log_folder = $this->CI->config->item('ns_query_log_path');
         } elseif ($this->CI->config->item('is_citparseapi') === true) {
             $log_folder = $this->CI->config->item('parse_query_log_path');

@@ -19,7 +19,6 @@ var filesToCache = [
 var pathsToAvoid = [
     "admin/",
     "WS/",
-    "V1/",
     "NS/"
 ]; 
 

@@ -338,10 +338,12 @@ class User_login_email extends Cit_Controller
                     $image_arr["color"] = "FFFFFF";
                     $image_arr["no_img"] = FALSE;
                     $dest_path = "user_profile";
-                    $image_arr["path"] = $this->general->getImageNestedFolders($dest_path);
-                    $data = $this->general->get_image($image_arr);
-
-                    $result_arr[$data_key]["u_profile_image"] = $data;
+                    /*$image_arr["path"] = $this->general->getImageNestedFolders($dest_path);
+                    $data = $this->general->get_image($image_arr);*/
+                    $image_arr["path"] ="whitelable_v2/user_profile";
+                    $data = $this->general->get_image_aws($image_arr);
+                    
+                    $result_arr[$data_key]["u_profile_image"] = (false == empty($data))?$data:"";
 
                     $i++;
                 }
@@ -549,6 +551,7 @@ class User_login_email extends Cit_Controller
             'u_latitude',
             'u_longitude',
             'u_state_id',
+            'u_state_name',
             'u_zip_code',
             'u_email_verified',
             'u_device_type',
@@ -562,7 +565,7 @@ class User_login_email extends Cit_Controller
             'u_social_login_type',
             'u_social_login_id',
             'u_push_notify',
-            'ms_state',
+            //'ms_state',
             'e_one_time_transaction',
             't_one_time_transaction',
             'u_terms_conditions_version',
@@ -587,6 +590,7 @@ class User_login_email extends Cit_Controller
             "u_latitude" => "latitude",
             "u_longitude" => "longitude",
             "u_state_id" => "state_id",
+            "u_state_name" => "state_name",
             "u_zip_code" => "zip_code",
             "u_email_verified" => "email_verified",
             "u_device_type" => "device_type",
@@ -600,7 +604,7 @@ class User_login_email extends Cit_Controller
             "u_social_login_type" => "social_login_type",
             "u_social_login_id" => "social_login_id",
             "u_push_notify" => "push_notify",
-            "ms_state" => "state",
+            //"ms_state" => "state",
             "e_one_time_transaction" => "purchase_status",
             "t_one_time_transaction" => "purchase_receipt_data",
             "u_terms_conditions_version" => "terms_conditions_version",

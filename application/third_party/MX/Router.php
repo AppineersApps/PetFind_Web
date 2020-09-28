@@ -56,7 +56,6 @@ class MX_Router extends CI_Router
 		}
 		
 		$segments = $this->locate($segments);
-		
 
 		if($this->located == -1)
 		{
@@ -69,8 +68,9 @@ class MX_Router extends CI_Router
 			$this->_set_default_controller();
 			return;
 		}
-		//echo $segments[0]; exit;
+		
 		$this->set_class($segments[0]);
+		
 		if (isset($segments[1]))
 		{
 			$this->set_method($segments[1]);
@@ -82,7 +82,6 @@ class MX_Router extends CI_Router
        
 		array_unshift($segments, NULL);
 		unset($segments[0]);
-		
 		$this->uri->rsegments = $segments;
 	}
 	
@@ -93,7 +92,6 @@ class MX_Router extends CI_Router
 
 	protected function _set_default_controller()
 	{
-		//echo $this->directory; exit;
 		if (empty($this->directory))
 		{
 			/* set the default controller module path */
@@ -119,7 +117,7 @@ class MX_Router extends CI_Router
 		{
 			$segments = $routes;
 		}
-		
+
 		/* get the segments array elements */
 		list($module, $directory, $controller) = array_pad($segments, 3, NULL);
 
@@ -135,12 +133,9 @@ class MX_Router extends CI_Router
 				/* module sub-controller exists? */
 				if($directory)
 				{
-					//print_r($directory);exit;
-
 					/* module sub-directory exists? */
 					if(is_dir($source.$directory.'/'))
 					{	
-						//echo __LINE__;exit;
 						$source .= $directory.'/';
 						$this->directory .= $directory.'/';
 
@@ -167,7 +162,6 @@ class MX_Router extends CI_Router
 				/* module controller exists? */
 				if(is_file($source.ucfirst($module).$ext))
 				{
-					//echo __LINE__;exit;
 					$this->located = 1;
 					return $segments;
 				}
@@ -179,7 +173,6 @@ class MX_Router extends CI_Router
 		/* application sub-directory controller exists? */
 		if($directory)
 		{
-			
 			if(is_file(APPPATH.'controllers/'.$module.'/'.ucfirst($directory).$ext))
 			{
 				$this->directory = $module.'/';
@@ -200,7 +193,6 @@ class MX_Router extends CI_Router
 		/* application controllers sub-directory exists? */
 		if (is_dir(APPPATH.'controllers/'.$module.'/'))
 		{
-			
 			$this->directory = $module.'/';
 			return array_slice($segments, 1);
 		}
@@ -208,7 +200,6 @@ class MX_Router extends CI_Router
 		/* application controller exists? */
 		if (is_file(APPPATH.'controllers/'.ucfirst($module).$ext))
 		{
-			
 			return $segments;
 		}
 		

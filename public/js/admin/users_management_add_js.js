@@ -12,17 +12,13 @@ Project.modules.users_management = {
             onfocusout: false,
             ignore:".ignore-valid, .ignore-show-hide",
             rules : {
-		    "gmf_autocomplete_u_address": {
-		        "required": true
-		    },
+		    
 		    "u_status": {
 		        "required": true
 		    }
 		},
             messages : {
-		    "gmf_autocomplete_u_address": {
-		        "required": ci_js_validation_message(js_lang_label.GENERIC_PLEASE_ENTER_A_VALUE_FOR_THE__C35FIELD_C35_FIELD_C46 ,"#FIELD#",js_lang_label.USERS_MANAGEMENT_ADDRESS)
-		    },
+		    
 		    "u_status": {
 		        "required": ci_js_validation_message(js_lang_label.GENERIC_PLEASE_ENTER_A_VALUE_FOR_THE__C35FIELD_C35_FIELD_C46 ,"#FIELD#",js_lang_label.USERS_MANAGEMENT_STATUS)
 		    }
@@ -30,9 +26,7 @@ Project.modules.users_management = {
             errorPlacement : function(error, element) {
                 switch(element.attr("name")){
                     
-                        case 'gmf_autocomplete_u_address':
-                            $('#'+element.attr('id')+'Err').html(error);
-                            break;
+                        
                         case 'u_status':
                             $('#'+element.attr('id')+'Err').html(error);
                             break;

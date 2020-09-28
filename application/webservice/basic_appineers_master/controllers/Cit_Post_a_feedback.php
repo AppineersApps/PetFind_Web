@@ -28,7 +28,7 @@ public function uploadQueryImages($input_params=array()){
     $user_id=$input_params['user_id'];
     $img_name="image_";
     $query_id=$input_params['query_id'];
-    $folder_name="public/upload/query_images/".$query_id."/";
+    $folder_name="whitelable_v2/query_images/".$query_id."/";
   
     $return_arr = array();
     $insert_arr = array();
@@ -51,7 +51,7 @@ public function uploadQueryImages($input_params=array()){
 		    $temp_file 		= $_FILES[$new_file_name]['tmp_name'];
 			$image_name 	= $_FILES[$new_file_name]['name'];
 			list($file_name, $extension) 	= $this->general->get_file_attributes($image_name);
-			$res = $this->general->file_upload($folder_name, $temp_file, $file_name);
+        	$res = $this->general->uploadAWSData($temp_file, $folder_name, $file_name );
 	
 			if($res)
 			{

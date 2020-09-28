@@ -280,7 +280,6 @@ class Users_management_model extends CI_Model
         $this->db->select("u.vMobileNo AS u_mobile_no");
         $this->db->select("u.dtAddedAt AS u_added_at");
         $this->db->select("u.eStatus AS u_status");
-        $this->db->select("u.eLogStatus AS u_log_status_updated");
         $this->db->select("u.dtUpdatedAt AS u_updated_at");
         
         } else {
@@ -301,7 +300,6 @@ class Users_management_model extends CI_Model
             $this->db->select("u.vPrivacyPolicyVersion AS u_privacy_policy_version");
             $this->db->select("u.dtDeletedAt AS u_deleted_at");
             $this->db->select("u.eStatus AS u_status");
-             $this->db->select("u.eLogStatus AS u_log_status_updated");
             $this->db->select("u.vPassword AS u_password");
             $this->db->select("u.dLatitude AS u_latitude");
             $this->db->select("u.dLongitude AS u_longitude");
@@ -448,7 +446,6 @@ class Users_management_model extends CI_Model
         $this->db->select("u.vMobileNo AS u_mobile_no");
         $this->db->select("u.dtAddedAt AS u_added_at");
         $this->db->select("u.eStatus AS u_status");
-         $this->db->select("u.eLogStatus AS u_log_status_updated");
         $this->db->select("u.dtUpdatedAt AS u_updated_at");
         
         
@@ -551,7 +548,6 @@ class Users_management_model extends CI_Model
         $this->db->select("u.vMobileNo AS u_mobile_no");
         $this->db->select("u.dtAddedAt AS u_added_at");
         $this->db->select("u.eStatus AS u_status");
-         $this->db->select("u.eLogStatus AS u_log_status_updated");
         $this->db->select("u.dtUpdatedAt AS u_updated_at");
         
         
@@ -631,8 +627,8 @@ class Users_management_model extends CI_Model
                 "viewedit" => "No",
                 "file_upload" => "Yes",
                 "file_inline" => "Yes",
-                "file_server" => "local",
-                "file_folder" => "user_profile",
+                "file_server" => "amazon",
+                "file_folder" => "side_jobs/user_profile",
                 "file_width" => "80",
                 "file_height" => "80"
             ),
@@ -841,8 +837,8 @@ class Users_management_model extends CI_Model
                 "lang_code" => "USERS_MANAGEMENT_PROFILE_IMAGE",
                 "label_lang" => $this->lang->line('USERS_MANAGEMENT_PROFILE_IMAGE'),
                 "file_upload" => "Yes",
-                "file_server" => "local",
-                "file_folder" => "user_profile",
+                "file_server" => "amazon",
+                "file_folder" => "side_jobs/user_profile",
                 "file_width" => "80",
                 "file_height" => "80",
                 "file_format" => "gif,png,jpg,jpeg,jpe,bmp,ico",
@@ -1032,19 +1028,6 @@ class Users_management_model extends CI_Model
                 "label" => "Status",
                 "lang_code" => "USERS_MANAGEMENT_STATUS",
                 "label_lang" => $this->lang->line('USERS_MANAGEMENT_STATUS')
-            ),
-                "u_log_status_updated" => array(
-                "name" => "u_log_status_updated",
-                "table_name" => "users",
-                "table_alias" => "u",
-                "field_name" => "eLogStatus",
-                "entry_type" => "Table",
-                "data_type" => "enum",
-                "show_input" => "Both",
-                "type" => "dropdown",
-                "label" => "Log Status",
-                "lang_code" => "USERS_MANAGEMENT_LOG_STATUS",
-                "label_lang" => $this->lang->line('USERS_MANAGEMENT_LOG_STATUS')
             ),
                 "u_password" => array(
                 "name" => "u_password",
