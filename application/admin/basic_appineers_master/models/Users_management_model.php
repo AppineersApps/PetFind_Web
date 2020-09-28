@@ -294,7 +294,7 @@ class Users_management_model extends CI_Model
             $this->db->select("u.dDob AS u_dob");
             $this->db->select("u.tAddress AS u_address");
             $this->db->select("u.vCity AS u_city");
-            $this->db->select("u.iStateId AS u_state_id");
+            $this->db->select("u.vStateName AS u_state_name");
             $this->db->select("u.vZipCode AS u_zip_code");
             $this->db->select("u.vTermsConditionsVersion AS u_terms_conditions_version");
             $this->db->select("u.vPrivacyPolicyVersion AS u_privacy_policy_version");
@@ -318,6 +318,7 @@ class Users_management_model extends CI_Model
             $this->db->select("u.eOneTimeTransaction AS u_one_time_transaction");
             $this->db->select("u.vDeviceModel AS u_device_model");
             $this->db->select("u.vDeviceOS AS u_device_os");
+            $this->db->select("u.eLogStatus AS u_log_status_updated");
             
         }
         
@@ -950,13 +951,13 @@ class Users_management_model extends CI_Model
                 "lang_code" => "USERS_MANAGEMENT_CITY",
                 "label_lang" => $this->lang->line('USERS_MANAGEMENT_CITY')
             ),
-                "u_state_id" => array(
-                "name" => "u_state_id",
+                "u_state_name" => array(
+                "name" => "u_state_name",
                 "table_name" => "users",
                 "table_alias" => "u",
-                "field_name" => "iStateId",
+                "field_name" => "vStateName", 
                 "entry_type" => "Table",
-                "data_type" => "int",
+                "data_type" => "varchar",
                 "show_input" => "Both",
                 "type" => "dropdown",
                 "label" => "State",
@@ -1270,6 +1271,19 @@ class Users_management_model extends CI_Model
                 "label" => "Device Os",
                 "lang_code" => "USERS_MANAGEMENT_DEVICE_OS",
                 "label_lang" => $this->lang->line('USERS_MANAGEMENT_DEVICE_OS')
+            ),
+                 "u_log_status_updated" => array(
+                "name" => "u_log_status_updated",
+                "table_name" => "users",
+                "table_alias" => "u",
+                "field_name" => "eLogStatus",
+                "entry_type" => "Table",
+                "data_type" => "enum",
+                "show_input" => "Both",
+                "type" => "dropdown",
+                "label" => "Log Status",
+                "lang_code" => "USERS_MANAGEMENT_LOG_STATUS",
+                "label_lang" => $this->lang->line('USERS_MANAGEMENT_LOG_STATUS')
             )
         );
         

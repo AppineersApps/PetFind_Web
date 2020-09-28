@@ -148,7 +148,21 @@ class Users_management extends Cit_Controller
             "u_one_time_transaction" => array(
                 "type" => "phpfn",
                 "function" => "",
-            )
+            ),
+            "u_log_status_updated" => array(
+                "type" => "enum",
+                "default" => "Yes",
+                "values" => array(
+                    array(
+                        'id' => 'Active',
+                        'val' => $this->lang->line('USERS_MANAGEMENT_LOG_ACTIVE')
+                    ),
+                    array(
+                        'id' => 'Inactive',
+                        'val' => $this->lang->line('USERS_MANAGEMENT_LOG_INACTIVE')
+                    )
+                )
+            ),
         );
         $this->parMod = $this->params_arr["parMod"];
         $this->parID = $this->params_arr["parID"];
@@ -953,7 +967,7 @@ class Users_management extends Cit_Controller
             $u_dob = $params_arr["u_dob"];
             $u_address = $params_arr["u_address"];
             $u_city = $params_arr["u_city"];
-            $u_state_id = $params_arr["u_state_id"];
+            $u_state_name = $params_arr["u_state_name"];
             $u_zip_code = $params_arr["u_zip_code"];
             $u_terms_conditions_version = $params_arr["u_terms_conditions_version"];
             $u_privacy_policy_version = $params_arr["u_privacy_policy_version"];
@@ -964,7 +978,9 @@ class Users_management extends Cit_Controller
             $u_longitude = $params_arr["u_longitude"];
             $u_push_notify = $params_arr["u_push_notify"];
             $u_one_time_transaction = $params_arr["u_one_time_transaction"];
-            $u_access_token = $params_arr["u_access_token"];
+            if($u_status == "Inactive"){
+               $u_access_token = $params_arr["u_access_token"]; 
+            }
             $u_reset_password_code = $params_arr["u_reset_password_code"];
             $u_email_verification_code = $params_arr["u_email_verification_code"];
             $u_email_verified = $params_arr["u_email_verified"];
@@ -977,6 +993,7 @@ class Users_management extends Cit_Controller
             $u_one_time_transaction = $params_arr["u_one_time_transaction"];
             $u_device_model = $params_arr["u_device_model"];
             $u_device_os = $params_arr["u_device_os"];
+            $u_log_status_updated = $params_arr["u_log_status_updated"];
 
             $data = $save_data_arr = $file_data = array();
             $data["vProfileImage"] = $u_profile_image;
@@ -988,7 +1005,7 @@ class Users_management extends Cit_Controller
             $data["dDob"] = $this->filter->formatActionData($u_dob, $form_config["u_dob"]);
             $data["tAddress"] = $u_address;
             $data["vCity"] = $u_city;
-            $data["iStateId"] = $u_state_id;
+            $data["vStateName"] = $u_state_name;
             $data["vZipCode"] = $u_zip_code;
             $data["vTermsConditionsVersion"] = $u_terms_conditions_version;
             $data["vPrivacyPolicyVersion"] = $u_privacy_policy_version;
@@ -999,7 +1016,9 @@ class Users_management extends Cit_Controller
             $data["dLongitude"] = $u_longitude;
             $data["ePushNotify"] = $u_push_notify;
             $data["tOneTimeTransaction"] = $u_one_time_transaction;
-            $data["vAccessToken"] = $u_access_token;
+            if($u_status == "Inactive"){
+               $data["vAccessToken"] = $u_access_token; 
+            }
             $data["vResetPasswordCode"] = $u_reset_password_code;
             $data["vEmailVerificationCode"] = $u_email_verification_code;
             $data["eEmailVerified"] = $u_email_verified;
@@ -1012,6 +1031,7 @@ class Users_management extends Cit_Controller
             $data["eOneTimeTransaction"] = $u_one_time_transaction;
             $data["vDeviceModel"] = $u_device_model;
             $data["vDeviceOS"] = $u_device_os;
+            $data["eLogStatus"] = $u_log_status_updated;
 
             $save_data_arr["u_profile_image"] = $data["vProfileImage"];
             $save_data_arr["u_first_name"] = $data["vFirstName"];
@@ -1022,7 +1042,7 @@ class Users_management extends Cit_Controller
             $save_data_arr["u_dob"] = $data["dDob"];
             $save_data_arr["u_address"] = $data["tAddress"];
             $save_data_arr["u_city"] = $data["vCity"];
-            $save_data_arr["u_state_id"] = $data["iStateId"];
+            $save_data_arr["u_state_name"] = $data["vStateName"];
             $save_data_arr["u_zip_code"] = $data["vZipCode"];
             $save_data_arr["u_terms_conditions_version"] = $data["vTermsConditionsVersion"];
             $save_data_arr["u_privacy_policy_version"] = $data["vPrivacyPolicyVersion"];
@@ -1033,7 +1053,9 @@ class Users_management extends Cit_Controller
             $save_data_arr["u_longitude"] = $data["dLongitude"];
             $save_data_arr["u_push_notify"] = $data["ePushNotify"];
             $save_data_arr["u_one_time_transaction"] = $data["tOneTimeTransaction"];
-            $save_data_arr["u_access_token"] = $data["vAccessToken"];
+            if($u_status == "Inactive"){
+               $save_data_arr["u_access_token"] = $data["vAccessToken"]; 
+            }
             $save_data_arr["u_reset_password_code"] = $data["vResetPasswordCode"];
             $save_data_arr["u_email_verification_code"] = $data["vEmailVerificationCode"];
             $save_data_arr["u_email_verified"] = $data["eEmailVerified"];
@@ -1046,6 +1068,7 @@ class Users_management extends Cit_Controller
             $save_data_arr["u_one_time_transaction"] = $data["eOneTimeTransaction"];
             $save_data_arr["u_device_model"] = $data["vDeviceModel"];
             $save_data_arr["u_device_os"] = $data["vDeviceOS"];
+            $save_data_arr["u_log_status_updated"] = $data["eLogStatus"];
             if ($mode == 'Add')
             {
                 $id = $this->users_management_model->insert($data);
@@ -1131,7 +1154,7 @@ class Users_management extends Cit_Controller
         }
         $ret_arr['mod_enc_url']['add'] = $this->mod_enc_url['add'];
         $ret_arr['mod_enc_url']['index'] = $this->mod_enc_url['index'];
-        $ret_arr['red_type'] = 'Stay';
+        $ret_arr['red_type'] = 'List';
         $this->filter->getPageFlowURL($ret_arr, $this->module_config, $params_arr, $id, $data);
 
         $this->response_arr = $ret_arr;
