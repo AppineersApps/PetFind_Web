@@ -550,6 +550,7 @@ class Users_model extends CI_Model
 
             $this->db->from("users AS u");
 
+            $this->db->select("u.iUserId AS u_user_id");
             $this->db->select("u.vFirstName AS u_first_name");
             $this->db->select("u.vLastName AS u_last_name");
             $this->db->select("u.vUserName AS u_user_name");
@@ -739,6 +740,7 @@ class Users_model extends CI_Model
             //$this->db->join("mod_state AS ms", "u.iStateId = ms.iStateId", "left");
 
             $this->db->select("u.vFirstName AS u_first_name");
+            $this->db->select("u.iUserId AS u_user_id");
             $this->db->select("u.vLastName AS u_last_name");
             $this->db->select("u.vUserName AS u_user_name");
             $this->db->select("u.vEmail AS u_email");
@@ -947,6 +949,7 @@ class Users_model extends CI_Model
             //$this->db->join("mod_state AS ms", "u.iStateId = ms.iStateId", "left");
 
             $this->db->select("u.vFirstName AS u_first_name");
+            $this->db->select("u.iUserId AS u_user_id");
             $this->db->select("u.vLastName AS u_last_name");
             $this->db->select("u.vUserName AS u_user_name");
             $this->db->select("u.vEmail AS u_email");
@@ -1023,6 +1026,7 @@ class Users_model extends CI_Model
             $this->db->from("users AS u");
 
             $this->db->select("u.vEmail AS u_email");
+            $this->db->select("u.iUserId AS u_user_id");
             $this->db->select("u.eEmailVerified AS u_email_verified");
             $this->db->select("u.eStatus AS u_status");
             $this->db->select("u.vFirstName AS u_first_name");
@@ -1662,6 +1666,7 @@ class Users_model extends CI_Model
             $this->db->from("users AS u");
 
             $this->db->select("u.vFirstName AS u_first_name");
+            $this->db->select("u.iUserId AS u_user_id");
             $this->db->select("u.vLastName AS u_last_name");
             $this->db->select("u.vUserName AS u_user_name");
             $this->db->select("u.vEmail AS u_email");
