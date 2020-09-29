@@ -282,3 +282,6 @@
 
 //Go Ad Free Messages
     $lang["go_ad_free"]["users_finish_success"] = "Ads are removed successfully." ;
+
+//delete_api_log Messages
+    $lang["delete_api_log"]["api_accesslogs_finish_success"] = "Success" ;

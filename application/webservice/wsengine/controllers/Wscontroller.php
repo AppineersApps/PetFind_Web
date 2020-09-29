@@ -159,6 +159,8 @@ class Wscontroller extends Cit_Controller
             }
             
         }
+
+
          //data encryption process
         if($appFailled == 'Yes')
         {
@@ -169,6 +171,8 @@ class Wscontroller extends Cit_Controller
         }
 
         //HB-1153
+
+        $this->session->set_userdata("iUserId", $request_arr['user_id']);
 
         //data encryption process
         if ($this->config->item('WS_RESPONSE_ENCRYPTION') == "Y") {

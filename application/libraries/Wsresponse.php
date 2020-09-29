@@ -675,6 +675,54 @@ class Wsresponse
             }
         }
         //1153
+
+
+        // insert API accesslog response => Start
+        if (is_array($exec_data) && count($exec_data) > 0 ) {
+
+            $this->CI->db->select('vFileName');
+            $this->CI->db->where('iAccessLogId', $exec_data['api_log_id']);
+            $db_rec_obj = $this->CI->db->from('api_accesslogs')->get();
+            $result = is_object($db_rec_obj) ? $db_rec_obj->row_array() : array();
+            
+            if(!empty($result)){
+                $access_log_folder = $this->CI->config->item('admin_access_log_path');
+                $log_folder_path = $access_log_folder . "api_logs" . DS ;
+                $log_file_path = $log_folder_path . $result['vFileName'];
+
+                $json_data = file_get_contents($log_file_path);
+                $input_params = json_decode($json_data, true);
+                
+                $fileContents['input_params'] = $input_params['input_params'];
+                $fileContents['output_response'] = $arr;
+
+                $fp = fopen($log_file_path, 'w');
+                fwrite($fp, json_encode($fileContents));
+                fclose($fp);
+            }
+            if($exec_data['api_log_id'] > 0){
+                $updateArr = array();
+                if($this->CI->session->userdata('iUserId')){
+                    $updateArr['iPerformedBy'] = $this->CI->session->userdata('iUserId');
+                }else{
+                    $updateArr['iPerformedBy'] = NULL;
+                }
+                $updateArr['dtExecutedDate'] = date('Y-m-d H:i:s');
+                $this->CI->db->where('iAccessLogId', $exec_data['api_log_id']);
+                $this->CI->db->update('api_accesslogs', $updateArr);
+            }
+        }
+        // insert API accesslog response => End
+        
+        $this->CI->general->logDBQueriesList();
+        $this->CI->output->set_header('Access-Control-Allow-Origin: *');
+        $this->CI->output->set_output($output);
+        $this->CI->output->_display();
+        exit;
+
+
+
+        
         $this->CI->general->logDBQueriesList();
         $this->CI->output->set_header('Access-Control-Allow-Origin: *');
         $this->CI->output->set_output($output);
