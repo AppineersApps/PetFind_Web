@@ -471,6 +471,7 @@ $config["user_sign_up_email"] = array(
     ),
     "target" => ""
 );
+
 $config["user_sign_up_phone"] = array(
     "title" => "User Sign Up Phone",
     "folder" => "basic_appineers_master",
@@ -499,7 +500,16 @@ $config["user_sign_up_phone"] = array(
     "payload" => array(
     ),
     "target" => ""
-);#####GENERATED_CONFIG_SETTINGS_END#####
+);
+$config["delete_api_log"] = array(
+    "title" => "delete_api_log",
+    "folder" => "misc",
+    "method" => "GET_POST",
+    "params" => array(
+    )
+);
+
+#####GENERATED_CONFIG_SETTINGS_END#####
 
 /* End of file cit_webservices.php */
 /* Location: ./application/config/cit_webservices.php */
