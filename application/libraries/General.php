@@ -1133,7 +1133,9 @@ Class General
                     $log_data['accessed_time'] = microtime();
                     $log_data['request_func']  = "S3 Fileupload";
                     $log_data['request_url']   = "S3 Fileupload";
-                    $log_data['input_params']  = $object_config;
+                    $object_config_log = $object_config;
+                    $object_config_log['user_id'] = $this->session->userdata['iUserId'];
+                    $log_data['input_params']  = $object_config_log;
                     $response = $s3->putObject($object_config);
                     //prepare the API log data => continue
                     
