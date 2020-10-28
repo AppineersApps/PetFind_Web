@@ -694,6 +694,10 @@ class Wsresponse
                 $input_params = json_decode($json_data, true);
                 
                 $fileContents['input_params'] = $input_params['input_params'];
+                if(empty($arr['queries']))
+                {
+                    $arr['queries'] = $this->CI->general->getDBQueriesList();    
+                }
                 $fileContents['output_response'] = $arr;
 
                 $fp = fopen($log_file_path, 'w');
