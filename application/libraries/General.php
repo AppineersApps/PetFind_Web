@@ -794,7 +794,7 @@ Class General
         return $result;
     }
 
-    public function get_file_attributes($vphoto_name = '')
+     public function get_file_attributes($vphoto_name = '')
     {
        if (trim($vphoto_name) == "") {
             $extension = "jpg";
@@ -812,7 +812,7 @@ Class General
         $file = str_replace(" ", "_", $file);
         $file = preg_replace('/[^A-Za-z0-9@.-_]/', '', $file);
         $extension = $file_arr[count($file_arr) - 1];
-        $file_name = $file . "-" . uniqid() . "." . $extension;
+        $file_name = $file."_".uniqid().".". $extension;
         return array($file_name, $extension);
     }
 
