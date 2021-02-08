@@ -31,7 +31,7 @@
       <div style="color:#c50f0f;" id="confirm_pass_error"></div>
     </div>
     <div class="text-center sub-btn">
-      <button type="submit" id="forget_submit" class="btn btn-default">Submit</button>
+      <button type="submit" id="forget_submit" class="btn btn-default" style="width:100%;">Submit</button>
     </div>
   </form>
 </div></div>

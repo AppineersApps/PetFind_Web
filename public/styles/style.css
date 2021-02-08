@@ -79,3 +79,8 @@ div#new_pass_error { color: #c50f0f; position: absolute; top: 46px; left: 30px;f
 p.lead.ex-pass { font-size: 20px; color: #f4704e; font-family: 'hindbold'; }
 .ex-pswr img { margin-bottom:0;}
 .btn.active.focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn:active:focus, .btn:focus { outline:none;}
+
+.custom-forget
+{
+	width:100%;
+}
