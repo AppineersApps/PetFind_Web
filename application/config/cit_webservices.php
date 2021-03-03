@@ -509,6 +509,18 @@ $config["delete_api_log"] = array(
     )
 );
 
+//  Missing Pet Module Api
+$config["missing_pet"] = array(
+    "title" => "missing_pet",
+    "folder" => "basic_appineers_master",
+    "method" => $_SERVER['REQUEST_METHOD'],
+    "params" => array(),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
 #####GENERATED_CONFIG_SETTINGS_END#####
 
 /* End of file cit_webservices.php */

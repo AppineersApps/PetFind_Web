@@ -502,17 +502,23 @@ class User_sign_up_email extends Cit_Controller
                 $params_arr["_vprivacypolicyversion"] = $this->getPrivacyPolicyVersion($params_arr["_vprivacypolicyversion"], $input_params);
             }
             $this->block_result = $this->users_model->create_user($params_arr);
+          
             if (!$this->block_result["success"])
             {
                 throw new Exception("Insertion failed.");
             }
+
             $data_arr = $this->block_result["array"];
+            $user_insert_id = $this->block_result['data'][0]['insert_id'];
+              // print_r($user_insert_id);exit;
             $upload_path = $this->config->item("upload_path");
             if (!empty($images_arr["user_profile"]["name"]))
             {
 
-                $folder_name = "whitelable_v2/user_profile";             
+                // $folder_name = "whitelable_v2/user_profile";             
                 
+                $aws_folder_name = $this->config->item("AWS_FOLDER_NAME");
+                $folder_name = $aws_folder_name."/user_profile/".$user_insert_id."/";
                 $temp_file = $_FILES["user_profile"]["tmp_name"];
                 $res = $this->general->uploadAWSData($temp_file, $folder_name, $images_arr["user_profile"]["name"]);
                 if ($upload_arr[0] == "")
@@ -603,7 +609,7 @@ class User_sign_up_email extends Cit_Controller
                     $image_arr["no_img"] = FALSE;
                     $dest_path = "user_profile";
                     //$image_arr["path"] = $this->general->getImageNestedFolders($dest_path);
-                    $image_arr["path"] ="whitelable_v2/user_profile";
+                    $image_arr["path"] ="pet_find/user_profile";
                     $data = $this->general->get_image_aws($image_arr);
 
                     $result_arr[$data_key]["u_profile_image"] = (false == empty($data))?$data:"";

@@ -285,3 +285,9 @@
 
 //delete_api_log Messages
     $lang["delete_api_log"]["api_accesslogs_finish_success"] = "Success" ;
+
+//  Message for missing pet updated successfully
+    $lang["update_missing_pet"]["get_update_finish_success"] = "Updated Missing pet Successfully" ;
+    $lang["update_missing_pet"]["get_update_finish_success_1"] = "Failed to Update Missing pet" ;
+    $lang["delete_missing_pet"]["delete_missing_pet_finish_success"] = "Deleted Missing pet Successfully" ;
+    $lang["delete_missing_pet"]["delete_missing_pet_finish_success_1"] = "Failed to Delete Missing pet" ;

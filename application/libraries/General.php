@@ -1194,6 +1194,7 @@ Class General
                 $response = $s3->deleteObject($object_fodler, $file_name);
             }
         } catch (Exception $e) {
+            log_message('error', $e->getMessage());
             
         }
         return $response;

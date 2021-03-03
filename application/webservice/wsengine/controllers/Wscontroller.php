@@ -70,6 +70,7 @@ class Wscontroller extends Cit_Controller
         header('Access-Control-Allow-Origin: *');
         $this->config->load('cit_webservices', TRUE);
         $all_methods = $this->config->item('cit_webservices');
+        // print_r($all_methods);exit;
         $res_format = NULL;
         if (stristr($func_arg, ".") !== FALSE) {
             $func_arr = explode(".", $func_arg);
