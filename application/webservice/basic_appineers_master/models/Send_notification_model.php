@@ -163,7 +163,7 @@ class Send_notification_model extends CI_Model
         try
         {
             $result_arr = array();
-             $strSql="SELECT 
+            $strSql="SELECT 
             
             distinct(t.iTagTo) AS receiver_id,
              u.vDeviceToken AS u_device_token,             

@@ -477,17 +477,19 @@ class Edit_profile extends Cit_Controller
                 $i = 0;
                 foreach ($result_arr as $data_key => $data_arr)
                 {
-                     // print_r($data_arr); exit;
+                     // print_r($input_params["user_id"]); exit;
                      $aws_folder_name = $this->config->item("AWS_FOLDER_NAME");
                     $data = $data_arr["u_profile_image"];
                     $image_arr = array();
+                    $p_key = ($data_arr["u_user_id"] != "") ? $data_arr["u_user_id"] : $input_params["user_id"];
+                    $image_arr["pk"] = $p_key;
                     $image_arr["image_name"] = $data;
                     $image_arr["ext"] = implode(",", $this->config->item("IMAGE_EXTENSION_ARR"));
                     $image_arr["color"] = "FFFFFF";
                     $image_arr["no_img"] = FALSE;
-                    $image_arr["path"] =$aws_folder_name. "/user_profile/".$input_params['user_id']."/";
+                    $image_arr["path"] =$aws_folder_name. "/user_profile";
                     //$image_arr["path"] = $this->general->getImageNestedFolders($dest_path);
-                   
+                   // print_r($image_arr["path"]); exit;
                     $data = $this->general->get_image_aws($image_arr);
                     
                     $result_arr[$data_key]["u_profile_image"] = (false == empty($data)) ? $data : "";

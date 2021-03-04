@@ -106,7 +106,7 @@ if (strstr($_SERVER['HTTP_HOST'], '18.211.58.235')) {
       'hostname' => 'localhost',
       'username' => 'root',
       'password' => '',
-      'database' => 'appineers_v2',
+      'database' => 'pet_find',
       'port' => '',
       'dbdriver' => 'mysqli',
       'dbprefix' => '',

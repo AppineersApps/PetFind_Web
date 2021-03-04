@@ -1162,10 +1162,12 @@ class Missing_pet extends Cit_Controller
                     $input_params = $this->custom_image_function($input_params);  
                     $input_params = $this->get_missing_pet_details($input_params); 
                       // get notification and send notifications to tagged peoples
-                    //  $input_params = $this->notification_template($input_params);
-                    //  $input_params = $this->get_user_details_for_send_notifi($input_params);
-                    //  $input_params = $this->start_loop_1($input_params); 
-                    // print_r($input_params);exit;
+                     $input_params = $this->custom_function($input_params);
+                       
+                     $input_params = $this->get_user_details_for_send_notifi($input_params);
+                    
+                     $input_params = $this->start_loop_1($input_params); 
+                      print_r('after');exit;
                     $output_response = $this->missing_pet_finish_success($input_params);
                     return $output_response;
                 }
@@ -2043,7 +2045,8 @@ class Missing_pet extends Cit_Controller
         }
         else
         {
-            $result_arr["data"] = $this->uploadQueryImages($input_params);
+            // $result_arr["data"] = $this->uploadQueryImages($input_params);
+            $result_arr["data"] ='';
         }
         $format_arr = $result_arr;
 
@@ -2054,23 +2057,22 @@ class Missing_pet extends Cit_Controller
         return $input_params;
     }
 
-    /**
+      /**
      * custom_function method is used to process custom function.
-     * @created priyanka chillakuru | 12.09.2019
-     * @modified priyanka chillakuru | 13.09.2019
+     * @created CIT Dev Team
+     * @modified ---
      * @param array $input_params input_params array to process loop flow.
      * @return array $input_params returns modfied input_params array.
      */
     public function custom_function($input_params = array())
     {
-
-        if (!method_exists($this, "checkUniqueUser"))
+        if (!method_exists($this, "PrepareHelperMessage"))
         {
             $result_arr["data"] = array();
         }
         else
         {
-            $result_arr["data"] = $this->checkUniqueUser($input_params);
+            $result_arr["data"] = $this->PrepareHelperMessage($input_params);
         }
         $format_arr = $result_arr;
 
@@ -2164,6 +2166,254 @@ class Missing_pet extends Cit_Controller
 
         return $input_params;
     }
+
+    /**
+     * get_user_details_for_send_notifi method is used to get details of user for notification.
+     * @created CIT Dev Team
+     * @param array $input_params input_params array to process loop flow.
+     * @return array $input_params returns modfied input_params array.
+     */
+    public function get_user_details_for_send_notifi($input_params = array())
+    {
+
+
+        $this->block_result = array();
+        try
+        {
+            // print_r($input_params);exit;
+            $this->block_result = $this->send_notification_model->get_user_details_for_send_notifi($input_params);
+            // print_r( $this->block_result);exit;
+            if (!$this->block_result["success"])
+            {
+                throw new Exception("No records found.");
+            }
+        }
+        catch(Exception $e)
+        {
+            $success = 0;
+            $this->block_result["data"] = array();
+        }
+        $input_params["get_user_details_for_send_notifi"] = $this->block_result["data"];
+        $input_params = $this->wsresponse->assignSingleRecord($input_params, $this->block_result["data"]);
+
+        return $input_params;
+    }
+            /**
+     * start_loop_1 method is used to process loop flow.
+     * @created CIT Dev Team
+     * @param array $input_params input_params array to process loop flow.
+     * @return array $input_params returns modfied input_params array.
+     */
+    public function start_loop_1($input_params = array())
+    {
+         print_r('hi');exit;
+        $this->iterate_start_loop_1($input_params["get_user_details_for_send_notifi"], $input_params);
+        return $input_params;
+    }
+    /**
+     * iterate_start_loop_1 method is used to iterate loop.
+     * @created CIT Dev Team
+     * @param array $get_tagged_user_arr array to iterate loop.
+     * @param array $input_params_addr $input_params_addr array to address original input params.
+     */
+    public function iterate_start_loop_1(&$get_tagged_user_arr = array(), &$input_params_addr = array())
+    {
+
+            $condition_res = $this->check_receiver_device_token($input_params);
+            print_r($condition_res);exit;
+            if ($condition_res["success"])
+            {
+
+                $input_params = $this->post_notification($input_params);
+                $input_params = $this->push_notification($input_params);
+            }
+
+            $get_tagged_user_arr[$i] = $this->wsresponse->filterLoopParams($input_params, $_loop_params_loc[$i], $get_near_by_drivers_lp_pms);
+        }
+    }
+     /**
+     * check_receiver_device_token method is used to process conditions.
+     * @created CIT Dev Team
+     * @modified Devangi Nirmal | 27.06.2019
+     * @param array $input_params input_params array to process condition flow.
+     * @return array $block_result returns result of condition block as array.
+     */
+    public function check_receiver_device_token($input_params = array())
+    {
+        $this->block_result = array();
+        try
+        {
+
+            $cc_lo_0 = $input_params["u_device_token"];
+
+            $cc_fr_0 = (!is_null($cc_lo_0) && !empty($cc_lo_0) && trim($cc_lo_0) != "") ? TRUE : FALSE;
+            if (!$cc_fr_0)
+            {
+                throw new Exception("Some conditions does not match.");
+            }
+            
+            $success = 1;
+            $message = "Conditions matched.";
+        }
+        catch(Exception $e)
+        {
+            $success = 0;
+            $message = $e->getMessage();
+        }
+        $this->block_result["success"] = $success;
+        $this->block_result["message"] = $message;
+        return $this->block_result;
+    }
+     /**
+     * post_notification method is used to process query block.
+     * @created CIT Dev Team
+     * @modified ---
+     * @param array $input_params input_params array to process loop flow.
+     * @return array $input_params returns modfied input_params array.
+     */
+    public function post_notification($input_params = array())
+    {
+        $this->block_result = array();
+        try
+        {
+            $params_arr = array();
+            
+            $params_arr = array();
+            if (isset($input_params["notification_message"]))
+            {
+                $params_arr["notification_message"] = $input_params["notification_message"];
+            }
+            if (isset($input_params["receiver_id"]))
+            {
+                $params_arr["receiver_id"] = $input_params["receiver_id"];
+            }
+            if (isset($input_params["user_id"]))
+            {
+                $params_arr["sender_id"] = $input_params["user_id"];
+            }
+            if (isset($input_params["service_id"]))
+            {
+                $params_arr["o_service_id"] = $input_params["service_id"];
+            }
+            if (isset($input_params["offer_id"]))
+            {
+                $params_arr["o_offer_id"] = $input_params["offer_id"];
+            }
+            
+            
+                $params_arr["_enotificationtype"] = "New Service created";
+
+            $params_arr["user_type"] = "Provider";
+           
+            $params_arr["_dtaddedat"] = "NOW()";
+            $params_arr["_dtupdatedat"] = "NOW()";
+            $params_arr["_estatus"] = "Unread";
+            $this->block_result = $this->send_notification_model->post_notification($params_arr);
+        }
+        catch(Exception $e)
+        {
+            $success = 0;
+            $this->block_result["data"] = array();
+        }
+        $input_params["post_notification"] = $this->block_result["data"];
+        $input_params = $this->wsresponse->assignSingleRecord($input_params, $this->block_result["data"]);
+
+        return $input_params;
+    }
+     /**
+     * push_notification method is used to process mobile push notification.
+     * @created CIT Dev Team
+     * @modified Devangi Nirmal | 18.06.2019
+     * @param array $input_params input_params array to process loop flow.
+     * @return array $input_params returns modfied input_params array.
+     */
+    public function push_notification($input_params = array())
+    {
+       
+        $this->block_result = array();
+        try
+        {
+
+            $device_id = $input_params["u_device_token"];
+            //echo $device_id;exit;
+            $code = "USER";
+            $sound = "default";
+            $badge = "";
+            $title = "";
+            $type = "new_service_added";
+            $send_vars = array(
+                array(
+                    "key" => "type",
+                    "value" => $type,
+                    "send" => "Yes",
+                ),
+                array(
+                    "key" => "receiver_id",
+                    "value" => $input_params["r_users_id"],
+                    "send" => "Yes",
+                ),
+                array(
+                    "key" => "user_id",
+                    "value" => $input_params["s_users_id"],
+                    "send" => "Yes",
+                ),
+                array(
+                    "key" => "user_name",
+                    "value" => $input_params["s_name"],
+                    "send" => "Yes",
+                ),
+                array(
+                    "key" => "user_profile",
+                    "value" => $input_params["s_profile_image"],
+                    "send" => "Yes",
+                ),
+                array(
+                    "key" => "user_image",
+                    "value" => $input_params["ui_image"],
+                    "send" => "Yes",
+                ),
+                 array(
+                    "key" => "user_type",
+                    "value" => "provider",
+                    "send" => "Yes",
+                )
+            );
+            $push_msg = "".$input_params["notification_message"]."";
+            $push_msg = $this->general->getReplacedInputParams($push_msg, $input_params);
+            $send_mode = "runtime";
+
+            $send_arr = array();
+            $send_arr['device_id'] = $device_id;
+            $send_arr['code'] = $code;
+            $send_arr['sound'] = $sound;
+             $send_arr['type'] = $type;
+            $send_arr['badge'] = intval($badge);
+            $send_arr['title'] = $title;
+            $send_arr['message'] = $push_msg;
+            $send_arr['variables'] = json_encode($send_vars);
+            $send_arr['send_mode'] = $send_mode;
+            $uni_id = $this->general->insertPushNotification($send_arr);
+            if (!$uni_id)
+            {
+                throw new Exception('Failure in insertion of push notification batch entry.');
+            }
+
+            $success = 1;
+            $message = "Push notification send succesfully.";
+        }
+        catch(Exception $e)
+        {
+            $success = 0;
+            $message = $e->getMessage();
+        }
+        $this->block_result["success"] = $success;
+        $this->block_result["message"] = $message;
+        $input_params["push_notification"] = $this->block_result["success"];
+
+        return $input_params;
+    }
+
+
 
 
 

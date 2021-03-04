@@ -311,9 +311,12 @@ class Social_login extends Cit_Controller
                 $i = 0;
                 foreach ($result_arr as $data_key => $data_arr)
                 {
-
+                    // print_r($input_params); exit;
+                    $aws_folder_name = $this->config->item("AWS_FOLDER_NAME");
                     $data = $data_arr["u_profile_image"];
                     $image_arr = array();
+                    $p_key = ($data_arr["u_user_id"] != "") ? $data_arr["u_user_id"] : $input_params["user_id"];
+                    $image_arr["pk"] = $p_key;
                     $image_arr["image_name"] = $data;
                     $image_arr["ext"] = implode(",", $this->config->item("IMAGE_EXTENSION_ARR"));
                     $image_arr["color"] = "FFFFFF";
@@ -321,7 +324,7 @@ class Social_login extends Cit_Controller
                     $dest_path = "user_profile";
                     /*$image_arr["path"] = $this->general->getImageNestedFolders($dest_path);
                     $data = $this->general->get_image($image_arr);*/
-                    $image_arr["path"] ="whitelable_v2/user_profile";
+                     $image_arr["path"] =$aws_folder_name. "/user_profile";
                     $data = $this->general->get_image_aws($image_arr);
 
                     $result_arr[$data_key]["u_profile_image"] = $data;
