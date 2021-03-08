@@ -508,6 +508,36 @@ $config["delete_api_log"] = array(
     )
 );
 
+$config["report_abusive_user"] = array(
+    "title" => "report_abusive_user",
+    "folder" => "basic_appineers_master",
+    "method" => "GET_POST",
+    "params" => array(
+        "user_id",
+        "report_on"
+    ),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+$config["report_abusive_for_missing_post"] = array(
+    "title" => "report_abusive_for_missing_post",
+    "folder" => "basic_appineers_master",
+    "method" => "GET_POST",
+    "params" => array(
+        "user_id",
+        "user_access_token",
+        "missing_pets_id",
+        "message"
+    ),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
 #####GENERATED_CONFIG_SETTINGS_END#####
 
 /* End of file cit_webservices.php */

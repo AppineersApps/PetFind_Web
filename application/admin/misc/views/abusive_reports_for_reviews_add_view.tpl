@@ -29,7 +29,7 @@
                     <div class="main-content-block " id="main_content_block">
                         <div style="width:98%;" class="frm-block-layout pad-calc-container">
                             <div class="box gradient <%$rl_theme_arr['frm_stand_content_row']%> <%$rl_theme_arr['frm_stand_border_view']%>">
-                                <div class="title <%$rl_theme_arr['frm_stand_titles_bar']%>"><h4><%$this->lang->line('ABUSIVE_REPORTS_FOR_POSTS_ABUSIVE_REPORTS_FOR_POSTS')%></h4></div>
+                                <div class="title <%$rl_theme_arr['frm_stand_titles_bar']%>"><h4><%$this->lang->line('ABUSIVE_REPORTS_FOR_MISSING_PETS_ABUSIVE_REPORTS_FOR_MISSING_PETS')%></h4></div>
                                 <div class="content <%$rl_theme_arr['frm_stand_label_align']%>">
                                     <div class="form-row row-fluid " id="cc_sh_arfp_reported_by">
                                         <label class="form-label span3">

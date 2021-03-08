@@ -1371,4 +1371,3 @@ class Abusive_reports extends Cit_Controller
         $this->skip_template_view();
     }
 }
-?>

@@ -552,12 +552,12 @@ class Abusive_reports_for_reviews extends Cit_Controller
                 $parent_join_arr = array(
                     "joins" => array(
                         array(
-                            "table_name" => "review",
+                            "table_name" => "missing_pets",
                             "table_alias" => "r",
-                            "field_name" => "iReviewId",
-                            "rel_table_name" => "abusive_reports_for_reviews",
+                            "field_name" => "iMissingPetId",
+                            "rel_table_name" => "abusive_reports_for_missing_post",
                             "rel_table_alias" => "arfp",
-                            "rel_field_name" => "iReviewId",
+                            "rel_field_name" => "iMissingPetId",
                             "join_type" => "left",
                             "extra_condition" => ""
                         )
@@ -869,6 +869,8 @@ class Abusive_reports_for_reviews extends Cit_Controller
                 'extra_hstr' => $extra_hstr,
             );
             $this->smarty->assign($render_arr);
+            // echo'<pre>';
+            // print_r($render_arr);echo'<pre>';exit();
             if (!empty($render_arr['overwrite_view']))
             {
                 $this->loadView($render_arr['overwrite_view']);
@@ -877,9 +879,11 @@ class Abusive_reports_for_reviews extends Cit_Controller
             {
                 if ($mode == "Update")
                 {
+
                     if ($edit_access && $viewMode != TRUE)
                     {
-                        $this->loadView("abusive_reports_for_reviews_add");
+             
+                         $this->loadView("abusive_reports_for_reviews_add");
                     }
                     else
                     {
@@ -940,67 +944,72 @@ class Abusive_reports_for_reviews extends Cit_Controller
 
             $form_config = $this->abusive_reports_for_reviews_model->getFormConfiguration();
             $params_arr = $this->_request_params();
+             echo '<pre>';
+             print_r($params_arr);exit();
             $arfp_reported_by = $params_arr["arfp_reported_by"];
-            $arfp_review_id = $params_arr["arfp_review_id"];
+            $arfp_reviews_id = $params_arr["arfp_reviews_id"];
             $arfp_message = $params_arr["arfp_message"];
             $arfp_added_at = $params_arr["arfp_added_at"];
-            $arfp_review_text = $params_arr["p_post_title"];
+            $arfp_details_text = $params_arr["p_post_title"];
             $arfp_status = $params_arr["status"];
 
             $data = $save_data_arr = $file_data = array();
             $data["iReportedBy"] = $arfp_reported_by;
-            $data["iReviewId"] = $arfp_review_id;
+            $data["iMissingPetId"] = $arfp_reviews_id;
             $data["vMessage"] = $arfp_message;
             $data["dtAddedAt"] = $this->filter->formatActionData($arfp_added_at, $form_config["arfp_added_at"]);
             $data["eStatus"] =  $arfp_status;
-            $textdata['vDescription']= $arfp_review_text;
+            $textdata['vdogDetails']= $arfp_details_text;
 
             $save_data_arr["arfp_reported_by"] = $data["iReportedBy"];
-            $save_data_arr["arfp_post_id"] = $data["iReviewId"];
+            $save_data_arr["arfp_reviews_id"] = $data["iMissingPetId"];
             $save_data_arr["arfp_message"] = $data["vMessage"];
             $save_data_arr["arfp_added_at"] = $data["dtAddedAt"];
-            $save_data_arr["arfp_status"] = $data["eStatus"];
+            $save_data_arr["arfp_details_text"]=$data["vdogDetails"];
+         $save_data_arr["arfp_status"] = $data["eStatus"];
             if ($mode == 'Add')
             {
                 $id = $this->abusive_reports_for_reviews_model->insert($data);
                 if (intval($id) > 0)
                 {
-                    $save_data_arr["iAbusiveReportsForReviewId"] = $data["iAbusiveReportsForReviewId"] = $id;
+                    $save_data_arr["iAbusiveReportsForMissingPetId"] = $data["iAbusiveReportsForMissingPetId"] = $id;
                     $msg = $this->general->processMessageLabel('ACTION_RECORD_ADDED_SUCCESSFULLY_C46_C46_C33');
                 }
                 else
                 {
                     throw new Exception($this->general->processMessageLabel('ACTION_FAILURE_IN_ADDING_RECORD_C46_C46_C33'));
                 }
-                $track_cond = $this->db->protect("arfp.iAbusiveReportsForReviewId")." = ".$this->db->escape($id);
+                $track_cond = $this->db->protect("arfp.iAbusiveReportsForMissingPetId")." = ".$this->db->escape($id);
                 $switch_combo = $this->abusive_reports_for_reviews_model->getSwitchTo($track_cond);
                 $recName = $switch_combo[0]["val"];
                 $this->general->trackModuleNavigation("Module", "Form", "Added", $this->mod_enc_url["add"], "abusive_reports_for_reviews", $recName, "mode|".$this->general->getAdminEncodeURL("Update")."|id|".$this->general->getAdminEncodeURL($id));
             }
             elseif ($mode == 'Update')
             {
-                 $this->load->model("basic_appineers_master/review_management_model");
+                //print_r($data);exit();
+                 $this->load->model("misc/review_management_model");
                  if($data["eStatus"] == "Rejected")
                  {
                     $textdata['eStatus'] = 'Inactive';
-                    $res = $this->review_management_model->update($textdata, intval($arfp_review_id));
+                    $res = $this->review_management_model->update($textdata, intval($r_review_id));
                  }
                  else
                  {
-                   $res = $this->review_management_model->update($textdata, intval($arfp_review_id)); 
+                   $res = $this->review_management_model->update($textdata, intval($r_review_id)); 
+                   //echo $res;exit();
                  }
                 
                 if (intval($res) > 0)
                 {
                      $res = $this->abusive_reports_for_reviews_model->update($data, intval($id));
-                    $save_data_arr["iAbusiveReportsForReviewId"] = $data["iAbusiveReportsForReviewId"] = $id;
+                    $save_data_arr["iAbusiveReportsForMissingPetId"] = $data["iAbusiveReportsForMissingPetId"] = $id;
                     $msg = $this->general->processMessageLabel('ACTION_RECORD_SUCCESSFULLY_UPDATED_C46_C46_C33');
                 }
                 else
                 {
                     throw new Exception($this->general->processMessageLabel('ACTION_FAILURE_IN_UPDATING_OF_THIS_RECORD_C46_C46_C33'));
                 }
-                $track_cond = $this->db->protect("arfp.iAbusiveReportsForReviewId")." = ".$this->db->escape($id);
+                $track_cond = $this->db->protect("arfp.iAbusiveReportsForMissingPetId")." = ".$this->db->escape($id);
                 $switch_combo = $this->abusive_reports_for_reviews_model->getSwitchTo($track_cond);
                 $recName = $switch_combo[0]["val"];
                 $this->general->trackModuleNavigation("Module", "Form", "Modified", $this->mod_enc_url["add"], "abusive_reports_for_reviews", $recName, "mode|".$this->general->getAdminEncodeURL("Update")."|id|".$this->general->getAdminEncodeURL($id));
@@ -1481,4 +1490,3 @@ class Abusive_reports_for_reviews extends Cit_Controller
         $this->skip_template_view();
     }
 }
-?>

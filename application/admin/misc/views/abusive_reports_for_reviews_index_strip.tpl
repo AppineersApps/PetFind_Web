@@ -4,7 +4,7 @@
 		<!-- Top Strip Title Block -->
         <h3>
             <div class="screen-title">
-                <%$this->lang->line('GENERIC_LISTING')%> :: <%$this->lang->line('ABUSIVE_REPORTS_FOR_REVIEWS_ABUSIVE_REPORTS_FOR_REVIEWS')%>
+                <%$this->lang->line('GENERIC_LISTING')%> :: <%$this->lang->line('ABUSIVE_REPORTS_FOR_MISSING_PETS_ABUSIVE_REPORTS_FOR_MISSING_PETS')%>
             </div>        
         </h3>
 		<!-- Top Strip Dropdown Block -->

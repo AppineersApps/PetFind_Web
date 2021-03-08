@@ -24,7 +24,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
  * @since 03.05.2019
  */
  
-class Report_abusive_for_review_model extends CI_Model
+class Report_abusive_for_missing_post_model extends CI_Model
 {
     public $default_lang = 'EN';
     
@@ -57,14 +57,14 @@ class Report_abusive_for_review_model extends CI_Model
             if(isset($params_arr["user_id"])){
                 $this->db->set("iReportedBy", $params_arr["user_id"]);
             }
-            if(isset($params_arr["review_id"])){
-                $this->db->set("iReviewId", $params_arr["review_id"]);
+            if(isset($params_arr["missing_pets_id"])){
+                $this->db->set("iMissingPetId", $params_arr["missing_pets_id"]);
             }
             if(isset($params_arr["message"])){
                 $this->db->set("vMessage", $params_arr["message"]);
             }
             $this->db->set($this->db->protect("dtAddedAt"), $params_arr["_dtaddedat"], FALSE);
-            $this->db->insert("abusive_reports_for_reviews");
+            $this->db->insert("abusive_reports_for_missing_post");
             $insert_id = $this->db->insert_id();
             if(!$insert_id){
                  throw new Exception("Failure in insertion.");

@@ -3,28 +3,28 @@
 defined('BASEPATH') || exit('No direct script access allowed');
 
 /**
- * Description of Abusive Reports For reviews Model
+ * Description of Review Management Model
  * 
  * @category admin
  *            
- * @package misc
+ * @package basic_appineers_master
  * 
  * @subpackage models 
  *  
- * @module Abusive Reports For reviews
+ * @module review Management
  * 
- * @class Abusive_reports_for_reviews_model.php
+ * @class review_management_model.php
  * 
- * @path application\admin\misc\models\Abusive_reports_for_reviews_model.php
+ * @path application\admin\basic_appineers_master\models\Review_management_model.php
  * 
  * @version 4.4
  *
  * @author CIT Dev Team
  * 
- * @date 26.08.2019
+ * @date 07.02.2020
  */
  
-class Abusive_reports_for_reviews_model extends CI_Model 
+class Review_management_model extends CI_Model 
 {
     public $table_name;
     public $table_alias;
@@ -56,8 +56,8 @@ class Abusive_reports_for_reviews_model extends CI_Model
     
     /**
      * __construct method is used to set model preferences while model object initialization.
-     * @created Devangi Nirmal | 21.08.2019
-     * @modified Devangi Nirmal | 21.08.2019
+     * @created priyanka chillakuru | 10.09.2019
+     * @modified priyanka chillakuru | 07.02.2020
      */
     public function __construct() 
     {
@@ -65,45 +65,30 @@ class Abusive_reports_for_reviews_model extends CI_Model
         $this->load->library('listing');
         $this->load->library('filter');
         $this->load->library('dropdown');
-        $this->module_name = "abusive_reports_for_reviews";
-        $this->table_name = "abusive_reports_for_missing_post";
-        $this->table_alias = "arfp";
-        $this->primary_key = "iAbusiveReportsForMissingPetId";
-        $this->primary_alias = "arfp_abusive_reports_for_review_id";
+        $this->module_name = "review_management";
+        $this->table_name = "missing_pets";
+        $this->table_alias = "r";
+        $this->primary_key = "iMissingPetId";
+        $this->primary_alias = "r_review_id";
         $this->physical_data_remove = "Yes";
-        $this->grid_fields = array("u_first_name", "owner_first_name","p_post_title", "arfp_message", "arfp_added_at", "status","sys_custom_field_1","ron_users_id",
-            "rb_users_id");
+        $this->grid_fields = array("r_first_name",
+                                    "r_email",
+                                    "r_mobile_no", 
+                                    "r_star", 
+                                    "r_description", 
+                                    "r_review_type" ,
+                                    "r_status"
+                                );
         $this->join_tables = array(
             array(
-                "table_name" => "users",
-                "table_alias" => "u",
-                "field_name" => "iUserId",
-                "rel_table_name" => "abusive_reports_for_missing_post",
-                "rel_table_alias" => "arfp",
-                "rel_field_name" => "iReportedBy",
-                "join_type" => "left",
-                "extra_condition" => ""
-            ),
-            array(
-                "table_name" => "missing_pets",
-                "table_alias" => "r",
+                "table_name" => "abusive_reports_for_missing_post",
+                "table_alias" => "b",
                 "field_name" => "iMissingPetId",
-                "rel_table_name" => "abusive_reports_for_missing_post",
-                "rel_table_alias" => "arfp",
-                "rel_field_name" => "iMissingPetId",
-                "join_type" => "left",
-                "extra_condition" => ""
-            )
-            ,
-             array(
-                "table_name" => "users",
-                "table_alias" => "owner",
-                "field_name" => "iUserId",
                 "rel_table_name" => "missing_pets",
                 "rel_table_alias" => "r",
-                "rel_field_name" => "iUserId",
+                "rel_field_name" => "iMissingPetId",
                 "join_type" => "left",
-                "extra_condition" => ""
+                "extra_condition" => "",
             )
         );
         $this->extra_cond = "";
@@ -111,7 +96,7 @@ class Abusive_reports_for_reviews_model extends CI_Model
         $this->having_cond = "";
         $this->orderby_cond = array(
                     array(
-                        "field" => "arfp.iAbusiveReportsForMissingPetId",
+                        "field" => "r.dtUpdatedAt",
                         "order" => "DESC"
                     ));
         $this->unique_type = "OR";
@@ -151,8 +136,10 @@ class Abusive_reports_for_reviews_model extends CI_Model
      * @param string $join join is to make joins while updating records.
      * @return boolean $res returns TRUE or FALSE.
      */
-    public function update($data = array(), $where = '', $alias = "No", $join = "No")
+    public function update($data = array(), $where = '', $alias = "No", $join = "Yes")
     {
+        //print_r($data);exit();
+        //print_r($where);exit();
         if($alias == "Yes"){
             if($join == "Yes"){
                 $join_tbls = $this->addJoinTables("NR");
@@ -171,6 +158,7 @@ class Abusive_reports_for_reviews_model extends CI_Model
                 }
                 $update_query = "UPDATE " . $this->db->protect($this->table_name) . " AS " . $this->db->protect($this->table_alias) . " " . $join_tbls . " SET " . implode(", ", $set_cond) . " " . $extra_cond;
                 $res = $this->db->query($update_query);
+                echo $res;exit();
             } else {
                 if (is_numeric($where)) {
                     $this->db->where($this->table_alias . "." . $this->primary_key, $where);
@@ -202,7 +190,7 @@ class Abusive_reports_for_reviews_model extends CI_Model
      * @param string $join join is to make joins while deleting records.
      * @return boolean $res returns TRUE or FALSE.
      */
-    public function delete($where = "", $alias = "No", $join = "No")
+    public function delete($where = "", $alias = "No", $join = "Yes")
     {
         if($this->config->item('PHYSICAL_RECORD_DELETE') && $this->physical_data_remove == 'No') {
             if($alias == "Yes"){
@@ -281,7 +269,6 @@ class Abusive_reports_for_reviews_model extends CI_Model
                 $res = $this->db->delete($this->table_name);
             }
         }
-        #echo $this->db->last_query();exit;
         return $res;
     }
     
@@ -297,11 +284,12 @@ class Abusive_reports_for_reviews_model extends CI_Model
      * @param boolean $list list is to differ listing fields or form fields.
      * @return array $data_arr returns data records array.
      */
-    public function getData($extra_cond = "", $fields = "", $order_by = "", $group_by = "", $limit = "", $join = "No", $having_cond = '', $list = FALSE)
+    public function getData($extra_cond = "", $fields = "", $order_by = "", $group_by = "", $limit = "", $join = "Yes", $having_cond = '', $list = FALSE)
     {
-
         if(is_array($fields)){
+        
             $this->listing->addSelectFields($fields);
+        
         } elseif($fields != ""){
             $this->db->select($fields);
         } elseif($list == TRUE){
@@ -309,27 +297,44 @@ class Abusive_reports_for_reviews_model extends CI_Model
             if($this->primary_alias != ""){
                 $this->db->select($this->table_alias . "." . $this->primary_key . " AS " . $this->primary_alias);
             }
-        $this->db->select("concat(u.vFirstName,\" \",u.vLastName) AS u_first_name");
-        $this->db->select("concat(owner.vFirstName,\" \",owner.vLastName) AS owner_first_name");
-        $this->db->select("arfp.iMissingPetId AS arfp_reviews_id");
-        $this->db->select("arfp.vMessage AS arfp_message");
-        $this->db->select("r.vdogDetails AS p_post_title");
-        $this->db->select("arfp.dtAddedAt AS arfp_added_at");
-        $this->db->select("arfp.eStatus AS status");
-        
-        $this->db->select("u.iUserId AS ron_users_id");
-            $this->db->select("owner.iUserId AS rb_users_id");
+             $this->db->select("r.iMissingPetId AS r_review_id");
+            $this->db->select("r.vProfileImage AS r_profile_image");
+            $this->db->select("concat(r.vFirstName,\"\",r.vLastName) AS r_first_name");
+            //$this->db->select("r.vEmail AS r_email");
+            //$this->db->select("r.vMobileNo AS r_mobile_no");
+            //$this->db->select("r.iStars AS r_star");
+            $this->db->select("r.vdogDetails AS r_description");
+            //$this->db->select("r.vReviewType AS r_review_type");
+            $this->db->select("r.dtUpdatedat AS r_updated_at");
+            $this->db->select("r.eStatus AS r_status");
         
         } else {
-            $this->db->select("arfp.iAbusiveReportsForMissingPetId AS iAbusiveReportsForMissingPetId");
-            $this->db->select("arfp.iAbusiveReportsForMissingPetId AS arfp_abusive_reports_for_review_id");
-            $this->db->select("arfp.iReportedBy AS arfp_reported_by");
-            $this->db->select("arfp.iMissingPetId AS arfp_reviews_id");
-            $this->db->select("arfp.vMessage AS arfp_message");
-            $this->db->select("r.vdogDetails AS p_post_title");   
-            $this->db->select("arfp.dtAddedAt AS arfp_added_at");
-            $this->db->select("arfp.eStatus AS status");
-            $this->db->select("('view') AS sys_custom_field_1", FALSE);
+            $this->db->select("r.iMissingPetId AS iMissingPetId");
+            $this->db->select("r.vProfileImage AS r_profile_image");
+            //$this->db->select("r.vEmail AS r_email");
+            $this->db->select("r.vMobileNo AS r_mobile_no");
+            //$this->db->select("r.iStars AS r_star");
+            $this->db->select("r.dAddedAt AS r_added_at");
+            $this->db->select("r.vdogDetails AS r_description");
+            $this->db->select("r.vFirstName AS r_first_name");
+            $this->db->select("r.vLastName AS r_last_name");
+            //$this->db->select("r.vReviewType AS r_review_type");
+            $this->db->select("r.dtUpdatedAt AS r_updated_at");
+            $this->db->select("r.dtDeletedAt AS r_deleted_at");
+            $this->db->select("r.eStatus AS r_status");
+            //$this->db->select("r.vBussinessName AS r_business_name");
+            // $this->db->select("b.vName AS r_business_type");
+            // $this->db->select("r.vPosition AS r_position");
+            // $this->db->select("r.tAddress AS r_address");
+            // $this->db->select("r.tApartmentInfo  AS r_apartmentinfo");
+            // $this->db->select("r.vCity AS r_city");
+            // $this->db->select("r.iStateId AS r_state_id");
+            // $this->db->select("r.vZipCode AS r_zip_code");
+            // $this->db->select("r.vPlaceId AS r_place_id");
+            // $this->db->select("r.vClaimedEmail AS r_claimed_email");
+            // $this->db->select("r.bIsClaimed AS r_is_claimed");
+            // $this->db->select("r.dLatitude AS r_latitude");
+            // $this->db->select("r.dLongitude AS r_longitude");
             
         }
         
@@ -339,6 +344,7 @@ class Abusive_reports_for_reviews_model extends CI_Model
             if($join["list"] == "Yes"){
                 $this->addJoinTables("AR");
             }
+            
         } else {
             if($join == "Yes"){
                 $this->addJoinTables("AR");
@@ -449,29 +455,34 @@ class Abusive_reports_for_reviews_model extends CI_Model
             $total_records = $this->db->count_all_results();
         }
         $total_pages = $this->listing->getTotalPages($total_records, $rec_per_page);
+        #echo $this->db->last_query();exit;
         
         
         $this->db->select($this->table_alias . "." . $this->primary_key . " AS " . $this->primary_key);
         if($this->primary_alias != ""){
             $this->db->select($this->table_alias . "." . $this->primary_key . " AS " . $this->primary_alias);
         }
-        $this->db->select("concat(u.vFirstName,\" \",u.vLastName) AS u_first_name");
-        $this->db->select("concat(owner.vFirstName,\" \",owner.vLastName) AS owner_first_name");
-        $this->db->select("r.vdogDetails AS p_post_title");
-        $this->db->select("arfp.vMessage AS arfp_message");
-        $this->db->select("arfp.dtAddedAt AS arfp_added_at");
-        $this->db->select("arfp.eStatus AS status");
-        $this->db->select("('view') AS sys_custom_field_1", FALSE);
-        $this->db->select("u.iUserId AS ron_users_id");
-            $this->db->select("owner.iUserId AS rb_users_id");
+        $this->db->select("r.iMissingPetId AS r_review_id");
+        $this->db->select("r.vProfileImage AS r_profile_image");
+        $this->db->select("concat(r.vFirstName,\"\",r.vLastName) AS r_first_name");
+        //$this->db->select("r.vEmail AS r_email");
+        //$this->db->select("r.vMobileNo AS r_mobile_no");
+        //$this->db->select("r.iStars AS r_star");
+        $this->db->select("r.vdogDetails AS r_description");
+        //$this->db->select("r.vReviewType AS r_review_type");
+        $this->db->select("r.dtUpdatedAt AS r_updated_at");
+        $this->db->select("r.eStatus AS r_status");
         
         
-        
-        if($sdef == "Yes" && is_array($order_by) && count($order_by) > 0){
-            foreach($order_by as $orK => $orV){
-                $sort_filed = $orV['field'];
-                $sort_order = (strtolower($orV['order']) == "desc") ? "DESC" : "ASC";
-                $this->db->order_by($sort_filed, $sort_order);
+        if($sdef == "Yes"){
+            if(is_array($order_by) && count($order_by) > 0){
+                foreach($order_by as $orK => $orV){
+                    $sort_filed = $orV['field'];
+                    $sort_order = (strtolower($orV['order']) == "desc") ? "DESC" : "ASC";
+                    $this->db->order_by($sort_filed, $sort_order);
+                }
+            } else if (!empty($order_by) && is_string($order_by)) {
+                $this->db->order_by($order_by);
             }
         }
         if ($sidx != "") {
@@ -480,11 +491,11 @@ class Abusive_reports_for_reviews_model extends CI_Model
         $limit_offset = $this->listing->getStartIndex($total_records, $page, $rec_per_page);
         $this->db->limit($rec_per_page, $limit_offset);
         $return_data_obj = $this->db->get();
-        #echo $this->db->last_query();exit;
         $return_data = is_object($return_data_obj) ? $return_data_obj->result_array() : array();
         $this->db->flush_cache();
         $listing_data = $this->listing->getDataForJqGrid($return_data, $filter_config, $page, $total_pages, $total_records);
         $this->listing_data = $return_data;
+        #echo $this->db->last_query();
         return $listing_data;
     }
     
@@ -555,23 +566,27 @@ class Abusive_reports_for_reviews_model extends CI_Model
         if($this->primary_alias != ""){
             $this->db->select($this->table_alias . "." . $this->primary_key . " AS " . $this->primary_alias);
         }
-        $this->db->select("concat(u.vFirstName,\" \",u.vLastName) AS u_first_name");
-        $this->db->select("concat(owner.vFirstName,\" \",owner.vLastName) AS owner_first_name");
-        $this->db->select("r.vdogDetails AS p_post_title");
-        $this->db->select("arfp.vMessage AS arfp_message");
-        $this->db->select("arfp.dtAddedAt AS arfp_added_at");
-        $this->db->select("arfp.eStatus AS status");
-        $this->db->select("('view') AS sys_custom_field_1", FALSE);
-        $this->db->select("u.iUserId AS ron_users_id");
+        $this->db->select("r.iMissingPetId AS r_review_id");
+        $this->db->select("r.vProfileImage AS r_profile_image");
+        $this->db->select("concat(r.vFirstName,\"\",r.vLastName) AS r_first_name");
+        //$this->db->select("r.vEmail AS r_email");
+        //$this->db->select("r.vMobileNo AS r_mobile_no");
+        $this->db->select("r.iStars AS r_star");
+        $this->db->select("r.vdogDetails AS r_description");
+        //$this->db->select("r.vReviewType AS r_review_type");
+        $this->db->select("r.dtUpdatedAt AS r_updated_at");
+        $this->db->select("r.eStatus AS r_status");
 
-            $this->db->select("owner.iUserId AS rb_users_id");
         
-        
-        if($sdef == "Yes" && is_array($order_by) && count($order_by) > 0){
-            foreach($order_by as $orK => $orV){
-                $sort_filed = $orV['field'];
-                $sort_order = (strtolower($orV['order']) == "desc") ? "DESC" : "ASC";
-                $this->db->order_by($sort_filed, $sort_order);
+        if($sdef == "Yes"){
+            if(is_array($order_by) && count($order_by) > 0){
+                foreach($order_by as $orK => $orV){
+                    $sort_filed = $orV['field'];
+                    $sort_order = (strtolower($orV['order']) == "desc") ? "DESC" : "ASC";
+                    $this->db->order_by($sort_filed, $sort_order);
+                }
+            } else if (!empty($order_by) && is_string($order_by)) {
+                $this->db->order_by($order_by);
             }
         }
         if ($sidx != "") {
@@ -615,222 +630,225 @@ class Abusive_reports_for_reviews_model extends CI_Model
     public function getListConfiguration($name = "")
     {
         $list_config = array(
-                "u_first_name" => array(
-                "name" => "u_first_name",
-                "table_name" => "users",
-                "table_alias" => "u",
-                "field_name" => "vFirstName",
-                "source_field" => "arfp_reported_by",
-                "display_query" => "concat(u.vFirstName,\" \",u.vLastName)",
-                "entry_type" => "Table",
-                "data_type" => "",
-                "show_in" => "Both",
-                "type" => "dropdown",
-                "align" => "left",
-                "label" => "Reported By",
-                "lang_code" => "ABUSIVE_REPORTS_FOR_MISSING_PETS_REPORTED_BY",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_FOR_MISSING_PETS_REPORTED_BY'),
-                "search" => "Yes",
-                "export" => "Yes",
-                "sortable" => "Yes",
-                "addable" => "No",
-                "editable" => "No",
-                "viewedit" => "No",
-                "related" => "Yes",
-                "edit_link" => "Yes",
-                "custom_link" => "Yes"
-            ),
-              "owner_first_name" => array(
-                "name" => "owner_first_name",
-                "table_name" => "users",
-                "table_alias" => "u",
-                "field_name" => "iUserId",
-                "source_field" => "owner_first_name",
-                "display_query" => "u.iUserId",
-                "entry_type" => "Table",
-                "data_type" => "",
-                "show_in" => "Both",
-                "type" => "dropdown",
-                "align" => "left",
-                "label" => "Missing Owner",
-                "lang_code" => "ABUSIVE_REPORTS_FOR_MISSING_OWNER",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_FOR_MISSING_OWNER'),
-                "search" => "Yes",
-                "export" => "Yes",
-                "sortable" => "Yes",
-                "addable" => "No",
-                "editable" => "No",
-                "viewedit" => "No",
-                "related" => "Yes",
-                "edit_link" => "Yes",
-                "custom_link" => "Yes",
-
-            ),
-                "p_post_title" => array(
-                "name" => "p_post_title",
+            "r_profile_image" => array(
+                "name" => "r_profile_image",
                 "table_name" => "missing_pets",
                 "table_alias" => "r",
-                "field_name" => "vdogDetails",
-                "source_field" => "",
-                "display_query" => "r.vdogDetails",
+                "field_name" => "vProfileImage",
+                "source_field" => "r_profile_image",
+                "display_query" => "r.vProfileImage",
                 "entry_type" => "Table",
-                "data_type" => "",
+                "data_type" => "varchar",
                 "show_in" => "Both",
-                "type" => "textbox",
-                "align" => "left",
-                "label" => "Details",
-                 "lang_code" => "ABUSIVE_REPORTS_FOR_MISSING_PETS_DETAILS",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_FOR_MISSING_PETS_DETAILS'),
-                "search" => "Yes",
+                "type" => "file",
+                "align" => "center",
+                "label" => "Profile Image",
+                "lang_code" => "REVIEW_MANAGEMENT_PROFILE_IMAGE",
+                "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_PROFILE_IMAGE'),
+                "width" => 50,
+                "search" => "No",
                 "export" => "Yes",
-                "sortable" => "Yes",
+                "sortable" => "No",
                 "addable" => "No",
-                "editable" => "Yes",
-                "viewedit" => "Yes",
-                "edit_link" => "Yes",
-                "php_func" => "controller::setLimitForDescription"
-            ),
-                "arfp_message" => array(
-                "name" => "arfp_message",
-                "table_name" => "abusive_reports_for_missing_post",
-                "table_alias" => "arfp",
-                "field_name" => "vMessage",
-                "source_field" => "arfp_message",
-                "display_query" => "arfp.vMessage",
+                "editable" => "No",
+                "viewedit" => "No",
+                "file_upload" => "Yes",
+                "file_inline" => "Yes",
+                "file_server" => "local",
+                "file_folder" => "consumer_profile_image",
+                "file_width" => "80",
+                "file_height" => "80",
+                "file_keep" => "iMissingPetId",
+                ),
+                
+            "r_first_name" => array(
+                "name" => "r_first_name",
+                "table_name" => "missing_pets",
+                "table_alias" => "r",
+                "field_name" => "vFirstName",
+                "source_field" => "r_first_name",
+                "display_query" => "concat(r.vFirstName,\"\",r.vLastName)",
                 "entry_type" => "Table",
                 "data_type" => "varchar",
                 "show_in" => "Both",
                 "type" => "textbox",
                 "align" => "left",
-                "label" => "Message",
-                "lang_code" => "ABUSIVE_REPORTS_FOR_MISSING_PETS_MESSAGE",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_FOR_MISSING_PETS_MESSAGE'),
+                "label" => "Full Name",
+                "lang_code" => "REVIEW_MANAGEMENT_FULL_NAME",
+                "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_FULL_NAME'),
+                "width" => 50,
                 "search" => "Yes",
                 "export" => "Yes",
                 "sortable" => "Yes",
                 "addable" => "No",
                 "editable" => "No",
                 "viewedit" => "No",
-                "php_func" => "controller::setLimitForDescription"
+                "edit_link" => "Yes"
             ),
-                "arfp_added_at" => array(
-                "name" => "arfp_added_at",
-                "table_name" => "abusive_reports_for_missing_post",
-                "table_alias" => "arfp",
-                "field_name" => "dtAddedAt",
-                "source_field" => "arfp_added_at",
-                "display_query" => "arfp.dtAddedAt",
+            // "r_email" => array(
+            //     "name" => "r_email",
+            //     "table_name" => "review",
+            //     "table_alias" => "r",
+            //     "field_name" => "vEmail",
+            //     "source_field" => "r_email",
+            //     "display_query" => "r.vEmail",
+            //     "entry_type" => "Table",
+            //     "data_type" => "varchar",
+            //     "show_in" => "Both",
+            //     "type" => "textbox",
+            //     "align" => "left",
+            //     "label" => "Email",
+            //     "lang_code" => "REVIEW_MANAGEMENT_EMAIL",
+            //     "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_EMAIL'),
+            //     "width" => 50,
+            //     "search" => "Yes",
+            //     "export" => "Yes",
+            //     "sortable" => "Yes",
+            //     "addable" => "No",
+            //     "editable" => "No",
+            //     "viewedit" => "No",
+            //     "edit_link" => "Yes"
+            // ),
+            // "r_mobile_no" => array(
+            //     "name" => "r_mobile_no",
+            //     "table_name" => "review",
+            //     "table_alias" => "r",
+            //     "field_name" => "vMobileNo",
+            //     "source_field" => "r_mobile_no",
+            //     "display_query" => "r.vMobileNo",
+            //     "entry_type" => "Table",
+            //     "data_type" => "varchar",
+            //     "show_in" => "Both",
+            //     "type" => "textbox",
+            //     "align" => "left",
+            //     "label" => "Mobile Number",
+            //     "lang_code" => "REVIEW_MANAGEMENT_MOBILE_NUMBER",
+            //     "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_MOBILE_NUMBER'),
+            //     "width" => 50,
+            //     "search" => "Yes",
+            //     "export" => "Yes",
+            //     "sortable" => "Yes",
+            //     "addable" => "No",
+            //     "editable" => "No",
+            //     "viewedit" => "No",
+            //     "edit_link" => "Yes"
+            // ),
+            // "r_star" => array(
+            //     "name" => "r_star",
+            //     "table_name" => "review",
+            //     "table_alias" => "r",
+            //     "field_name" => "iStars",
+            //     "source_field" => "r_star",
+            //     "display_query" => "r.iStars",
+            //     "entry_type" => "Table",
+            //     "data_type" => "int",
+            //     "show_in" => "Both",
+            //     "type" => "textbox",
+            //     "align" => "left",
+            //     "label" => "Stars Given",
+            //     "lang_code" => "REVIEW_MANAGEMENT_STAR",
+            //     "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_STAR'),
+            //     "width" => 80,
+            //     "search" => "Yes",
+            //     "export" => "Yes",
+            //     "sortable" => "Yes",
+            //     "addable" => "No",
+            //     "editable" => "No",
+            //     "viewedit" => "No"
+            // ),
+            "r_description" => array(
+                "name" => "r_description",
+                "table_name" => "missing_pets",
+                "table_alias" => "r",
+                "field_name" => "vdogDetails",
+                "source_field" => "r_description",
+                "display_query" => "r.vdogDetails",
+                "entry_type" => "Table",
+                "data_type" => "varchar",
+                "show_in" => "Both",
+                "type" => "textbox",
+                "align" => "left",
+                "label" => "Stars Given",
+                "lang_code" => "REVIEW_MANAGEMENT_DESCRIPTION",
+                "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_DESCRIPTION'),
+                "width" => 80,
+                "search" => "Yes",
+                "export" => "Yes",
+                "sortable" => "Yes",
+                "addable" => "No",
+                "editable" => "No",
+                "viewedit" => "No"
+            ),
+            // "r_review_type" => array(
+            //     "name" => "r_review_type",
+            //     "table_name" => "review",
+            //     "table_alias" => "r",
+            //     "field_name" => "vReviewType",
+            //     "source_field" => "r_review_type",
+            //     "display_query" => "r.vReviewType",
+            //     "entry_type" => "Table",
+            //     "data_type" => "varchar",
+            //     "show_in" => "Both",
+            //     "type" => "textbox",
+            //     "align" => "left",
+            //     "label" => "Stars Given",
+            //     "lang_code" => "REVIEW_MANAGEMENT_REVIEW_TYPE",
+            //     "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_REVIEW_TYPE'),
+            //     "width" => 80,
+            //     "search" => "Yes",
+            //     "export" => "Yes",
+            //     "sortable" => "Yes",
+            //     "addable" => "No",
+            //     "editable" => "No",
+            //     "viewedit" => "No"
+            // ),
+               
+                "r_updated_at" => array(
+                "name" => "r_updated_at",
+                "table_name" => "missing_pets",
+                "table_alias" => "r",
+                "field_name" => "dtUpdatedAt",
+                "source_field" => "r_updated_at",
+                "display_query" => "r.dtUpdatedAt",
                 "entry_type" => "Table",
                 "data_type" => "datetime",
                 "show_in" => "Both",
-                "type" => "date",
+                "type" => "date_and_time",
                 "align" => "left",
-                "label" => "Reported On",
-                "lang_code" => "ABUSIVE_REPORTS_FOR_MISSING_PETS_REPORTED_ON",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_FOR_MISSING_PETS_REPORTED_ON'),
+                "label" => "Created On",
+                "lang_code" => "REVIEW_MANAGEMENT_UPDATED_AT",
+                "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_UPDATED_AT'),
+                "width" => 50,
                 "search" => "Yes",
                 "export" => "Yes",
                 "sortable" => "Yes",
                 "addable" => "No",
                 "editable" => "No",
                 "viewedit" => "No",
-                "format" => $this->general->getAdminPHPFormats('date'),
-                "php_date" => "m-d-Y"
-            ),            
-            "status" => array(
-                "name" => "status",
-                "table_name" => "abusive_reports_for_post",
-                "table_alias" => "arfp",
+                "format" => $this->general->getAdminPHPFormats('date_and_time')
+            ),
+                "r_status" => array(
+                "name" => "r_status",
+                "table_name" => "missing_pets",
+                "table_alias" => "r",
                 "field_name" => "eStatus",
-                "source_field" => "arfp_status",
-                "display_query" => "arfp.eStatus",
+                "source_field" => "r_status",
+                "display_query" => "r.eStatus",
                 "entry_type" => "Table",
                 "data_type" => "enum",
                 "show_in" => "Both",
                 "type" => "dropdown",
                 "align" => "center",
                 "label" => "Status",
-                "lang_code" => "ABUSIVE_REPORTS_FOR_MISSING_PETS_STATUS",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_FOR_MISSING_PETS_STATUS'),
+                "lang_code" => "REVIEW_MANAGEMENT_STATUS",
+                "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_STATUS'),
+                "width" => 50,
                 "search" => "Yes",
                 "export" => "Yes",
                 "sortable" => "Yes",
                 "addable" => "No",
                 "editable" => "Yes",
-                "viewedit" => "Yes",
-            ),
-             "sys_custom_field_1" => array(
-                "name" => "sys_custom_field_1",
-                "table_name" => "",
-                "table_alias" => "",
-                "field_name" => "",
-                "source_field" => "",
-                "display_query" => "view",
-                "entry_type" => "Custom",
-                "data_type" => "",
-                "show_in" => "Both",
-                "type" => "textbox",
-                "align" => "center",
-                "label" => "Edit",
-                "lang_code" => "ABUSIVE_REPORTS_FOR_MISSING_PETS_EDIT",
-                "label_lang" => "Edit",
-                "search" => "No",
-                "export" => "No",
-                "sortable" => "Yes",
-                "addable" => "No",
-                "editable" => "No",
-                "viewedit" => "No",
-                "php_func" => "controller::showStatusButton",
-            ),
-              "ron_users_id" => array(
-                "name" => "ron_users_id",
-                "table_name" => "users",
-                "table_alias" => "u",
-                "field_name" => "iUserId",
-                "source_field" => "ar_reported_on",
-                "display_query" => "u.iUserId",
-                "entry_type" => "Table",
-                "data_type" => "",
-                "show_in" => "Both",
-                "type" => "dropdown",
-                "align" => "center",
-                "label" => "on Id",
-                "lang_code" => "ABUSIVE_REPORTS_ON_ID",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_ON_ID'),
-                "width" => 50,
-                "search" => "Yes",
-                "export" => "Yes",
-                "sortable" => "Yes",
-                "addable" => "No",
-                "editable" => "No",
-                "viewedit" => "No",
-                "related" => "Yes",
-                "hidden" => "Yes",
-            ),
-            "rb_users_id" => array(
-                "name" => "rb_users_id",
-                "table_name" => "users",
-                "table_alias" => "owner",
-                "field_name" => "iUserId",
-                "source_field" => "ar_reported_by",
-                "display_query" => "owner.iUserId",
-                "entry_type" => "Table",
-                "data_type" => "",
-                "show_in" => "Both",
-                "type" => "dropdown",
-                "align" => "center",
-                "label" => "by Id",
-                "lang_code" => "ABUSIVE_REPORTS_BY_ID",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_BY_ID'),
-                "width" => 50,
-                "search" => "Yes",
-                "export" => "Yes",
-                "sortable" => "Yes",
-                "addable" => "No",
-                "editable" => "No",
-                "viewedit" => "No",
-                "related" => "Yes",
-                "hidden" => "Yes",
+                "viewedit" => "Yes"
             )
         );
         
@@ -856,106 +874,360 @@ class Abusive_reports_for_reviews_model extends CI_Model
     public function getFormConfiguration($name = "")
     {
         $form_config = array(
-                "arfp_reported_by" => array(
-                "name" => "arfp_reported_by",
-                "table_name" => "abusive_reports_for_missing_post",
-                "table_alias" => "arfp",
-                "field_name" => "iReportedBy",
+            
+            "r_star" => array(
+                "name" => "r_star",
+                "table_name" => "review",
+                "table_alias" => "r",
+                "field_name" => "iStars",
                 "entry_type" => "Table",
                 "data_type" => "int",
                 "show_input" => "Both",
-                "type" => "dropdown",
-                "label" => "Reported By",
-                "lang_code" => "ABUSIVE_REPORTS_FOR_MISSING_PETS_REPORTED_BY",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_FOR_MISSING_PETS_REPORTED_BY'),               
-                "custom_link" => "Yes"
+                "type" => "textbox",
+                "label" => "Stars Given",
+                "lang_code" => "REVIEW_MANAGEMENT_STAR",
+                "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_STAR')
             ),
-             "owner_first_name" => array(
-                "name" => "owner_first_name",
-                "table_name" => "users",
-                "table_alias" => "usr",
-                "field_name" => "iUserId",
-                "entry_type" => "Table",
-                "data_type" => "int",
-                "show_input" => "Both",
-                "type" => "dropdown",
-                "label" => "Missing Owner",
-                "lang_code" => "ABUSIVE_REPORTS_FOR_MISSING_OWNER",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_FOR_MISSING_OWNER'),               
-                "custom_link" => "Yes"
-            ),
-              "p_post_title" => array(
-                "name" => "p_post_title",
+            "r_description" => array(
+                "name" => "r_description",
                 "table_name" => "missing_pets",
                 "table_alias" => "r",
                 "field_name" => "vdogDetails",
-                "source_field" => "",
-                "display_query" => "r.vdogDetails",
-                "entry_type" => "Table",
-                "data_type" => "",
-                "show_in" => "Both",
-                "type" => "textbox",
-                "align" => "left",
-                "label" => "Details",
-                 "lang_code" => "ABUSIVE_REPORTS_FOR_MISSING_PETS_DETAILS",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_FOR_MISSING_PETS_DETAILS')
-               
-            ),
-                "arfp_reviews_id" => array(
-                "name" => "arfp_reviews_id",
-                "table_name" => "abusive_reports_for_missing_post",
-                "table_alias" => "arfp",
-                "field_name" => "iMissingPetId",
-                "entry_type" => "Table",
-                "data_type" => "int",
-                "show_input" => "Both",
-                "type" => "textbox",
-                "label" => "Post",
-                "lang_code" => "ABUSIVE_REPORTS_FOR_MISSING_PETS_ID",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_FOR_MISSING_PETS_ID')
-               
-            ),
-            "arfp_message" => array(
-                "name" => "arfp_message",
-                "table_name" => "abusive_reports_for_missing_post",
-                "table_alias" => "arfp",
-                "field_name" => "vMessage",
                 "entry_type" => "Table",
                 "data_type" => "varchar",
                 "show_input" => "Both",
                 "type" => "textbox",
-                "label" => "Message",
-                "lang_code" => "ABUSIVE_REPORTS_FOR_MISSING_PETS_MESSAGE",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_FOR_MISSING_PETS_MESSAGE')
+                "label" => "Review",
+                "lang_code" => "REVIEW_MANAGEMENT_DESCRIPTION",
+                "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_DESCRIPTION')
             ),
-            "arfp_added_at" => array(
-            "name" => "arfp_added_at",
-            "table_name" => "abusive_reports_for_missing_post",
-            "table_alias" => "arfp",
-            "field_name" => "dtAddedAt",
+                "r_first_name" => array(
+                "name" => "r_first_name",
+                "table_name" => "missing_pets",
+                "table_alias" => "r",
+                "field_name" => "vFirstName",
+                "entry_type" => "Table",
+                "data_type" => "varchar",
+                "show_input" => "Both",
+                "type" => "textbox",
+                "label" => "First Name",
+                "lang_code" => "REVIEW_MANAGEMENT_FIRST_NAME",
+                "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_FIRST_NAME')
+            ),
+                "r_last_name" => array(
+                "name" => "r_last_name",
+                "table_name" => "missing_pets",
+                "table_alias" => "r",
+                "field_name" => "vLastName",
+                "entry_type" => "Table",
+                "data_type" => "varchar",
+                "show_input" => "Both",
+                "type" => "textbox",
+                "label" => "Last Name",
+                "lang_code" => "REVIEW_MANAGEMENT_LAST_NAME",
+                "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_LAST_NAME')
+            ),
+            "r_profile_image" => array(
+            "name" => "r_profile_image",
+            "table_name" => "missing_pets",
+            "table_alias" => "r",
+            "field_name" => "vProfileImage",
+            "entry_type" => "Table",
+            "data_type" => "varchar",
+            "show_input" => "Both",
+            "type" => "file",
+            "label" => "Profile Image",
+            "lang_code" => "REVIEW_MANAGEMENT_PROFILE_IMAGE",
+            "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_PROFILE_IMAGE'),
+            "file_upload" => "Yes",
+            "file_inline" => "Yes",
+            "file_server" => "local",
+            "file_folder" => "consumer_profile_image",
+            "file_width" => "80",
+            "file_height" => "80",
+            "file_keep" => "iMissingPetId",
+            "file_format" => "gif,png,jpg,jpeg,jpe,bmp,ico",
+            "file_size" => "102400"
+        ),
+               
+                "r_email" => array(
+                "name" => "r_email",
+                "table_name" => "review",
+                "table_alias" => "r",
+                "field_name" => "vEmail",
+                "entry_type" => "Table",
+                "data_type" => "varchar",
+                "show_input" => "Both",
+                "type" => "textbox",
+                "label" => "Email",
+                "lang_code" => "REVIEW_MANAGEMENT_EMAIL",
+                "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_EMAIL')
+            ),
+            //     "r_mobile_no" => array(
+            //     "name" => "r_mobile_no",
+            //     "table_name" => "review",
+            //     "table_alias" => "r",
+            //     "field_name" => "vMobileNo",
+            //     "entry_type" => "Table",
+            //     "data_type" => "varchar",
+            //     "show_input" => "Both",
+            //     "type" => "textbox",
+            //     "label" => "Mobile Number",
+            //     "lang_code" => "REVIEW_MANAGEMENT_MOBILE_NUMBER",
+            //     "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_MOBILE_NUMBER')
+            // ),
+            //     "r_address" => array(
+            //     "name" => "r_address",
+            //     "table_name" => "review",
+            //     "table_alias" => "r",
+            //     "field_name" => "tAddress",
+            //     "entry_type" => "Table",
+            //     "data_type" => "text",
+            //     "show_input" => "Both",
+            //     "type" => "google_maps",
+            //     "label" => "Address",
+            //     "lang_code" => "REVIEW_MANAGEMENT_ADDRESS",
+            //     "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_ADDRESS')
+            // ),
+            //     "r_apartmentinfo" => array(
+            //     "name" => "r_address",
+            //     "table_name" => "review",
+            //     "table_alias" => "r",
+            //     "field_name" => "tApartmentInfo",
+            //     "entry_type" => "Table",
+            //     "data_type" => "text",
+            //     "show_input" => "Both",
+            //     "type" => "google_maps",
+            //     "label" => "Address",
+            //     "lang_code" => "Apartment Info",
+            //     "label_lang" => "Apartment Info",
+            // ),
+            //     "r_city" => array(
+            //     "name" => "r_city",
+            //     "table_name" => "review",
+            //     "table_alias" => "r",
+            //     "field_name" => "vCity",
+            //     "entry_type" => "Table",
+            //     "data_type" => "varchar",
+            //     "show_input" => "Both",
+            //     "type" => "textbox",
+            //     "label" => "City",
+            //     "lang_code" => "REVIEW_MANAGEMENT_CITY",
+            //     "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_CITY')
+            // ),
+            //     "r_state_id" => array(
+            //     "name" => "r_state_id",
+            //     "table_name" => "review",
+            //     "table_alias" => "r",
+            //     "field_name" => "iStateId",
+            //     "entry_type" => "Table",
+            //     "data_type" => "int",
+            //     "show_input" => "Both",
+            //     "type" => "dropdown",
+            //     "label" => "State",
+            //     "lang_code" => "REVIEW_MANAGEMENT_STATE",
+            //     "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_STATE')
+            // ),
+            //     "r_zip_code" => array(
+            //     "name" => "r_zip_code",
+            //     "table_name" => "review",
+            //     "table_alias" => "r",
+            //     "field_name" => "vZipCode",
+            //     "entry_type" => "Table",
+            //     "data_type" => "varchar",
+            //     "show_input" => "Both",
+            //     "type" => "textbox",
+            //     "label" => "Zip Code",
+            //     "lang_code" => "REVIEW_MANAGEMENT_ZIP_CODE",
+            //     "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_ZIP_CODE')
+            // ),
+            //     "r_review_type" => array(
+            //     "name" => "r_review_type",
+            //     "table_name" => "review",
+            //     "table_alias" => "r",
+            //     "field_name" => "vReviewType",
+            //     "entry_type" => "Table",
+            //     "data_type" => "varchar",
+            //     "show_input" => "Both",
+            //     "type" => "textbox",
+            //     "label" => "Review Type",
+            //     "lang_code" => "REVIEW_MANAGEMENT_REVIEW_TYPE",
+            //     "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_REVIEW_TYPE')
+            // ),
+                "r_user_id" => array(
+                "name" => "r_user_id",
+                "table_name" => "missing_pets",
+                "table_alias" => "r",
+                "field_name" => "iUserId",
+                "entry_type" => "Table",
+                "data_type" => "int",
+                "show_input" => "Both",
+                "type" => "textbox",
+                "label" => "User ID",
+                "lang_code" => "REVIEW_MANAGEMENT_USER_ID",
+                "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_USER_ID')
+            ),
+            "r_added_at" => array(
+            "name" => "r_added_at",
+            "table_name" => "missing_pets",
+            "table_alias" => "r",
+            "field_name" => "dAddedAt",
             "entry_type" => "Table",
             "data_type" => "datetime",
-            "show_input" => "Both",
-            "type" => "date",
-            "label" => "Reported On",
-            "lang_code" => "ABUSIVE_REPORTS_FOR_MISSING_PETS_REPORTED_ON",
-            "label_lang" => $this->lang->line('ABUSIVE_REPORTS_FOR_MISSING_PETS_REPORTED_ON'),
-            "format" => $this->general->getAdminPHPFormats('date')
+            "show_input" => "Hidden",
+            "type" => "date_and_time",
+            "label" => "Added At",
+            "lang_code" => "REVIEW_MANAGEMENT_ADDED_AT",
+            "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_ADDED_AT'),
+            "format" => $this->general->getAdminPHPFormats('date_and_time')
+        ),
+            "r_updated_at" => array(
+            "name" => "r_updated_at",
+            "table_name" => "missing_pets",
+            "table_alias" => "r",
+            "field_name" => "dtUpdatedAt",
+            "entry_type" => "Table",
+            "data_type" => "datetime",
+            "show_input" => "Hidden",
+            "type" => "date_and_time",
+            "label" => "Updated At",
+            "lang_code" => "REVIEW_MANAGEMENT_UPDATED_AT",
+            "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_UPDATED_AT'),
+            "default" => $this->filter->getDefaultValue("r_updated_at","MySQL","NOW()"),
+            "dfapply" => "forceApply",
+            "format" => $this->general->getAdminPHPFormats('date_and_time')
+        ),
+
+                "r_deleted_at" => array(
+                "name" => "r_deleted_at",
+                "table_name" => "missing_pets",
+                "table_alias" => "r",
+                "field_name" => "dtDeletedAt",
+                "entry_type" => "Table",
+                "data_type" => "datetime",
+                "show_input" => "Both",
+                "type" => "date_and_time",
+                "label" => "Deleted At",
+                "lang_code" => "REVIEW_MANAGEMENT_DELETED_AT",
+                "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_DELETED_AT'),
+                "format" => $this->general->getAdminPHPFormats('date')
             ),
-            "status" => array(
-                "name" => "status",
-                "table_name" => "abusive_reports_for_missing_post",
-                "table_alias" => "arfp",
+                "r_status" => array(
+                "name" => "r_status",
+                "table_name" => "missing_pets",
+                "table_alias" => "r",
                 "field_name" => "eStatus",
                 "entry_type" => "Table",
                 "data_type" => "enum",
                 "show_input" => "Both",
                 "type" => "dropdown",
                 "label" => "Status",
-                "lang_code" => "ABUSIVE_REPORTS_FOR_MISSING_PETS_STATUS",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_FOR_MISSING_PETS_STATUS'),
-                "default" => $this->filter->getDefaultValue("status","Text","Pending"),
-                "dfapply" => "addOnly"
+                "lang_code" => "REVIEW_MANAGEMENT_STATUS",
+                "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_STATUS')
+            ),
+                "r_business_name" => array(
+                "name" => "r_business_name",
+                "table_name" => "review",
+                "table_alias" => "r",
+                "field_name" => "vBussinessName",
+                "entry_type" => "Table",
+                "data_type" => "varchar",
+                "show_input" => "Hidden",
+                "type" => "textbox",
+                "label" => "Business Name",
+                "lang_code" => "REVIEW_MANAGEMENT_BUSINESS_NAME",
+                "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_BUSINESS_NAME')
+            ),
+            "r_business_type" => array(
+            "name" => "r_business_type",
+            "table_name" => "business_type",
+            "table_alias" => "b",
+            "field_name" => "vName",
+            "entry_type" => "Table",
+            "data_type" => "varchar",
+            "show_input" => "Hidden",
+            "type" => "textbox",
+            "label" => "Business Type",
+            "lang_code" => "REVIEW_MANAGEMENT_BUSINESS_TYPE",
+            "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_BUSINESS_TYPE')
+            ),
+            "r_position" => array(
+            "name" => "r_position",
+            "table_name" => "review",
+            "table_alias" => "r",
+            "field_name" => "vPosition",
+            "entry_type" => "Table",
+            "data_type" => "varchar",
+            "show_input" => "Hidden",
+            "type" => "textbox",
+            "label" => "Position",
+            "lang_code" => "REVIEW_MANAGEMENT_POSITION",
+            "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_POSITION')
+            ),
+            "r_place_id" => array(
+            "name" => "r_place_id",
+            "table_name" => "review",
+            "table_alias" => "r",
+            "field_name" => "vPlaceId",
+            "entry_type" => "Table",
+            "data_type" => "varchar",
+            "show_input" => "Hidden",
+            "type" => "textbox",
+            "label" => "Place ID",
+            "lang_code" => "REVIEW_MANAGEMENT_PLACE_ID",
+            "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_PLACE_ID')
+            ),
+            "r_claimed_email" => array(
+            "name" => "r_claimed_email",
+            "table_name" => "review",
+            "table_alias" => "r",
+            "field_name" => "vClaimedEmail",
+            "entry_type" => "Table",
+            "data_type" => "varchar",
+            "show_input" => "Hidden",
+            "type" => "textbox",
+            "label" => "Claimed Email",
+            "lang_code" => "REVIEW_MANAGEMENT_CLAIMED_EMAIL",
+            "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_CLAIMED_EMAIL')
+            ),
+            "r_is_claimed" => array(
+            "name" => "r_is_claimed",
+            "table_name" => "review",
+            "table_alias" => "r",
+            "field_name" => "bIsClaimed",
+            "entry_type" => "Table",
+            "data_type" => "varchar",
+            "show_input" => "Hidden",
+            "type" => "textbox",
+            "label" => "Position",
+            "lang_code" => "REVIEW_MANAGEMENT_IS_CLAIMED",
+            "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_IS_CLAIMED')
+            ),
+                "r_latitude" => array(
+                "name" => "r_latitude",
+                "table_name" => "review",
+                "table_alias" => "r",
+                "field_name" => "dLatitude",
+                "entry_type" => "Table",
+                "data_type" => "decimal",
+                "show_input" => "Hidden",
+                "type" => "textbox",
+                "label" => "Latitude",
+                "lang_code" => "REVIEW_MANAGEMENT_LATITUDE",
+                "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_LATITUDE')
+            ),
+                "r_longitude" => array(
+                "name" => "r_longitude",
+                "table_name" => "review",
+                "table_alias" => "r",
+                "field_name" => "dLongitude",
+                "entry_type" => "Table",
+                "data_type" => "decimal",
+                "show_input" => "Hidden",
+                "type" => "textbox",
+                "label" => "Longitude",
+                "lang_code" => "REVIEW_MANAGEMENT_LONGITUDE",
+                "label_lang" => $this->lang->line('REVIEW_MANAGEMENT_LONGITUDE')
             )
         );
         
@@ -1046,100 +1318,18 @@ class Abusive_reports_for_reviews_model extends CI_Model
         }
     }
     
-    /**
-     * processCustomLinks method is used to process grid custom link settings configuration.
-     * @param array $data_arr data_arr is to process data records.
-     * @param array $config_arr config_arr for process custom link settings.
-     * @return array $data_arr returns data records array.
-     */ 
-    public function processCustomLinks($data_arr = array(), $config_arr = array())
-    {
-        $custom_link_config = array(
-           "u_first_name" => array(
-                array(
-                    "open" => "Popup",
-                    "width" => "75%",
-                    "height" => "75%",
-                    "apply" => "No",
-                    "block" => array(
-                        "oper" => "",
-                        "conditions" => array(
-                        )
-                    ),
-                    "module_type" => "Module",
-                    "module_name" => "users_management",
-                    "folder_name" => "basic_appineers_master",
-                    "module_page" => "Update",
-                    "custom_link" =>  "",
-                    "extra_params" => array(
-                        array(
-                            "req_var" => "mode",
-                            "req_val" => "Update",
-                            "req_mod" => "Static"
-                        ),
-                        array(
-                            "req_var" => "id",
-                            "req_val" => "ron_users_id",
-                            "req_mod" => "Variable"
-                        )
-                    )
-                )
-            ),
-           "owner_first_name" => array(
-                array(
-                    "open" => "Popup",
-                    "width" => "75%",
-                    "height" => "75%",
-                    "apply" => "No",
-                    "block" => array(
-                        "oper" => "",
-                        "conditions" => array()
-                    ),
-                    "module_type" => "Module",
-                    "module_name" => "users_management",
-                    "folder_name" => "basic_appineers_master",
-                    "module_page" => "Update",
-                    "custom_link" => "",
-                    "extra_params" => array(
-                        array(
-                            "req_var" => "mode",
-                            "req_val" => "Update",
-                            "req_mod" => "Static",
-                        ),
-                        array(
-                            "req_var" => "id",
-                            "req_val" => "rb_users_id",
-                            "req_mod" => "Variable",
-                        )
-                    )
-                )
-            )
-        );
-        $grid_fields = $this->grid_fields;
-        $listing_data = $this->listing_data;
-        if(!is_array($listing_data) || count($listing_data) == 0){
-            return $data_arr;
-        }
-        $rows_arr = $data_arr['rows'];
-        foreach($listing_data as $dKey => $dVal){
-            $custom_links_arr = array();
-            $id = $dVal["iAbusiveReportsForMissingPetId"];
-            foreach($grid_fields as $gKey=>$gVal){
-                if ($config_arr[$gVal]['custom_link'] == "Yes" && $config_arr[$gVal]['edit_link'] == "Yes") {
-                    $custom_link_temp = $this->listing->getGridCustomEditLink($custom_link_config[$gVal], $dVal[$gVal], $dVal, $id);
-                   
-                    if ($custom_link_temp['success']) {
-                        $data_arr['rows'][$dKey][$gVal] = $custom_link_temp['formated_link'];
-                        $custom_links_arr[$gVal]['link'] = $custom_link_temp['actual_link'];
-                        $custom_links_arr[$gVal]['extra_attr_str'] = $custom_link_temp['extra_attr_str'];
-                    }
-                }
-            }
-            if (is_array($custom_links_arr) && count($custom_links_arr) > 0) {
-                $data_arr['links'][$this->general->getAdminEncodeURL($id,0)] = $custom_links_arr;
-            }
-        }
-        return $data_arr;
-    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
 }

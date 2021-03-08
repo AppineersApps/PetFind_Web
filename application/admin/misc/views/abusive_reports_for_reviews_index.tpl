@@ -193,7 +193,7 @@
             "dataUrl": '<%$admin_url%><%$mod_enc_url["get_list_options"]%>?alias_name=u_first_name&mode=<%$mod_enc_mode["Update"]%>&rformat=html<%$extra_qstr%>',
             "dataInit": <%if $count_arr['u_first_name']['ajax'] eq 'Yes' %>initEditGridAjaxChosenEvent<%else%>initGridChosenEvent<%/if%>,
             "ajaxCall": '<%if $count_arr["u_first_name"] eq "Yes" %>ajax-call<%/if%>',
-            "data-placeholder": "<%$this->general->parseLabelMessage('GENERIC_PLEASE_SELECT__C35FIELD_C35' ,'#FIELD#', 'ABUSIVE_REPORTS_FOR_REVIEWS_REPORTED_BY')%>",
+            "data-placeholder": "<%$this->general->parseLabelMessage('GENERIC_PLEASE_SELECT__C35FIELD_C35' ,'#FIELD#', 'ABUSIVE_REPORTS_FOR_MISSING_PETS_REPORTED_BY')%>",
             "class": "inline-edit-row chosen-select"
         },
         "ctrl_type": "dropdown",
@@ -247,7 +247,7 @@
             "dataUrl": '<%$admin_url%><%$mod_enc_url["get_list_options"]%>?alias_name=owner_first_name&mode=<%$mod_enc_mode["Update"]%>&rformat=html<%$extra_qstr%>',
             "dataInit": <%if $count_arr['owner_first_name']['ajax'] eq 'Yes' %>initEditGridAjaxChosenEvent<%else%>initGridChosenEvent<%/if%>,
             "ajaxCall": '<%if $count_arr["owner_first_name"] eq "Yes" %>ajax-call<%/if%>',
-            "data-placeholder": "<%$this->general->parseLabelMessage('GENERIC_PLEASE_SELECT__C35FIELD_C35' ,'#FIELD#', 'ABUSIVE_REPORTS_FOR_REVIEWS_OWNER')%>",
+            "data-placeholder": "<%$this->general->parseLabelMessage('GENERIC_PLEASE_SELECT__C35FIELD_C35' ,'#FIELD#', 'ABUSIVE_REPORTS_FOR_MISSING_OWNER')%>",
             "class": "inline-edit-row chosen-select"
         },
         "ctrl_type": "dropdown",
@@ -430,7 +430,7 @@
             "dataUrl": '<%$admin_url%><%$mod_enc_url["get_list_options"]%>?alias_name=arfp_status&mode=<%$mod_enc_mode["Update"]%>&rformat=html<%$extra_qstr%>',
             "dataInit": <%if $count_arr['arfp_status']['ajax'] eq 'Yes' %>initEditGridAjaxChosenEvent<%else%>initGridChosenEvent<%/if%>,
             "ajaxCall": '<%if $count_arr["arfp_status"] eq "Yes" %>ajax-call<%/if%>',
-            "data-placeholder": "<%$this->general->parseLabelMessage('GENERIC_PLEASE_SELECT__C35FIELD_C35' ,'#FIELD#', 'ABUSIVE_REPORTS_FOR_REVIEWS_STATUS')%>",
+            "data-placeholder": "<%$this->general->parseLabelMessage('GENERIC_PLEASE_SELECT__C35FIELD_C35' ,'#FIELD#', 'ABUSIVE_REPORTS_FOR_MISSING_PETS_STATUS')%>",
             "class": "inline-edit-row chosen-select"
         },
         "ctrl_type": "dropdown",

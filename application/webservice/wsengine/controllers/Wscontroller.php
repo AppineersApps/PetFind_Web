@@ -70,6 +70,7 @@ class Wscontroller extends Cit_Controller
         header('Access-Control-Allow-Origin: *');
         $this->config->load('cit_webservices', TRUE);
         $all_methods = $this->config->item('cit_webservices');
+        #echo $all_methods;exit();
         $res_format = NULL;
         if (stristr($func_arg, ".") !== FALSE) {
             $func_arr = explode(".", $func_arg);
@@ -77,12 +78,14 @@ class Wscontroller extends Cit_Controller
             $res_format = $func_arr[1];
         } else {
             $func_name = $func_arg;
+            #echo $func_name;exit();
         }
+        //echo $all_methods[$func_name];
         if (empty($all_methods[$func_name])) {
             show_error('API code not found. Please save settings or update code.', 400);
         }
         $this->load->module($all_methods[$func_name]['folder'] . "/" . $func_name);
-
+        #echo $all_methods[$func_name]['folder'];
         //checking for webservice controller
         if (!is_object($this->$func_name)) {
             show_error('API code not found. Please save settings or update code.', 400);

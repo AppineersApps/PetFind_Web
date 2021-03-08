@@ -48,92 +48,54 @@
                                                 <%/if%>
                                             </strong></span>
                                         <%else%>
-                                            <%$this->dropdown->display("arfp_reported_by","arfp_reported_by","  title='<%$this->lang->line('ABUSIVE_REPORTS_FOR_REVIEWS_REPORTED_BY')%>'  aria-chosen-valid='Yes'  class='chosen-select frm-size-medium'  data-placeholder='<%$this->general->parseLabelMessage('GENERIC_PLEASE_SELECT__C35FIELD_C35' ,'#FIELD#', 'ABUSIVE_REPORTS_FOR_REVIEWS_REPORTED_BY')%>'  ", "|||", "", $opt_selected,"arfp_reported_by")%>
+                                            <%$this->dropdown->display("arfp_reported_by","arfp_reported_by","  title='<%$this->lang->line('ABUSIVE_REPORTS_FOR_MISSING_PETS_REPORTED_BY')%>'  aria-chosen-valid='Yes'  class='chosen-select frm-size-medium'  data-placeholder='<%$this->general->parseLabelMessage('GENERIC_PLEASE_SELECT__C35FIELD_C35' ,'#FIELD#', 'ABUSIVE_REPORTS_FOR_MISSING_PETS_REPORTED_BY')%>'  ", "|||", "", $opt_selected,"arfp_reported_by")%>
                                         <%/if%>
                                     </div>
                                     <div class="error-msg-form "><label class='error' id='arfp_reported_byErr'></label></div>
                                 </div>
-                                <div class="form-row row-fluid " id="cc_sh_arfp_post_id">
-                                    <!-- <label class="form-label span3 ">
-                                        <%$form_config['arfp_review_id']['label_lang']%>
-                                    </label> --> 
+                                <div class="form-row row-fluid " id="cc_sh_owner_first_name">
+                                     <label class="form-label span3 ">
+                                        <%$form_config['owner_first_name']['label_lang']%>
+                                    </label> 
                                     <div class="form-right-div  <%if $mode eq 'Update'%>frm-elements-div<%/if%> ">
                                         <%if $mode eq "Update"%>
-                                            <input type="hidden" class="ignore-valid" name="arfp_review_id" id="arfp_review_id" value="<%$data['arfp_review_id']|@htmlentities%>" />
-                                            <!-- <span class="frm-data-label">
+                                            <input type="hidden" class="ignore-valid" name="owner_first_name" id="owner_first_name" value="<%$data['owner_first_name']|@htmlentities%>" />
+                                             <span class="frm-data-label">
                                                 <strong>
-                                                    <%if $data['arfp_review_id'] neq ""%>
-                                                        <%$data['arfp_review_id']%>
+                                                    <%if $data['owner_first_name'] neq ""%>
+                                                        <%$data['owner_first_name']%>
                                                     <%else%>
                                                     <%/if%>
-                                                </strong></span> -->
+                                                </strong></span> 
                                             <%else%>
-                                                <input type="text" placeholder="" value="<%$data['arfp_review_id']|@htmlentities%>" name="arfp_review_id" id="arfp_abusive_reports_for_review_id" title="<%$this->lang->line('ABUSIVE_REPORTS_FOR_REVIEW_REVIEW')%>"  data-ctrl-type='textbox'  class='frm-size-medium'  />
+                                                <input type="text" placeholder="" value="<%$data['owner_first_name']|@htmlentities%>" name="owner_first_name" id="owner_first_name" title="<%$this->lang->line('ABUSIVE_REPORTS_FOR_MISSING_OWNER')%>"  data-ctrl-type='textbox'  class='frm-size-medium'  />
                                             <%/if%>
                                         </div>
-                                        <div class="error-msg-form "><label class='error' id='arfp_abusive_reports_for_review_idErr'></label></div>
-                                    </div>
-                                    <%assign var="child_module_name" value="user_review_images"%>
-                                                                    <%assign var="child_data" value=$child_assoc_data[$child_module_name]%>
-                                                                    <%assign var="child_func" value=$child_assoc_func[$child_module_name]%>
-                                                                    <%assign var="child_elem" value=$child_assoc_elem[$child_module_name]%>
-                                                                    <%assign var="child_conf_arr" value=$child_assoc_conf[$child_module_name]%>
-                                                                    <%assign var="child_opt_arr" value=$child_assoc_opt[$child_module_name]%>
-                                                                    <%assign var="child_img_html" value=$child_assoc_img[$child_module_name]%>
-                                                                    <%assign var="child_auto_arr" value=$child_assoc_auto[$child_module_name]%>
-                                                                    <%assign var="child_access_arr" value=$child_assoc_access[$child_module_name]%>
-                                                                    <%if $child_conf_arr["recMode"] eq "Update"%>
-                                                                        <%assign var="child_cnt" value=$child_data|@count%>
-                                                                        <%assign var="recMode" value="Update"%>
-                                                                    <%else%>
-                                                                        <%assign var="child_cnt" value="0"%>
-                                                                        <%assign var="recMode" value="Add"%>
-                                                                    <%/if%>
-                                                                    <%if $child_cnt gt 0%>
-                                                                        <%assign var="child_ord" value=$child_cnt%>
-                                                                    <%else%>
-                                                                        <%assign var="child_ord" value="1"%>
-                                                                    <%/if%>
-                                                                    <%assign var="child_merge_data" value=[]%>
-                                                                    <div class="form-row row-fluid form-inline-child" id="child_module_<%$child_module_name%>">
-                                                                        <input  type="hidden" name="childModule[]" id="childModule_<%$child_module_name%>" value="<%$child_module_name%>" />
-                                                                        <input  type="hidden" name="childModuleShowHide[<%$child_module_name%>]" id="childModuleShowHide_<%$child_module_name%>" value="No" />
-                                                                        <%section name=i loop=$child_ord%>
-                                                                            <%assign var="row_index" value=$smarty.section.i.index%>
-                                                                            <%assign var="child_id" value=$child_data[i]['iUserReviewImageId']%>
-                                                                            <%assign var="enc_child_id" value=$this->general->getAdminEncodeURL($child_id)%>
-                                                                            <%assign var="child_id_temp" value=[$child_data[i]['uri_review_image']]%>
-                                                                            <%assign var="child_merge_data" value=$child_merge_data|@array_merge:$child_id_temp%>
-                                                                            <input type="hidden" name="child[user_review_images][id][<%$row_index%>]" id="child_user_review_images_id_<%$row_index%>" value="<%$child_id%>" />
-                                                                            <input type="hidden" name="child[user_review_images][enc_id][<%$row_index%>]" id="child_user_review_images_enc_id_<%$row_index%>" value="<%$enc_child_id%>" />
-                                                                            <input type="hidden" name="child[user_review_images][uri_user_review_id][<%$row_index%>]" id="child_user_review_images_uri_user_review_id_<%$row_index%>" value="<%$child_data[i]['uri_user_review_id']%>"  class='ignore-valid ' />
-                                                                            <input type="hidden" name="child[user_review_images][uri_added_at][<%$row_index%>]" id="child_user_review_images_uri_added_at_<%$row_index%>" value="<%$child_data[i]['uri_added_at']%>"  class='ignore-valid '  aria-date-format='yy-mm-dd'  aria-format-type='date' />
-                                                                            <input type="hidden" name="child[user_review_images][uri_status][<%$row_index%>]" id="child_user_review_images_uri_status_<%$row_index%>" value="<%$child_data[i]['uri_status']%>"  class='ignore-valid ' />
-                                                                        <%/section%>
-                                                                        <label class="form-label span3 inline-module-label"><%$this->lang->line('USER_STORE_REVIEW_USER_REVIEW_IMAGES')%></label>
-                                                                        <div class="form-right-div form-inline-child <%if $recMode eq "Update"%>frm-elements-div<%/if%>"  id="child_module_rel_<%$child_module_name%>">
-                                                                            <div id="upload_multi_file_user_review_images" class="upload-multi-file frm-size-medium clear">
-                                                                                <%assign var="is_images_exists" value=0%>
-                                                                                <%section name=j loop=$child_cnt%>
-                                                                                    <%assign var="row_index" value=$smarty.section.j.index%>
-                                                                                    <%if $child_img_html[$row_index]["uri_review_image"] neq ""%>
-                                                                                        <%assign var="is_images_exists" value=1%>
-                                                                                        <div class="row-upload-file" id="upload_row_user_review_images_<%$row_index%>">
-                                                                                            <input type="hidden" value="<%$child_data[j]['uri_review_image']%>" name="child[user_review_images][old_uri_review_image][<%$row_index%>]" id="child_user_review_images_old_uri_review_image_<%$row_index%>" />
-                                                                                            <input type="hidden" value="<%$child_data[j]['uri_review_image']%>" name="child[user_review_images][uri_review_image][<%$row_index%>]" id="child_user_review_images_uri_review_image_<%$row_index%>" class="ignore-valid" aria-extensions="gif,png,jpg,jpeg,jpe,bmp,ico" aria-valid-size="<%$this->lang->line('GENERIC_LESS_THAN')%> (<) 100 MB"/>
-                                                                                            <div class="">
-                                                                                                <%$child_img_html[$row_index]["uri_review_image"]%>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    <%/if%>
-                                                                                <%/section%>
-                                                                                <%if $is_images_exists eq 0%>
-                                                                                    <input type="hidden" value="" name="child[user_review_images][uri_review_image][0]" id="child_user_review_images_uri_review_image_0" class="_upload_req_file"/>
-                                                                                <%/if%>
-                                                                            </div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                    </div>
+                                        <div class="error-msg-form "><label class='error' id='arfp_abusive_reports_for_missing_pets_idErr'></label></div>
+                                </div>
+                                <div class="form-row row-fluid " id="cc_sh_arfp_reviews_id">
+                                     <label class="form-label span3 ">
+                                        <%$form_config['arfp_reviews_id']['label_lang']%>
+                                    </label> 
+                                    <div class="form-right-div  <%if $mode eq 'Update'%>frm-elements-div<%/if%> ">
+                                        <%if $mode eq "Update"%>
+                                            <input type="hidden" class="ignore-valid" name="arfp_reviews_id" id="arfp_reviews_id" value="<%$data['arfp_reviews_id']|@htmlentities%>" />
+                                             <span class="frm-data-label">
+                                                <strong>
+                                                    <%if $data['arfp_reviews_id'] neq ""%>
+                                                        <%$data['arfp_reviews_id']%>
+                                                    <%else%>
+                                                    <%/if%>
+                                                </strong></span> 
+                                            <%else%>
+                                                <input type="hidden" placeholder="" value="<%$data['arfp_reviews_id']|@htmlentities%>" name="arfp_reviews_id" id="arfp_reviews_id" title="<%$this->lang->line('ABUSIVE_REPORTS_FOR_MISSING_PET_ID')%>"  data-ctrl-type='textbox'  class='frm-size-medium'  />
+                                            <%/if%>
+                                        </div>
+                                        <div class="error-msg-form "><label class='error' id='arfp_abusive_reports_for_missing_pets_idErr'></label></div>
+                                </div>    
+                                    
+                                                            
+                                   
                                     <div class="form-row row-fluid " id="cc_sh_arfp_post_id">
                                     <label class="form-label span3 ">
                                         <%$form_config['p_post_title']['label_lang']%>
