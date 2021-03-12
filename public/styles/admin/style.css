@@ -220,3 +220,13 @@ a.side-menu-hide span{margin-left:4px;margin-right:4px;}
 .sa-show-hide-log:hover {background: #fdfdfd; border: solid 1px #9faebc;}
 a.sa-show-hide-log:hover {color: #9faebc; text-decoration: none;}
 a.sa-show-hide-log.bottom-log-icons {font-size: 16px; padding: 7px 10px 7px 10px; position: relative; top: -5px;}
+
+.top-bg, .top-menu ul {
+    background: #1E99AD !important;
+}
+.top-menu ul li a.top_link:hover:after, .top-menu ul li a.top_link.active:after {
+    background: #1E99AD !important;
+}
+.normal-login-type .login-btn, .forgot-pwd-btns .btn-info {
+    background: #1E99AD !important;
+}

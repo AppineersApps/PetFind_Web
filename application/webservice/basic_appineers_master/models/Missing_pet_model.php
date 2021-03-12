@@ -266,12 +266,17 @@ class Missing_pet_model extends CI_Model
             $this->db->select("i.vImageId_3 AS image_3");
             $this->db->select("i.vImageId_4 AS image_4");
             $this->db->select("i.vImageId_5 AS image_5");
+            $this->db->select("u.vLastName AS owner_last_name");
+            $this->db->select("u.vFirstName AS owner_first_name");
+            $this->db->select("u.vAptSuite AS owner_apt_suit");
+            $this->db->select("u.tAddress AS owner_apt_suit");
+            $this->db->join("users as u","i.iUserId = u.iUserId", "left");
 
             $strWhere = "ePostStatus ='Active'";
 
             if(false == empty($arrResult['user_id']))
             {
-                $strWhere.= "AND iUserId ='".$arrResult['user_id']."'";
+                $strWhere.= "AND i.iUserId ='".$arrResult['user_id']."'";
                
             }
 

@@ -44,6 +44,7 @@ class Bulkemail extends Cit_Controller
         $this->mod_enc_url = $this->general->getCustomEncryptURL($this->mod_url_cod, TRUE);
         $this->load->model('bulkemail_model');
         $this->load->model('user/admin_model');
+        $this->load->model('basic_appineers_master/users_management_model');
         $this->load->model('tools/systememails_model');
         $this->load->library('filter');
         $this->load->library('ci_misc');
@@ -71,11 +72,16 @@ class Bulkemail extends Cit_Controller
             if (is_array($db_module_data) && ($db_module_data) > 0) {
                 $db_module['Module'] = $db_module_data;
             }
+            $db_email_custom = array(array('id'=>'user','val'=>'Users'));
+            $EMAIL_ADMIN = $this->ci_misc->getFromEmailAddress();
+
             $render_arr = array(
                 'db_email' => $db_email,
-                'db_module' => $db_module,
+                // 'db_module' => $db_module,
                 'email_temp_data' => $email_temp_data,
-                'mod_enc_url' => $this->mod_enc_url
+                'mod_enc_url' => $this->mod_enc_url,
+                'db_email_custom' => $db_email_custom,
+                'EMAIL_ADMIN' => $EMAIL_ADMIN
             );
             $this->smarty->assign($render_arr);
             $this->loadView('bulkemail');
@@ -121,6 +127,16 @@ class Bulkemail extends Cit_Controller
                 } elseif ($type == "Mod") {
                     $field_name = $this->input->get_post('vFieldName', TRUE);
                     $data_arr = $this->ci_misc->getBulkEmailModuleData($send_details[1]);
+                }
+                elseif ($type == "Custom") {                    
+                    if($send_details[1] = 'user')
+                    {
+                        $email_address_arr = $user_ids;
+                       
+                    }elseif($send_details[1] = 'driver')
+                    {
+                        $email_address_arr = $user_ids;
+                    }
                 }
                 if (is_array($data_arr) && count($data_arr) > 0) {
                     for ($i = 0; $i < count($data_arr); $i++) {
@@ -189,7 +205,16 @@ class Bulkemail extends Cit_Controller
                 $id = $sent_idarr[1];
                 $extra_cond = $this->db->protect("ma.iGroupId") . " = " . $this->db->escape($id);
                 $email_arr = $this->admin_model->getData($extra_cond, "ma.vEmail", "", "", "", "Yes");
-            } elseif ($sent_idarr[0] == "Mod") {
+            } 
+            elseif ($sent_idarr[0] == "Custom") {
+                
+                    $extra_cond = "u.eStatus = 'Active'";
+                
+                $email_arr = $this->users_management_model->getData($extra_cond, "u.vEmail", "", "", "", "Yes");
+                $sent_type = "Groups";
+               // echo $this->db->last_query();exit;
+            }
+            elseif ($sent_idarr[0] == "Mod") {
                 $sent_type = "Modules";
                 $id = $sent_idarr[1];
                 $params_arr['module_name'] = $id;

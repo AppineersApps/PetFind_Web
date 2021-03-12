@@ -59,7 +59,7 @@ public function listingValue($value = '',$id = '',$data = array())
     }
     else if($data['aa_performed_by'] == '0')
     {
-        $value = "N/A [CRON]";
+        $value = "N/A";
     }
     return $value;
 }

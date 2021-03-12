@@ -25,10 +25,7 @@
                                 <span>Status:</span>
                                 <strong>{%u_status%}</strong>
                             </p>
-                            <!--<p>-->
-                            <!--    <span>Username:</span>-->
-                            <!--    <strong>{%u_user_name%}</strong>-->
-                            <!--</p>-->
+                           
                         </div>
                     </div>
                 </div>
@@ -97,7 +94,7 @@
     el_grid_settings['status_lang_arr'] = $.parseJSON('<%$status_label|@json_encode%>');
                 
     el_grid_settings['hide_add_btn'] = '';
-    el_grid_settings['hide_del_btn'] = '';
+    el_grid_settings['hide_del_btn'] = '1';
     el_grid_settings['hide_status_btn'] = '1';
     el_grid_settings['hide_export_btn'] = '1';
     el_grid_settings['hide_columns_btn'] = 'Yes';
@@ -162,10 +159,6 @@
     {
         "name": "u_first_name",
         "label": "<%$list_config['u_first_name']['label_lang']%>"
-    },
-    {
-        "name": "u_user_name",
-        "label": "<%$list_config['u_user_name']['label_lang']%>"
     },
     {
         "name": "u_email",
@@ -265,48 +258,6 @@
         },
         "ctrl_type": "textbox",
         "default_value": "<%$list_config['u_first_name']['default']%>",
-        "filterSopt": "bw",
-        "formatter": formatAdminModuleEditLink,
-        "unformat": unformatAdminModuleEditLink
-    },
-    {
-        "name": "u_user_name",
-        "index": "u_user_name",
-        "label": "<%$list_config['u_user_name']['label_lang']%>",
-        "labelClass": "header-align-left",
-        "resizable": true,
-        "width": "<%$list_config['u_user_name']['width']%>",
-        "search": <%if $list_config['u_user_name']['search'] eq 'No' %>false<%else%>true<%/if%>,
-        "export": <%if $list_config['u_user_name']['export'] eq 'No' %>false<%else%>true<%/if%>,
-        "sortable": <%if $list_config['u_user_name']['sortable'] eq 'No' %>false<%else%>true<%/if%>,
-        "hidden": <%if $list_config['u_user_name']['hidden'] eq 'Yes' %>true<%else%>false<%/if%>,
-        "hideme": <%if $list_config['u_user_name']['hideme'] eq 'Yes' %>true<%else%>false<%/if%>,
-        "addable": <%if $list_config['u_user_name']['addable'] eq 'Yes' %>true<%else%>false<%/if%>,
-        "editable": <%if $list_config['u_user_name']['editable'] eq 'Yes' %>true<%else%>false<%/if%>,
-        "align": "left",
-        "edittype": "text",
-        "editrules": {
-            "infoArr": []
-        },
-        "searchoptions": {
-            "attr": {
-                "aria-grid-id": el_tpl_settings.main_grid_id,
-                "aria-module-name": "users_management",
-                "aria-unique-name": "u_user_name",
-                "autocomplete": "off"
-            },
-            "sopt": strSearchOpts,
-            "searchhidden": <%if $list_config['u_user_name']['search'] eq 'Yes' %>true<%else%>false<%/if%>
-        },
-        "editoptions": {
-            "aria-grid-id": el_tpl_settings.main_grid_id,
-            "aria-module-name": "users_management",
-            "aria-unique-name": "u_user_name",
-            "placeholder": "",
-            "class": "inline-edit-row "
-        },
-        "ctrl_type": "textbox",
-        "default_value": "<%$list_config['u_user_name']['default']%>",
         "filterSopt": "bw",
         "formatter": formatAdminModuleEditLink,
         "unformat": unformatAdminModuleEditLink

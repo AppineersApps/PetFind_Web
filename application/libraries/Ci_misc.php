@@ -151,6 +151,11 @@ $module_arr["admin"] = $this->CI->lang->line("ADMIN_ADMIN");
         }
         return $data;
     }
+     public function getFromEmailAddress()
+    {
+        $email_admin = $this->CI->config->item('EMAIL_ADMIN');
+        return $email_admin;
+    }
 }
 
 /* End of file Ci_misc.php */

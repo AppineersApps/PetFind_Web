@@ -20,7 +20,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
  *
  * @author CIT Dev Team
  *
- * @since 18.09.2019
+ * @since 
  */
 
 class Missing_pet extends Cit_Controller
@@ -201,12 +201,23 @@ class Missing_pet extends Cit_Controller
         $output_response = array();
         switch ($method) {
           case 'GET':
-            if(true == isset($request_arr['page_code']) && 'search'==$request_arr['page_code'])
+            if(true == isset($request_arr['page_code']))
             {
+                if('pet_list'==$request_arr['page_code'])
+                {
+                    $output_response =  $this->get_missing_pets($request_arr);
+                     echo'<pre>';print_r($request_arr);exit;
+
+                }
+                else
+                {
+                    echo'<pre>';print_r($request_arr);exit;
+                }
                 $output_response =  $this->search_item_serial_number($request_arr);
             }
             else
             {
+                 
                $output_response =  $this->get_item($request_arr);
             }
 
@@ -215,7 +226,7 @@ class Missing_pet extends Cit_Controller
           case 'POST':
                if(true == isset($request_arr['page_code']) && 'edit_pet'==$request_arr['page_code'] || 'edit_pet_status' ==$request_arr['page_code'])
               {
-                 // echo'<pre>';print_r($request_arr);exit;
+                
                 $output_response =  $this->update_missing_pet($request_arr);
               }
               else
@@ -234,8 +245,8 @@ class Missing_pet extends Cit_Controller
     }
      /**
      * rules_set_store_item method is used to validate api input params.
-     * @created kavita sawant | 08.01.2020
-     * @modified kavita sawant | 08.01.2020
+     * @created Snehal Shinde | 
+     * @modified Snehal Shinde | 
      * @param array $request_arr request_arr array is used for api input.
      * @return array $valid_res returns output response of API.
      */
@@ -402,8 +413,8 @@ class Missing_pet extends Cit_Controller
     }
     /**
      * rules_set_store_review method is used to validate api input params.
-     * @created kavita sawant | 08.01.2020
-     * @modified kavita sawant | 08.01.2020
+     * @created Snehal Shinde | 
+     * @modified Snehal Shinde | 
      * @param array $request_arr request_arr array is used for api input.
      * @return array $valid_res returns output response of API.
      */
@@ -444,8 +455,8 @@ class Missing_pet extends Cit_Controller
 
     /**
      * start_set_store_item method is used to initiate api execution flow.
-     * @created kavita sawant | 08.01.2020
-     * @modified kavita sawant | 08.01.2020
+     * @created Snehal Shinde | 
+     * @modified Snehal Shinde | 
      * @param array $request_arr request_arr array is used for api input.
      * @param bool $inner_api inner_api flag is used to idetify whether it is inner api request or general request.
      * @return array $output_response returns output response of API.
@@ -496,8 +507,8 @@ class Missing_pet extends Cit_Controller
 
     /**
      * rules_set_store_review method is used to validate api input params.
-     * @created kavita sawant | 08.01.2020
-     * @modified kavita sawant | 08.01.2020
+     * @created Snehal Shinde | 
+     * @modified Snehal Shinde | 
      * @param array $request_arr request_arr array is used for api input.
      * @return array $valid_res returns output response of API.
      */
@@ -532,8 +543,8 @@ class Missing_pet extends Cit_Controller
 
 /**
      * start_set_store_item method is used to initiate api execution flow.
-     * @created kavita sawant | 08.01.2020
-     * @modified kavita sawant | 08.01.2020
+     * @created Snehal Shinde | 
+     * @modified Snehal Shinde | 
      * @param array $request_arr request_arr array is used for api input.
      * @param bool $inner_api inner_api flag is used to idetify whether it is inner api request or general request.
      * @return array $output_response returns output response of API.
@@ -596,8 +607,7 @@ class Missing_pet extends Cit_Controller
 
     /**
      * get_review_details method is used to process review block.
-     * @created priyanka chillakuru | 16.09.2019
-     * @modified priyanka chillakuru | 16.09.2019
+     * @created Snehal Shinde
      * @param array $input_params input_params array to process loop flow.
      * @return array $input_params returns modfied input_params array.
      */
@@ -684,9 +694,9 @@ class Missing_pet extends Cit_Controller
 
 
      /**
-     * start_edit_profile method is used to initiate api execution flow.
-     * @created priyanka chillakuru | 18.09.2019
-     * @modified priyanka chillakuru | 23.12.2019
+     * update_missing_pet method is used to Update missing pet post
+     * @created Snehal Shinde 
+     * @modified Snehal Shinde 
      * @param array $request_arr request_arr array is used for api input.
      * @param bool $inner_api inner_api flag is used to idetify whether it is inner api request or general request.
      * @return array $output_response returns output response of API.
@@ -754,8 +764,8 @@ class Missing_pet extends Cit_Controller
 
      /**
      * get_updated_details method is used to process query block.
-     * @created priyanka chillakuru | 18.09.2019
-     * @modified priyanka chillakuru | 23.12.2019
+     * @created Snehal Shinde | 
+     * @modified Snehal Shinde | 
      * @param array $input_params input_params array to process loop flow.
      * @return array $input_params returns modfied input_params array.
      */
@@ -813,8 +823,8 @@ class Missing_pet extends Cit_Controller
     }
      /**
      * get_updated_details method is used to process query block.
-     * @created priyanka chillakuru | 18.09.2019
-     * @modified priyanka chillakuru | 23.12.2019
+     * @created Snehal Shinde | 
+     * @modified Snehal Shinde | 
      * @param array $input_params input_params array to process loop flow.
      * @return array $input_params returns modfied input_params array.
      */
@@ -882,8 +892,8 @@ class Missing_pet extends Cit_Controller
 
      /**
      * update_profile method is used to process query block.
-     * @created priyanka chillakuru | 18.09.2019
-     * @modified priyanka chillakuru | 25.09.2019
+     * @created Snehal Shinde | 
+     * @modified Snehal Shinde | 
      * @param array $input_params input_params array to process loop flow.
      * @return array $input_params returns modfied input_params array.
      */
@@ -1025,8 +1035,8 @@ class Missing_pet extends Cit_Controller
 
     /**
      * checkuniqueusername method is used to process custom function.
-     * @created priyanka chillakuru | 25.09.2019
-     * @modified saikumar anantham | 08.10.2019
+     * @created Snehal Shinde  |
+     * @modified Snehal Shinde | 
      * @param array $input_params input_params array to process loop flow.
      * @return array $input_params returns modfied input_params array.
      */
@@ -1051,86 +1061,7 @@ class Missing_pet extends Cit_Controller
         return $input_params;
     }
 
-    /**
-     * get_all_items method is used to process review block.
-     * @created priyanka chillakuru | 16.09.2019
-     * @modified priyanka chillakuru | 16.09.2019
-     * @param array $input_params input_params array to process loop flow.
-     * @return array $input_params returns modfied input_params array.
-     */
-    public function get_all_items($input_params = array())
-    {
-        $this->block_result = array();
-        try
-        {
-            $arrResult = array();
-                      
-            $arrResult['item_status'] = isset($input_params["item_status"]) ? $input_params["item_status"] : "";
-            $arrResult['user_id'] = isset($input_params["user_id"]) ? $input_params["user_id"] : "";
-            $arrResult['item_id'] = isset($input_params["item_id"]) ? $input_params["item_id"] : "";
-            $arrResult['page_code'] = isset($input_params["page_code"]) ? $input_params["page_code"] : "";
-
-            $this->block_result = $this->missing_pet_model->get_missing_pet_details($arrResult);
-            if (!$this->block_result["success"])
-            {
-                throw new Exception("No records found.");
-            }
-            $result_arr = $this->block_result["data"];
-
-               if (is_array($result_arr) && count($result_arr) > 0)
-                {
-                    
-                    foreach ($result_arr as $data_key => $data_arr)
-                    {
-                        $selected = array();
-                        $data =array();
-                        $upper_limit=5;
-                        
-                        for($i=1; $i<=$upper_limit; $i++)
-                        {
-                            if(false == empty($data_arr["image_".$i]))
-                            {
-                                $data = $data_arr["image_".$i];
-                                $image_arr = array();
-                                $image_arr["image_name"] = $data;
-                                $image_arr["ext"] = implode(",", $this->config->item("IMAGE_EXTENSION_ARR"));
-                                $p_key = ($data_arr["item_id"] != "") ? $data_arr["item_id"] : $input_params["item_id"];
-                                $image_arr["pk"] = $p_key;
-                                $image_arr["color"] = "FFFFFF";
-                                $image_arr["no_img"] = FALSE;
-                                $image_arr["path"] = "serialize_it/item_image";
-                                $data = $this->general->get_image_aws($image_arr);
-                                array_push($selected, $data);
-                                if(false == empty($selected)){
-                                    $result_arr[$data_key]["images"] = $selected; 
-                                }
-                            }
-                            else
-                            {
-                                    $result_arr[$data_key]["images"] = $selected;
-                            }
-                           
-                        }
-                    }
-                    $this->block_result["data"] = $result_arr;
-                }
-                if (is_array($result_arr) && count($result_arr) > 0)
-                {
-                   
-                    $this->block_result["data"] = $result_arr;
-                }
-        }
-        catch(Exception $e)
-        {
-            $success = 0;
-            $this->block_result["data"] = array();
-        }
-        $input_params["get_all_items"] = $this->block_result["data"];
-        
-        $input_params = $this->wsresponse->assignSingleRecord($input_params, $this->block_result["data"]);
-       return $input_params;
-    }
-
+   
     public function add_missing_pet($input){
         try
         {
@@ -1160,14 +1091,12 @@ class Missing_pet extends Cit_Controller
                 if ($condition_res["success"])
                 {
                     $input_params = $this->custom_image_function($input_params);  
-                    $input_params = $this->get_missing_pet_details($input_params); 
                       // get notification and send notifications to tagged peoples
                      $input_params = $this->custom_function($input_params);
                        
                      $input_params = $this->get_user_details_for_send_notifi($input_params);
                     
                      $input_params = $this->start_loop_1($input_params); 
-                      print_r('after');exit;
                     $output_response = $this->missing_pet_finish_success($input_params);
                     return $output_response;
                 }
@@ -1189,7 +1118,7 @@ class Missing_pet extends Cit_Controller
     /**
      * set_store_review method is used to process review block.
      * @created CIT Dev Team
-     * @modified priyanka chillakuru | 16.09.2019
+     * @modified Snehal Shinde | 
      * @param array $input_params input_params array to process loop flow.
      * @return array $input_params returns modfied input_params array.
      */
@@ -1313,7 +1242,7 @@ class Missing_pet extends Cit_Controller
     /**
      * is_posted method is used to process conditions.
      * @created CIT Dev Team
-     * @modified priyanka chillakuru | 18.09.2019
+     * @modified Snehal Shinde | 
      * @param array $input_params input_params array to process condition flow.
      * @return array $block_result returns result of condition block as array.
      */
@@ -1347,7 +1276,7 @@ class Missing_pet extends Cit_Controller
     /**
      * is_posted method is used to process conditions.
      * @created CIT Dev Team
-     * @modified priyanka chillakuru | 18.09.2019
+     * @modified Snehal Shinde | 
      * @param array $input_params input_params array to process condition flow.
      * @return array $block_result returns result of condition block as array.
      */
@@ -1381,120 +1310,16 @@ class Missing_pet extends Cit_Controller
     /**
      * user_review_finish_success method is used to process finish flow.
      * @created CIT Dev Team
-     * @modified priyanka chillakuru | 16.09.2019
+     * @modified Snehal Shinde | 
      * @param array $input_params input_params array to process loop flow.
      * @return array $responce_arr returns responce array of api.
      */
     public function missing_pet_finish_success($input_params = array())
     {
-        // $output_arr['settings']['success'] = "1";
-        // $output_arr['settings']['message'] = "Missing pet added successfully";
-        // $output_arr['data'] = '';
-        // $responce_arr = $this->wsresponse->sendWSResponse($output_arr, array(), "add_missing_pet");
-
-        // return $responce_arr;
-
-
-
-        $setting_fields = array(
-            "success" => "1",
-            "message" => "Missing pet added successfully",
-        );
-        $output_fields = array(
-            'missing_pet_id',
-            'user_id',
-            'dog_name',
-            'last_seen_date',
-            'date_of_birth',
-            'last_seen_street',
-            'last_seen_city',
-            'last_seen_state',
-            'last_seen_zip_code',
-            'last_seen_latitude',
-            'last_seen_longitude',
-            'hair_color',
-            'eye_color',
-            'height',
-            'weight',
-            'gender',
-            'breed',
-            'identity_mark',
-            'body_type',
-            'image_1',
-            'image_2',
-            'image_3',
-            'image_4',
-            'image_5',
-            'dog_details',
-            'pet_status',
-            'found_user_id',
-            'pet_found_street_address',
-            'pet_found_city',
-            'pet_found_state',
-            'pet_found_latitude',
-            'pet_found_longitude',
-            'pet_found_date',
-            'added_at',
-            'updated_at',
-            'tagged_people',
-        );
-        $output_keys = array(
-            'get_missing_pet_details',
-        );
-
-        $ouput_aliases = array(
-            "get_missing_pet_details" => "get_missing_pet_details",
-            "missing_pet_id" => "missing_pet_id",
-            "user_id" => "user_id",
-            "dog_name" => "dog_name",
-            "last_seen_date" => "last_seen_date",
-            "date_of_birth" => "date_of_birth",
-            "last_seen_city" => "last_seen_city",
-            "last_seen_state" => "last_seen_state",
-            "last_seen_zip_code" => "last_seen_zip_code",
-            "last_seen_latitude" => "last_seen_latitude",
-            "last_seen_longitude" => "last_seen_longitude",
-            "hair_color" => "hair_color",
-            "eye_color" => "eye_color",
-            "height" => "height",
-            "weight" => "weight",
-            "gender" => "gender",
-            "breed" => "breed",
-            "identity_mark" => "identity_mark",
-            "body_type" => "body_type",
-            "image_1" => "image_1",
-            "image_2" => "image_2",
-            "image_3" => "image_3",
-            "image_4" => "image_4",
-            "image_5" => "image_5",
-            "dog_details" => "dog_details",
-            "pet_status" => "pet_status",
-            "found_user_id" =>"found_user_id",
-            "pet_found_street_address"=>"pet_found_street_address",
-            "pet_found_city" =>"pet_found_city",
-            "pet_found_state" =>"pet_found_state",
-            "pet_found_latitude" =>"pet_found_latitude",
-            "pet_found_longitude" =>"pet_found_longitude",
-            "pet_found_date"=> "pet_found_date",
-            "added_at" => "added_at",
-            "updated_at" => "updated_at",
-            "tagged_people" => "tagged_people",
-        );
-
-//print_r($ouput_aliases);exit;
-        $output_array["settings"] = $setting_fields;
-        $output_array["settings"]["fields"] = $output_fields;
-        $output_array["data"] = $input_params;
-
-        $func_array["function"]["name"] = "add_missing_pet";
-        $func_array["function"]["output_keys"] = $output_keys;
-        $func_array["function"]["output_alias"] = $ouput_aliases;
-        $func_array["function"]["single_keys"] = $this->single_keys;
-        $func_array["function"]["multiple_keys"] = $this->multiple_keys;
-
-        $this->wsresponse->setResponseStatus(200);
-
-        $responce_arr = $this->wsresponse->outputResponse($output_array, $func_array);
+        $output_arr['settings']['success'] = "1";
+        $output_arr['settings']['message'] = "Missing pet added successfully";
+        $output_arr['data'] = '';
+        $responce_arr = $this->wsresponse->sendWSResponse($output_arr, array(), "add_missing_pet");
 
         return $responce_arr;
 
@@ -1503,7 +1328,7 @@ class Missing_pet extends Cit_Controller
     /**
      * user_review_finish_success_1 method is used to process finish flow.
      * @created CIT Dev Team
-     * @modified priyanka chillakuru | 13.09.2019
+     * @modified Snehal Shinde | 
      * @param array $input_params input_params array to process loop flow.
      * @return array $responce_arr returns responce array of api.
      */
@@ -1533,7 +1358,7 @@ class Missing_pet extends Cit_Controller
      /**
      * user_review_finish_success method is used to process finish flow.
      * @created CIT Dev Team
-     * @modified priyanka chillakuru | 16.09.2019
+     * @modified Snehal Shinde | 
      * @param array $input_params input_params array to process loop flow.
      * @return array $responce_arr returns responce array of api.
      */
@@ -1630,7 +1455,7 @@ class Missing_pet extends Cit_Controller
     /**
      * user_review_finish_success_1 method is used to process finish flow.
      * @created CIT Dev Team
-     * @modified priyanka chillakuru | 13.09.2019
+     * @modified Snehal Shinde | 
      * @param array $input_params input_params array to process loop flow.
      * @return array $responce_arr returns responce array of api.
      */
@@ -1661,7 +1486,7 @@ class Missing_pet extends Cit_Controller
      /**
      * user_review_finish_success method is used to process finish flow.
      * @created CIT Dev Team
-     * @modified priyanka chillakuru | 16.09.2019
+     * @modified Snehal Shinde | 
      * @param array $input_params input_params array to process loop flow.
      * @return array $responce_arr returns responce array of api.
      */
@@ -1767,7 +1592,7 @@ class Missing_pet extends Cit_Controller
     /**
      * user_review_finish_success_1 method is used to process finish flow.
      * @created CIT Dev Team
-     * @modified priyanka chillakuru | 13.09.2019
+     * @modified Snehal Shinde | 
      * @param array $input_params input_params array to process loop flow.
      * @return array $responce_arr returns responce array of api.
      */
@@ -1798,7 +1623,7 @@ class Missing_pet extends Cit_Controller
      /**
      * user_review_finish_success method is used to process finish flow.
      * @created CIT Dev Team
-     * @modified priyanka chillakuru | 16.09.2019
+     * @modified Snehal Shinde | 
      * @param array $input_params input_params array to process loop flow.
      * @return array $responce_arr returns responce array of api.
      */
@@ -1829,7 +1654,7 @@ class Missing_pet extends Cit_Controller
     /**
      * user_review_finish_success_1 method is used to process finish flow.
      * @created CIT Dev Team
-     * @modified priyanka chillakuru | 13.09.2019
+     * @modified Snehal Shinde | 
      * @param array $input_params input_params array to process loop flow.
      * @return array $responce_arr returns responce array of api.
      */
@@ -1859,8 +1684,8 @@ class Missing_pet extends Cit_Controller
 
      /**
      * get_deleted_review method is used to initiate api execution flow.
-     * @created aditi billore | 08.01.2020
-     * @modified kavita sawant | 08.01.2020
+     * @created aditi billore | 
+     * @modified Snehal Shinde | 
      * @param array $request_arr request_arr array is used for api input.
      * @param bool $inner_api inner_api flag is used to idetify whether it is inner api request or general request.
      * @return array $output_response returns output response of API.
@@ -1913,7 +1738,7 @@ class Missing_pet extends Cit_Controller
     /**
      * delete review method is used to process review block.
      * @created CIT Dev Team
-     * @modified priyanka chillakuru | 16.09.2019
+     * @modified Snehal Shinde | 
      * @param array $input_params input_params array to process loop flow.
      * @return array $input_params returns modfied input_params array.
      */
@@ -1952,7 +1777,7 @@ class Missing_pet extends Cit_Controller
      /**
      * delete_review_finish_success method is used to process finish flow.
      * @created CIT Dev Team
-     * @modified priyanka chillakuru | 16.09.2019
+     * @modified Snehal Shinde | 
      * @param array $input_params input_params array to process loop flow.
      * @return array $responce_arr returns responce array of api.
      */
@@ -1981,7 +1806,7 @@ class Missing_pet extends Cit_Controller
     /**
      * delete_review_finish_success_1 method is used to process finish flow.
      * @created CIT Dev Team
-     * @modified priyanka chillakuru | 16.09.2019
+     * @modified Snehal Shinde | 
      * @param array $input_params input_params array to process loop flow.
      * @return array $responce_arr returns responce array of api.
      */
@@ -2008,8 +1833,8 @@ class Missing_pet extends Cit_Controller
     }
 /**
      * format_email_v1 method is used to process custom function.
-     * @created priyanka chillakuru | 07.11.2019
-     * @modified saikumar anantham | 07.11.2019
+     * @created Snehal Shinde | 
+     * @modified Snehal Shinde | 
      * @param array $input_params input_params array to process loop flow.
      * @return array $input_params returns modfied input_params array.
      */
@@ -2032,8 +1857,8 @@ class Missing_pet extends Cit_Controller
     }
     /**
      * custom_function method is used to process custom function.
-     * @created priyanka chillakuru | 16.09.2019
-     * @modified priyanka chillakuru | 31.10.2019
+     * @created Snehal Shinde | 
+     * @modified Snehal Shinde | 
      * @param array $input_params input_params array to process loop flow.
      * @return array $input_params returns modfied input_params array.
      */
@@ -2045,8 +1870,7 @@ class Missing_pet extends Cit_Controller
         }
         else
         {
-            // $result_arr["data"] = $this->uploadQueryImages($input_params);
-            $result_arr["data"] ='';
+            $result_arr["data"] = $this->uploadQueryImages($input_params);
         }
         $format_arr = $result_arr;
 
@@ -2085,7 +1909,7 @@ class Missing_pet extends Cit_Controller
     /**
      * user_review_finish_success_1 method is used to process finish flow.
      * @created CIT Dev Team
-     * @modified priyanka chillakuru | 13.09.2019
+     * @modified Snehal Shinde | 
      * @param array $input_params input_params array to process loop flow.
      * @return array $responce_arr returns responce array of api.
      */
@@ -2114,8 +1938,8 @@ class Missing_pet extends Cit_Controller
     }
     /**
      * checkuniqueusername method is used to process custom function.
-     * @created priyanka chillakuru | 25.09.2019
-     * @modified saikumar anantham | 08.10.2019
+     * @created Snehal Shinde | 
+     * @modified Snehal Shinde | 
      * @param array $input_params input_params array to process loop flow.
      * @return array $input_params returns modfied input_params array.
      */
@@ -2155,6 +1979,7 @@ class Missing_pet extends Cit_Controller
             }
             $result_arr = $this->block_result["data"];
              $this->block_result["data"] = $result_arr;
+           
         }
         catch(Exception $e)
         {
@@ -2165,6 +1990,7 @@ class Missing_pet extends Cit_Controller
         $input_params = $this->wsresponse->assignSingleRecord($input_params, $this->block_result["data"]);
 
         return $input_params;
+
     }
 
     /**
@@ -2206,21 +2032,43 @@ class Missing_pet extends Cit_Controller
      */
     public function start_loop_1($input_params = array())
     {
-         print_r('hi');exit;
+         // print_r('hi');exit;
         $this->iterate_start_loop_1($input_params["get_user_details_for_send_notifi"], $input_params);
         return $input_params;
     }
     /**
      * iterate_start_loop_1 method is used to iterate loop.
      * @created CIT Dev Team
-     * @param array $get_tagged_user_arr array to iterate loop.
+     * @param array $get_near_by_users_lp_arr array to iterate loop.
      * @param array $input_params_addr $input_params_addr array to address original input params.
      */
-    public function iterate_start_loop_1(&$get_tagged_user_arr = array(), &$input_params_addr = array())
+    public function iterate_start_loop_1(&$get_near_by_users_lp_arr = array(), &$input_params_addr = array())
     {
+            // print_r($input_params_addr);exit;
+        $input_params_loc = $input_params_addr;
+        $_loop_params_loc = $get_near_by_users_lp_arr;
+        $_lp_ini = 0;
+        $_lp_end = count($_loop_params_loc);
+        for ($i = $_lp_ini; $i < $_lp_end; $i += 1)
+        {
+            $get_near_by_users_lp_pms = $input_params_loc;
+
+            unset($get_near_by_users_lp_pms["get_user_details_for_send_notifi"]);
+            if (is_array($_loop_params_loc[$i]))
+            {
+                $get_near_by_users_lp_pms = $_loop_params_loc[$i]+$input_params_loc;
+            }
+            else
+            {
+                $get_near_by_users_lp_pms["get_user_details_for_send_notifi"] = $_loop_params_loc[$i];
+                $_loop_params_loc[$i] = array();
+                $_loop_params_loc[$i]["get_user_details_for_send_notifi"] = $get_near_by_users_lp_pms["get_user_details_for_send_notifi"];
+            }
+
+            $get_near_by_users_lp_pms["i"] = $i;
+            $input_params = $get_near_by_users_lp_pms;
 
             $condition_res = $this->check_receiver_device_token($input_params);
-            print_r($condition_res);exit;
             if ($condition_res["success"])
             {
 
@@ -2228,13 +2076,13 @@ class Missing_pet extends Cit_Controller
                 $input_params = $this->push_notification($input_params);
             }
 
-            $get_tagged_user_arr[$i] = $this->wsresponse->filterLoopParams($input_params, $_loop_params_loc[$i], $get_near_by_drivers_lp_pms);
+            $get_near_by_users_lp_arr[$i] = $this->wsresponse->filterLoopParams($input_params, $_loop_params_loc[$i], $get_near_by_users_lp_pms);
         }
     }
      /**
      * check_receiver_device_token method is used to process conditions.
      * @created CIT Dev Team
-     * @modified Devangi Nirmal | 27.06.2019
+     * @modified Snehal Shinde | 
      * @param array $input_params input_params array to process condition flow.
      * @return array $block_result returns result of condition block as array.
      */
@@ -2273,6 +2121,7 @@ class Missing_pet extends Cit_Controller
      */
     public function post_notification($input_params = array())
     {
+        // print_r($input_params);exit;
         $this->block_result = array();
         try
         {
@@ -2291,19 +2140,13 @@ class Missing_pet extends Cit_Controller
             {
                 $params_arr["sender_id"] = $input_params["user_id"];
             }
-            if (isset($input_params["service_id"]))
+            if (isset($input_params["missing_pet_id"]))
             {
-                $params_arr["o_service_id"] = $input_params["service_id"];
-            }
-            if (isset($input_params["offer_id"]))
-            {
-                $params_arr["o_offer_id"] = $input_params["offer_id"];
+                $params_arr["missing_pet_id"] = $input_params["missing_pet_id"];
             }
             
             
-                $params_arr["_enotificationtype"] = "New Service created";
-
-            $params_arr["user_type"] = "Provider";
+                $params_arr["_enotificationtype"] = "New missing pet post created";
            
             $params_arr["_dtaddedat"] = "NOW()";
             $params_arr["_dtupdatedat"] = "NOW()";
@@ -2323,13 +2166,13 @@ class Missing_pet extends Cit_Controller
      /**
      * push_notification method is used to process mobile push notification.
      * @created CIT Dev Team
-     * @modified Devangi Nirmal | 18.06.2019
+     * @modified Snehal Shinde | 
      * @param array $input_params input_params array to process loop flow.
      * @return array $input_params returns modfied input_params array.
      */
     public function push_notification($input_params = array())
     {
-       
+       // print_r($input_params);exit;
         $this->block_result = array();
         try
         {
@@ -2340,7 +2183,7 @@ class Missing_pet extends Cit_Controller
             $sound = "default";
             $badge = "";
             $title = "";
-            $type = "new_service_added";
+            $type = "new_post_added";
             $send_vars = array(
                 array(
                     "key" => "type",
@@ -2349,32 +2192,27 @@ class Missing_pet extends Cit_Controller
                 ),
                 array(
                     "key" => "receiver_id",
-                    "value" => $input_params["r_users_id"],
+                    "value" => $input_params["receiver_id"],
                     "send" => "Yes",
                 ),
                 array(
                     "key" => "user_id",
-                    "value" => $input_params["s_users_id"],
+                    "value" => $input_params["user_id"],
                     "send" => "Yes",
                 ),
                 array(
                     "key" => "user_name",
-                    "value" => $input_params["s_name"],
+                    "value" => $input_params["u_name"],
                     "send" => "Yes",
                 ),
                 array(
                     "key" => "user_profile",
-                    "value" => $input_params["s_profile_image"],
+                    "value" => $input_params["u_profile_image"],
                     "send" => "Yes",
                 ),
                 array(
                     "key" => "user_image",
-                    "value" => $input_params["ui_image"],
-                    "send" => "Yes",
-                ),
-                 array(
-                    "key" => "user_type",
-                    "value" => "provider",
+                    "value" => $input_params["u_profile_image"],
                     "send" => "Yes",
                 )
             );
@@ -2414,7 +2252,175 @@ class Missing_pet extends Cit_Controller
     }
 
 
+    /**
+     * rules_set_store_review method is used to validate api input params.
+     * @created Snehal Shinde | 
+     * @modified Snehal Shinde | 
+     * @param array $request_arr request_arr array is used for api input.
+     * @return array $valid_res returns output response of API.
+     */
+    public function rules_get_missing_pets($request_arr = array())
+    {
+        
+       
+           $valid_arr = array(            
+        
+           "user_id" => array(
+                    array(
+                        "rule" => "number",
+                        "value" => true,
+                        "message" => "user_id_number"
+                    )
+                ),
+            "page_code" => array(
+                array(
+                    "rule" => "required",
+                    "value" => true,
+                    "message" => "page_code_required"
+                )
+            )
+            );
 
+        
+        $valid_res = $this->wsresponse->validateInputParams($valid_arr, $request_arr, "get_missing_pets");
+
+        return $valid_res;
+    }
+
+    /**
+     * start_set_store_item method is used to initiate api execution flow.
+     * @created Snehal Shinde | 
+     * @modified Snehal Shinde | 
+     * @param array $request_arr request_arr array is used for api input.
+     * @param bool $inner_api inner_api flag is used to idetify whether it is inner api request or general request.
+     * @return array $output_response returns output response of API.
+     */
+    public function get_missing_pets($request_arr = array(), $inner_api = FALSE)
+    {
+       try
+        {
+            $validation_res = $this->rules_get_missing_pets($request_arr);
+            if ($validation_res["success"] == "-5")
+            {
+                if ($inner_api === TRUE)
+                {
+                    return $validation_res;
+                }
+                else
+                {
+                    $this->wsresponse->sendValidationResponse($validation_res);
+                }
+            }
+
+
+            $output_response = array();
+            $input_params = $validation_res['input_params'];
+            $output_array = $func_array = array();
+            $input_params = $this->get_all_missing_pets($input_params);
+             print_r($input_params);exit;
+            $condition_res = $this->is_posted($input_params);
+            if ($condition_res["success"])
+            {
+                
+                $output_response = $this->get_item_finish_success($input_params);
+                return $output_response;
+            }
+
+            else
+            {
+ 
+                $output_response = $this->get_item_finish_success_1($input_params);
+                return $output_response;
+            }
+        }
+        catch(Exception $e)
+        {
+            $message = $e->getMessage();
+        }
+        return $output_response;
+    }
+
+ /**
+     * get_all_missing_pets method is used to process review block.
+     * @created Snehal Shinde | 
+     * @modified Snehal Shinde | 
+     * @param array $input_params input_params array to process loop flow.
+     * @return array $input_params returns modfied input_params array.
+     */
+    public function get_all_missing_pets($input_params = array())
+    {
+        $this->block_result = array();
+        try
+        {
+            $arrResult = array();
+                      
+           
+            $arrResult['user_id'] = isset($input_params["user_id"]) ? $input_params["user_id"] : "";
+            $arrResult['missing_pet_id'] = isset($input_params["missing_pet_id"]) ? $input_params["missing_pet_id"] : "";
+            $arrResult['page_code'] = isset($input_params["page_code"]) ? $input_params["page_code"] : "";
+
+            $this->block_result = $this->missing_pet_model->get_missing_pet_details($arrResult);
+
+            echo'<pre>';print_r($this->block_result);echo'<pre>';exit;
+            if (!$this->block_result["success"])
+            {
+                throw new Exception("No records found.");
+            }
+            $result_arr = $this->block_result["data"];
+
+               if (is_array($result_arr) && count($result_arr) > 0)
+                {
+                    
+                    foreach ($result_arr as $data_key => $data_arr)
+                    {
+                        $selected = array();
+                        $data =array();
+                        $upper_limit=5;
+                        
+                        for($i=1; $i<=$upper_limit; $i++)
+                        {
+                            if(false == empty($data_arr["image_".$i]))
+                            {
+                                $data = $data_arr["image_".$i];
+                                $image_arr = array();
+                                $image_arr["image_name"] = $data;
+                                $image_arr["ext"] = implode(",", $this->config->item("IMAGE_EXTENSION_ARR"));
+                                $p_key = ($data_arr["item_id"] != "") ? $data_arr["item_id"] : $input_params["item_id"];
+                                $image_arr["pk"] = $p_key;
+                                $image_arr["color"] = "FFFFFF";
+                                $image_arr["no_img"] = FALSE;
+                                $image_arr["path"] = "serialize_it/item_image";
+                                $data = $this->general->get_image_aws($image_arr);
+                                array_push($selected, $data);
+                                if(false == empty($selected)){
+                                    $result_arr[$data_key]["images"] = $selected; 
+                                }
+                            }
+                            else
+                            {
+                                    $result_arr[$data_key]["images"] = $selected;
+                            }
+                           
+                        }
+                    }
+                    $this->block_result["data"] = $result_arr;
+                }
+                if (is_array($result_arr) && count($result_arr) > 0)
+                {
+                   
+                    $this->block_result["data"] = $result_arr;
+                }
+        }
+        catch(Exception $e)
+        {
+            $success = 0;
+            $this->block_result["data"] = array();
+        }
+        $input_params["get_all_items"] = $this->block_result["data"];
+        
+        $input_params = $this->wsresponse->assignSingleRecord($input_params, $this->block_result["data"]);
+       return $input_params;
+    }
 
 
 }

@@ -65,27 +65,15 @@ class Send_notification_model extends CI_Model
             {
                 $this->db->set("iSenderId", $params_arr["sender_id"]);
             }
-            if (isset($params_arr["o_service_id"]))
+            if (isset($params_arr["missing_pet_id"]))
             {
-                $this->db->set("iServiceId", $params_arr["o_service_id"]);
-            }
-            if (isset($params_arr["o_offer_id"]))
-            {
-                $this->db->set("iOfferId", $params_arr["o_offer_id"]);
-            }
-            if (isset($params_arr["user_type"]))
-            {
-                $this->db->set("vReceiverUserType", $params_arr["user_type"]);
+                $this->db->set("iMissingPetId", $params_arr["missing_pet_id"]);
             }
             $this->db->set("vNotificationType", $params_arr["_enotificationtype"]);
             $this->db->set($this->db->protect("dtAddedAt"), $params_arr["_dtaddedat"], FALSE);
             $this->db->set($this->db->protect("dtUpdatedAt"), $params_arr["_dtupdatedat"], FALSE);
             $this->db->set("eNotificationStatus", "Active");
 
-            /*if (isset($params_arr["user_id"]))
-            {
-                $this->db->set("iUserId", $params_arr["user_id"]);
-            }*/
             $this->db->insert("notification");
             $insert_id = $this->db->insert_id();
             if (!$insert_id)
@@ -159,7 +147,6 @@ class Send_notification_model extends CI_Model
      */
     public function get_user_details_for_send_notifi($input_params)
     {
-        // print_r($input_params);exit;
         try
         {
             $result_arr = array();
@@ -171,11 +158,11 @@ class Send_notification_model extends CI_Model
              CONCAT(u.vFirstName,\" \",u.vLastName) AS u_name
              FROM tag_people AS t             
              INNER JOIN missing_pets AS misp ON t.iMissingPetId = misp.iMissingPetId
-             INNER JOIN users AS u ON (u.iUserId = t.iTagFrom)             
+             INNER JOIN users AS u ON (u.iUserId = t.iTagTo)             
              WHERE t.iTagFrom = '".$input_params['user_id']."'  AND t.iMissingPetId ='".$input_params['missing_pet_id']."'";
             $result_obj = $this->db->query($strSql);
 
-           //echo $this->db->last_query();exit;
+           // echo $this->db->last_query();exit;
             $result_arr = is_object($result_obj) ? $result_obj->result_array() : array();
             if (!is_array($result_arr) || count($result_arr) == 0)
             {

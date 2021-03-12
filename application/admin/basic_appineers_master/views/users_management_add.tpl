@@ -130,26 +130,7 @@
 </div>
 <div class="error-msg-form "><label class='error' id='u_last_nameErr'></label></div>
 </div>
-<div class="form-row row-fluid " id="cc_sh_u_user_name">
-<label class="form-label span3 ">
-<%$form_config['u_user_name']['label_lang']%>
-</label> 
-<div class="form-right-div  <%if $mode eq 'Update'%>frm-elements-div<%/if%> ">
-<%if $mode eq "Update"%>
-<input type="hidden" class="ignore-valid" name="u_user_name" id="u_user_name" value="<%$data['u_user_name']|@htmlentities%>" />
-<span class="frm-data-label">
-    <strong>
-        <%if $data['u_user_name'] neq ""%>
-            <%$data['u_user_name']%>
-        <%else%>
-        <%/if%>
-    </strong></span>
-<%else%>
-    <input type="text" placeholder="" value="<%$data['u_user_name']|@htmlentities%>" name="u_user_name" id="u_user_name" title="<%$this->lang->line('USERS_MANAGEMENT_USERNAME')%>"  data-ctrl-type='textbox'  class='frm-size-medium'  />
-<%/if%>
-</div>
-<div class="error-msg-form "><label class='error' id='u_user_nameErr'></label></div>
-</div>
+
 <div class="form-row row-fluid " id="cc_sh_u_email">
 <label class="form-label span3 ">
 <%$form_config['u_email']['label_lang']%>
@@ -190,82 +171,26 @@
     </div>
     <div class="error-msg-form "><label class='error' id='u_mobile_noErr'></label></div>
 </div>
-<div class="form-row row-fluid " id="cc_sh_u_dob">
+
+<div class="form-row row-fluid " id="cc_sh_u_aptSuit">
     <label class="form-label span3 ">
-        <%$form_config['u_dob']['label_lang']%>
+        <%$form_config['u_aptSuit']['label_lang']%>
     </label> 
     <div class="form-right-div  <%if $mode eq 'Update'%>frm-elements-div<%else%>input-append text-append-prepend<%/if%> ">
         <%if $mode eq "Update"%>
-            <input type="hidden" name="u_dob" id="u_dob" value="<%$this->general->dateSystemFormat($data['u_dob'])%>" class="ignore-valid view-label-only"  data-ctrl-type='date'  class='frm-datepicker ctrl-append-prepend frm-size-medium'  aria-date-format='<%$this->general->getAdminJSFormats('date', 'dateFormat')%>'  aria-format-type='date' />
-            <%assign var="display_date" value=$this->general->dateSystemFormat($data['u_dob'])%>
-            <span class="frm-data-label">
-                <strong>
-                    <%if $display_date neq ""%>
-                        <%$display_date%>
-                    <%else%>
-                    <%/if%>
-                </strong></span>
-            <%else%>
-                <input type="text" value="<%$this->general->dateSystemFormat($data['u_dob'])%>" placeholder="" name="u_dob" id="u_dob" title="<%$this->lang->line('USERS_MANAGEMENT_DOB')%>"  data-ctrl-type='date'  class='frm-datepicker ctrl-append-prepend frm-size-medium'  aria-date-format='<%$this->general->getAdminJSFormats('date', 'dateFormat')%>'  aria-format-type='date'  />
-                <span class='add-on text-addon date-append-class icomoon-icon-calendar'></span>
+            <input type="hidden" class="ignore-valid" name="u_aptSuit" id="u_aptSuit" value="<%$data['u_aptSuit']|@htmlentities%>" />
+        <span class="frm-data-label">
+            <strong>
+                <%if $data['u_aptSuit'] neq ""%>
+                    <%$data['u_aptSuit']%>
+                <%else%>
+                <%/if%>
+            </strong></span>
+        <%else%>
+            <input type="text" placeholder="" value="<%$data['u_aptSuit']|@htmlentities%>" name="u_aptSuit" id="u_aptSuit" title="<%$this->lang->line('USERS_MANAGEMENT_APTSUIT')%>"  data-ctrl-type='textbox'  class='frm-size-medium'  />
             <%/if%>
         </div>
-        <div class="error-msg-form "><label class='error' id='u_dobErr'></label></div>
-    </div>
-    <div class="form-row row-fluid " id="cc_sh_u_address">
-        <label class="form-label span3 ">
-            <%$form_config['u_address']['label_lang']%> <em>*</em> 
-        </label> 
-        <div class="form-right-div  ">
-            <span>
-                <div>
-                    <div class="frm-gmf-address-label">
-                        <span id="gmf_addr_label_u_address"><%$data['u_address']%></span>
-                        <textarea style="display:none;" class="ignore-valid" name="u_address" id="u_address"><%$data['u_address']%></textarea>
-                    </div>
-                    <span  class='frm-gmf-medium frm-gmf-height-tiny' >
-                        <textarea class="frm-gmf-address elastic" name="gmf_autocomplete_u_address" id="gmf_autocomplete_u_address" title="<%$this->lang->line('USERS_MANAGEMENT_ADDRESS')%>"><%$data['u_address']%></textarea>
-                    </span>
-                </div>
-                <div class="frm-gmf-options">
-                    <input type="radio" name="type_u_address" id="u_address-changetype-all" class="regular-radio" checked=true />
-                    <label for="u_address-changetype-all">&nbsp;</label>
-                    <label for="u_address-changetype-all">
-                        <%if $this->lang->line("GENERIC_ALL") neq ""%>
-                            <%$this->lang->line("GENERIC_ALL")%>
-                        <%else%>
-                            All
-                        <%/if%>
-                    </label>&nbsp;&nbsp;
-                    <input type="radio" name="type_u_address" id="u_address-changetype-establishment" class="regular-radio" />
-                    <label for="u_address-changetype-establishment">&nbsp;</label>
-                    <label for="u_address-changetype-establishment">
-                        <%if $this->lang->line("GENERIC_ESTABLISHMENTS") neq ""%>
-                            <%$this->lang->line("GENERIC_ESTABLISHMENTS")%>
-                        <%else%>
-                            Establishments
-                        <%/if%>
-                    </label>&nbsp;&nbsp;
-                    <input type="radio" name="type_u_address" id="u_address-changetype-geocode" class="regular-radio" />
-                    <label for="u_address-changetype-geocode">&nbsp;</label>
-                    <label for="u_address-changetype-geocode">
-                        <%if $this->lang->line("GENERIC_GEOCODES") neq ""%>
-                            <%$this->lang->line("GENERIC_GEOCODES")%>
-                        <%else%>
-                            Geocodes
-                        <%/if%>
-                    </label>
-                </div>
-                <span class='canvas_map'><div id='map_canvas_u_address'  class='frm-gmf-medium frm-gmf-height-tiny' ></div></span>
-            </span>
-            <%assign var=temp_map_arr value=[['name'=>'u_address','lat'=>'u_latitude','lng'=>'u_longitude','load'=>'No']]%>
-            <%if $google_map_arr|@is_array%>
-                <%assign var=google_map_arr value=$google_map_arr|@array_merge:$temp_map_arr%>
-            <%else%>
-                <%assign var=google_map_arr value=$temp_map_arr%>
-            <%/if%>
-        </div>
-        <div class="error-msg-form "><label class='error' id='u_addressErr'></label></div>
+        <div class="error-msg-form "><label class='error' id='u_aptSuitErr'></label></div>
     </div>
     <div class="form-row row-fluid " id="cc_sh_u_city">
         <label class="form-label span3 ">
@@ -307,29 +232,7 @@
             </div>
             <div class="error-msg-form "><label class='error' id='u_sateErr'></label></div>
         </div>
-<!--         <div class="form-row row-fluid " id="cc_sh_u_state_name">
-            <label class="form-label span3 ">
-                <%$form_config['u_state_name']['label_lang']%>
-            </label> 
-            <div class="form-right-div  <%if $mode eq 'Update'%>frm-elements-div<%/if%> ">
-                <%assign var="opt_selected" value=$data['u_state_name']%>
-                <%if $mode eq "Update"%>
-                    <input type="hidden" name="u_state_name" id="u_state_name" value="<%$data['u_state_name']%>" class="ignore-valid"/>
-                    <%assign var="combo_arr" value=$opt_arr["u_state_name"]%>
-                    <%assign var="opt_display" value=$this->general->displayKeyValueData($opt_selected, $combo_arr)%>
-                    <span class="frm-data-label">
-                        <strong>
-                            <%if $opt_display neq ""%>
-                                <%$opt_display%>
-                            <%else%>
-                            <%/if%>
-                        </strong></span>
-                    <%else%>
-                        <%$this->dropdown->display("u_state_name","u_state_name","  title='<%$this->lang->line('USERS_MANAGEMENT_STATE')%>'  aria-chosen-valid='Yes'  class='chosen-select frm-size-medium'  data-placeholder='<%$this->general->parseLabelMessage('GENERIC_PLEASE_SELECT__C35FIELD_C35' ,'#FIELD#', 'USERS_MANAGEMENT_STATE')%>'  ", "|||", "", $opt_selected,"u_state_name")%>
-                    <%/if%>
-                </div>
-                <div class="error-msg-form "><label class='error' id='u_state_idErr'></label></div>
-            </div> -->
+
             <div class="form-row row-fluid " id="cc_sh_u_zip_code">
                 <label class="form-label span3 ">
                     <%$form_config['u_zip_code']['label_lang']%>
@@ -390,28 +293,7 @@
                             </div>
                             <div class="error-msg-form "><label class='error' id='u_privacy_policy_versionErr'></label></div>
                         </div>
-                        <div class="form-row row-fluid " id="cc_sh_u_deleted_at">
-                            <label class="form-label span3 ">
-                                <%$form_config['u_deleted_at']['label_lang']%>
-                            </label> 
-                            <div class="form-right-div  <%if $mode eq 'Update'%>frm-elements-div<%else%>input-append text-append-prepend<%/if%> ">
-                                <%if $mode eq "Update"%>
-                                    <input type="hidden" name="u_deleted_at" id="u_deleted_at" value="<%$this->general->dateSystemFormat($data['u_deleted_at'])%>" class="ignore-valid view-label-only"  data-ctrl-type='date'  class='frm-datepicker ctrl-append-prepend frm-size-medium'  aria-date-format='<%$this->general->getAdminJSFormats('date', 'dateFormat')%>'  aria-format-type='date' />
-                                    <%assign var="display_date" value=$this->general->dateSystemFormat($data['u_deleted_at'])%>
-                                    <span class="frm-data-label">
-                                        <strong>
-                                            <%if $display_date neq ""%>
-                                                <%$display_date%>
-                                            <%else%>
-                                            <%/if%>
-                                        </strong></span>
-                                    <%else%>
-                                        <input type="text" value="<%$this->general->dateSystemFormat($data['u_deleted_at'])%>" placeholder="" name="u_deleted_at" id="u_deleted_at" title="<%$this->lang->line('USERS_MANAGEMENT_DELETED_AT')%>"  data-ctrl-type='date'  class='frm-datepicker ctrl-append-prepend frm-size-medium'  aria-date-format='<%$this->general->getAdminJSFormats('date', 'dateFormat')%>'  aria-format-type='date'  />
-                                        <span class='add-on text-addon date-append-class icomoon-icon-calendar'></span>
-                                    <%/if%>
-                                </div>
-                                <div class="error-msg-form "><label class='error' id='u_deleted_atErr'></label></div>
-                            </div>
+
                             <div class="form-row row-fluid " id="cc_sh_u_status">
                                 <label class="form-label span3 ">
                                     <%$form_config['u_status']['label_lang']%> <em>*</em> 

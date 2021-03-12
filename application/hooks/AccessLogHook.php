@@ -148,6 +148,7 @@ class AccessLogHook
 
     public function get_logging_data()
     {
+
         $params_arr = array();
         $date_format = $this->params['log_date_format'];
         $request_type = $this->params['type'];
@@ -163,6 +164,7 @@ class AccessLogHook
         $bowser = $this->get_browser($user_agent);
         $input_params_arr = $this->get_http_request_params();
         $input_params_str = (is_array($input_params_arr) && count($input_params_arr) > 0) ? serialize($input_params_arr) : "";
+        $request_method = $_SERVER['REQUEST_METHOD'];
 
         $log_str = <<<EOD
 {$ip_addr}~~{$request_func}~~{$request_type}~~{$date_str}~~{$url}~~{$user_agent}~~{$plat_form}~~{$bowser}~~{$input_params_str}
@@ -209,7 +211,6 @@ EOD;
         $log_file_path = $log_folder_path . $file_name;
         
         $fileContents['input_params'] = $input_params_arr;
-
         $fp = fopen($log_file_path, 'a+');
         fwrite($fp, json_encode($fileContents));
         fclose($fp);
@@ -223,6 +224,7 @@ EOD;
             $data_array['vPlatform']   = $plat_form;
             $data_array['vBrowser']    = $bowser;
             $data_array['vFileName']   = $file_name;
+            $data_array['vRequestMethod']   = $request_method;            
             $result = $this->CI->db->insert('api_accesslogs', $data_array);
             if($result > 0){
                 $exe_arr['api_log_id']  = $result;
@@ -272,7 +274,8 @@ EOD;
             '/ipad/i' => 'iPad',
             '/android/i' => 'Android',
             '/blackberry/i' => 'BlackBerry',
-            '/webos/i' => 'Mobile'
+            '/webos/i' => 'Mobile',
+            '/Postman/i' => 'Postman'
         );
 
         foreach ($os_array as $regex => $value) {
@@ -298,7 +301,8 @@ EOD;
             '/netscape/i' => 'Netscape',
             '/maxthon/i' => 'Maxthon',
             '/konqueror/i' => 'Konqueror',
-            '/mobile/i' => 'Handheld Browser'
+            '/mobile/i' => 'Handheld Browser',
+            '/Postman/i' => 'Postman'
         );
 
         foreach ($browser_array as $regex => $value) {

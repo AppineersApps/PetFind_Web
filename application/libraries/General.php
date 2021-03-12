@@ -86,6 +86,83 @@ Class General
         }
     }
 
+/**
+     * dbChanageLog method is used to store DB log.
+     * @param string $table_name affected table.
+     * @param string $primary_key affected table primary key.
+     * @param string $affected_rows number of affected records.
+     * @param array $data affected data.
+     * @param array $module_name module name.
+     * @param string $operation operation permormed.
+     */ 
+    public function dbChanageLog($table_name = "", $primary_key = "", $affected_rows= NULL, $data = array(), $where = array(), $module_name, $operation)
+    {
+        $this->CI->load->model('general/db_log_model');
+       // adding backend log 
+       if($affected_rows == 1)
+       {
+            if (is_numeric($where)) {
+              
+               $logArray['iPrimaryKey'] = $where; 
+               $logArray['vCondition'] = $primary_key . '=' . $where; 
+
+           } else if($where){
+
+               $logArray['iPrimaryKey'] = ""; 
+               $logArray['vCondition'] = $where; 
+           } 
+
+           $logArray['vTableName'] = $table_name;
+           $logArray['eOperation'] = $operation;
+           $logArray['tFieldData'] = json_encode($data);
+           $logArray['eSource'] = "Admin";
+           $logArray['iLoggedById'] = $this->CI->session->userdata('iAdminId');
+           $logArray['vLoggedName'] = $this->CI->session->userdata('vEmail');
+          // $logArray['dDateAdded'] = CURRENT_TIMESTAMP();
+           
+           $logArray['vEntityName'] = $module_name;
+
+           $log_id = $this->CI->db_log_model->insert($logArray);
+
+         //  echo $this->db->last_query(); exit();
+       }
+
+       if($affected_rows > 1)
+       {
+           if (substr_count($where,"IN") > 0) 
+           {
+               preg_match_all('!\d+!', $where, $matches);
+               $where_values = $matches[0];
+
+               foreach ($where_values as $key => $whereV) 
+               {
+                   if (is_numeric($whereV)) {
+                       $logArray['iPrimaryKey'] = $whereV; 
+                       $logArray['vCondition'] = $primary_key . '=' . $whereV; 
+
+                   } else if($whereV){
+
+                       $logArray['iPrimaryKey'] = ""; 
+                       $logArray['vCondition'] = $whereV; 
+                   } 
+
+                   $logArray['vTableName'] = $table_name;
+                   $logArray['eOperation'] = $operation;
+                   $logArray['tFieldData'] = json_encode($data);
+                   $logArray['eSource'] = "Admin";
+                   $logArray['iLoggedById'] = $this->CI->session->userdata('iAdminId');
+                   $logArray['vLoggedName'] = $this->CI->session->userdata('vEmail');
+                  // $logArray['dDateAdded'] = CURRENT_TIMESTAMP();
+                   $logArray['vEntityName'] = $module_name;
+                   $log_id = $this->CI->db_log_model->insert($logArray);
+                 //  echo $this->db->last_query(); exit();
+
+               }
+           }
+       }
+    }
+
+
     public function getSessionExpire()
     {
         if ($this->CI->session->userdata("isLoggedIn") && intval($this->CI->session->userdata('iSessionExpire')) > 0) {
@@ -1194,7 +1271,6 @@ Class General
                 $response = $s3->deleteObject($object_fodler, $file_name);
             }
         } catch (Exception $e) {
-            log_message('error', $e->getMessage());
             
         }
         return $response;
@@ -1835,7 +1911,7 @@ Class General
                     }
                 }
             }
-            $success = $this->pushTestNotification($push_arr['device_id'], $notify_arr);
+            $success = $this->pushTestNotification($push_arr['device_id'], $notify_arr['sound'], $notify_arr);
         }
         $this->CI->load->model('tools/push');
         $insert_arr = array();

@@ -84,3 +84,7 @@ p.lead.ex-pass { font-size: 20px; color: #f4704e; font-family: 'hindbold'; }
 {
 	width:100%;
 }
+.btn-width-100
+{
+	width: 100% !important;
+}

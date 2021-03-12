@@ -71,7 +71,7 @@ class Users_management_model extends CI_Model
         $this->primary_key = "iUserId";
         $this->primary_alias = "u_user_id";
         $this->physical_data_remove = "Yes";
-        $this->grid_fields = array("u_profile_image", "u_first_name", "u_user_name", "u_email", "u_mobile_no", "u_added_at", "u_status", "u_updated_at");
+        $this->grid_fields = array("u_profile_image", "u_first_name", "u_email", "u_mobile_no", "u_added_at", "u_status", "u_updated_at");
         $this->join_tables = array();
         $this->extra_cond = "";
         $this->groupby_cond = array();
@@ -291,6 +291,7 @@ class Users_management_model extends CI_Model
             $this->db->select("u.vUserName AS u_user_name");
             $this->db->select("u.vEmail AS u_email");
             $this->db->select("u.vMobileNo AS u_mobile_no");
+            $this->db->select("u.vAptSuite AS u_aptSuit");
             $this->db->select("u.dDob AS u_dob");
             $this->db->select("u.tAddress AS u_address");
             $this->db->select("u.vCity AS u_city");
@@ -629,9 +630,10 @@ class Users_management_model extends CI_Model
                 "file_upload" => "Yes",
                 "file_inline" => "Yes",
                 "file_server" => "amazon",
-                "file_folder" => "side_jobs/user_profile",
+                "file_folder" => "pet_find/user_profile",
                 "file_width" => "80",
-                "file_height" => "80"
+                "file_height" => "80",
+                "file_keep" =>'iUserId'
             ),
                 "u_first_name" => array(
                 "name" => "u_first_name",
@@ -648,30 +650,6 @@ class Users_management_model extends CI_Model
                 "label" => "Full Name",
                 "lang_code" => "USERS_MANAGEMENT_FULL_NAME",
                 "label_lang" => $this->lang->line('USERS_MANAGEMENT_FULL_NAME'),
-                "width" => 50,
-                "search" => "Yes",
-                "export" => "Yes",
-                "sortable" => "Yes",
-                "addable" => "No",
-                "editable" => "No",
-                "viewedit" => "No",
-                "edit_link" => "Yes"
-            ),
-                "u_user_name" => array(
-                "name" => "u_user_name",
-                "table_name" => "users",
-                "table_alias" => "u",
-                "field_name" => "vUserName",
-                "source_field" => "u_user_name",
-                "display_query" => "u.vUserName",
-                "entry_type" => "Table",
-                "data_type" => "varchar",
-                "show_in" => "Both",
-                "type" => "textbox",
-                "align" => "left",
-                "label" => "Username",
-                "lang_code" => "USERS_MANAGEMENT_USERNAME",
-                "label_lang" => $this->lang->line('USERS_MANAGEMENT_USERNAME'),
                 "width" => 50,
                 "search" => "Yes",
                 "export" => "Yes",
@@ -839,12 +817,13 @@ class Users_management_model extends CI_Model
                 "label_lang" => $this->lang->line('USERS_MANAGEMENT_PROFILE_IMAGE'),
                 "file_upload" => "Yes",
                 "file_server" => "amazon",
-                "file_folder" => "side_jobs/user_profile",
+                "file_folder" => "pet_find/user_profile",
                 "file_width" => "80",
                 "file_height" => "80",
                 "file_format" => "gif,png,jpg,jpeg,jpe,bmp,ico",
                 "file_size" => "102400",
-                "file_label" => "Yes"
+                "file_label" => "Yes",
+                "file_keep" =>'iUserId'
             ),
                 "u_first_name" => array(
                 "name" => "u_first_name",
@@ -910,6 +889,19 @@ class Users_management_model extends CI_Model
                 "label" => "Mobile Number",
                 "lang_code" => "USERS_MANAGEMENT_MOBILE_NUMBER",
                 "label_lang" => $this->lang->line('USERS_MANAGEMENT_MOBILE_NUMBER')
+            ),
+                "u_aptSuit" => array(
+                "name" => "u_aptSuit",
+                "table_name" => "users",
+                "table_alias" => "u",
+                "field_name" => "vAptSuite",
+                "entry_type" => "Table",
+                "data_type" => "varchar",
+                "show_input" => "Both",
+                "type" => "textbox",
+                "label" => "AptSuit",
+                "lang_code" => "USERS_MANAGEMENT_APTSUIT",
+                "label_lang" => $this->lang->line('USERS_MANAGEMENT_APTSUIT')
             ),
                 "u_dob" => array(
                 "name" => "u_dob",

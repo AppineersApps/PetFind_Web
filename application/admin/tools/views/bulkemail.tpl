@@ -23,14 +23,21 @@
                                                     <optgroup label="Other">
                                                         <option selected="selected" value="Other">Other</option>
                                                     </optgroup>
-                                                    <%foreach from=$db_email key=k item=v%>
+                                                    <!-- <%foreach from=$db_email key=k item=v%>
                                                         <optgroup label="<%$k%>">
                                                             <%assign var="innerArr" value=$v%>
                                                             <%section name="i" loop=$innerArr%>
                                                                 <option value="Grp@@<%$innerArr[i]['Id']%>"><%$innerArr[i]['Val']%></option>
                                                             <%/section%>
                                                         </optgroup>
+                                                    <%/foreach%> -->
+                                                     <optgroup label="Modules">
+                                                    <%foreach from=$db_email_custom key=k item=v%>
+                                                        <option value="Custom@@<%$v['id']%>"><%$v['val']%></option>
                                                     <%/foreach%>
+                                                    </optgroup>
+
+
                                                     <%if $db_module|@is_array && $db_module|@count gt 0 %>
                                                         <%foreach from=$db_module key=k item=v%>
                                                             <optgroup label="<%$k%>">
@@ -50,7 +57,7 @@
                                     <div class="form-row row-fluid" id="div_user">
                                         <label class="form-label span3"><%$this->lang->line('GENERIC_ENTER_EMAIL_ADDRESS')%> <em>*</em> :</label> 
                                         <div class="form-right-div">
-                                            <textarea title="<%$this->lang->line('GENERIC_PLEASE_ENTER_FROM_NAME')%>" id="vEmailAddress" name="vEmailAddress" class="elastic frm-size-large"></textarea>
+                                            <textarea title="<%$this->lang->line('GENERIC_PLEASE_ENTER_FROM_NAME')%>" id="vEmailAddress" name="vEmailAddress" class="elastic frm-size-large" ></textarea>
                                             <a class="tipR" style="text-decoration: none;" href="javascript://" oldtitle="Enter multiple email address with (,) seperated." title="Enter multiple email address with (,) seperated." aria-describedby="ui-tooltip-2">
                                                 <span class="icomoon-icon-help"></span>
                                             </a>
@@ -67,7 +74,7 @@
                                     <div class="form-row row-fluid">
                                         <label class="form-label span3"><%$this->lang->line('GENERIC_FROM_EMAIL')%> <em>*</em> :</label> 
                                         <div class="form-right-div">
-                                            <input type="text" class="frm-size-large" title="<%$this->lang->line('GENERIC_PLEASE_ENTER_FROM_EMAIL')%>" id="vFromEmail" value="<%$EMAIL_ADMIN%>" name="vFromEmail">
+                                            <input type="text" class="frm-size-large" title="<%$this->lang->line('GENERIC_PLEASE_ENTER_FROM_EMAIL')%>" id="vFromEmail" value="<%$EMAIL_ADMIN%>" name="vFromEmail" readonly="readonly">
                                         </div>
                                         <div class="error-msg-form" ><label class="error" id="vFromEmailErr"></label></div>
                                     </div>

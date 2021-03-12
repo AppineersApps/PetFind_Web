@@ -278,6 +278,7 @@ class Users_management extends Cit_Controller
                 'default_filters' => $this->users_management_model->default_filters,
             );
             $this->smarty->assign($render_arr);
+           // echo '<pre>'; print_r($render_arr);echo '<pre>';exit;
             if (!empty($render_arr['overwrite_view']))
             {
                 $this->loadView($render_arr['overwrite_view']);

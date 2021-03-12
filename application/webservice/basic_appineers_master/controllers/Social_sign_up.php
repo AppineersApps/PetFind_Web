@@ -511,11 +511,16 @@ class Social_sign_up extends Cit_Controller
                 throw new Exception("Insertion failed.");
             }
             $data_arr = $this->block_result["array"];
+             $user_insert_id = $this->block_result['data'][0]['insert_id'];
+              // print_r($this->block_result['data']);exit;
+
             $upload_path = $this->config->item("upload_path");
             if (!empty($images_arr["user_profile"]["name"]))
             {
 
-               $folder_name = "whitelable_v2/user_profile";             
+               $aws_folder_name = $this->config->item("AWS_FOLDER_NAME");
+
+               $folder_name = $aws_folder_name."/user_profile/".$user_insert_id."/";             
                 
                 $temp_file = $_FILES["user_profile"]["tmp_name"];
                 $res = $this->general->uploadAWSData($temp_file, $folder_name, $images_arr["user_profile"]["name"]);
@@ -598,7 +603,8 @@ class Social_sign_up extends Cit_Controller
                 $i = 0;
                 foreach ($result_arr as $data_key => $data_arr)
                 {
-
+                    // print_r($input_params);exit;
+                    $aws_folder_name = $this->config->item("AWS_FOLDER_NAME");
                     $data = $data_arr["u_profile_image"];
                     $image_arr = array();
                     $image_arr["image_name"] = $data;
@@ -608,7 +614,9 @@ class Social_sign_up extends Cit_Controller
                     $dest_path = "user_profile";
                    /* $image_arr["path"] = $this->general->getImageNestedFolders($dest_path);
                     $data = $this->general->get_image($image_arr);*/
-                    $image_arr["path"] ="fern/user_profile";
+                     $p_key = ($data_arr["u_user_id"] != "") ? $data_arr["u_user_id"] : $data_arr["u_user_id"];
+                    $image_arr["pk"] = $p_key;
+                    $image_arr["path"] =$aws_folder_name. "/user_profile";
                     $data = $this->general->get_image_aws($image_arr);
 
 

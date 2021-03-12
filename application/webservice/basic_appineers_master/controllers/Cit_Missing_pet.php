@@ -53,7 +53,7 @@ public function PrepareHelperMessage($input_params=array()){
     $this->db->select('nt.tNotificationText');
     $this->db->from('notification_template as nt');
     
-    $this->db->where('nt.vTemplateCode=','NewServiceCreate');
+    $this->db->where('nt.vTemplateCode=','NewPostCreate');
     $notification_text=$this->db->get()->result_array();
 
     $notification_text=$notification_text[0]['tNotificationText'];
