@@ -538,6 +538,32 @@ $config["report_abusive_for_missing_post"] = array(
     "target" => ""
 );
 
+$config["comment_a_post"] = array(
+    "title" => "comment_a_post",
+    "folder" => "post",
+    "method" => "GET_POST",
+    "params" => array(
+        "missing_pets_id",
+        "comments",
+        "comments_from"
+    ),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+$config["comment_listing"] = array(
+    "title" => "comment_listing",
+    "folder" => "post",
+    "method" => "GET_POST",
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+
 #####GENERATED_CONFIG_SETTINGS_END#####
 
 /* End of file cit_webservices.php */
