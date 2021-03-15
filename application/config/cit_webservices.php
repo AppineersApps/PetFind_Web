@@ -514,7 +514,8 @@ $config["report_abusive_user"] = array(
     "method" => "GET_POST",
     "params" => array(
         "user_id",
-        "report_on"
+        "report_on",
+        "message"
     ),
     "token" => "",
     "payload" => array(
