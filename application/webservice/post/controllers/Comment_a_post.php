@@ -309,9 +309,9 @@ class Comment_a_post extends Cit_Controller
             {
                 $params_arr["comments"] = $input_params["comments"];
             }
-            if (isset($input_params["comments_from"]))
+            if (isset($input_params["user_id"]))
             {
-                $params_arr["comments_from"] = $input_params["comments_from"];
+                $params_arr["comments_from"] = $input_params["user_id"];
             }
             $params_arr["_dtaddedat"] = "NOW()";
             //$params_arr["_estatus"] = "Active";
