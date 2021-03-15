@@ -2,7 +2,7 @@
 defined('BASEPATH') || exit('No direct script access allowed');
 
 /**
- * Description of Report Abusive User Controller
+ * Description of Report Abusive Controller
  *
  * @category webservice
  *
@@ -10,20 +10,20 @@ defined('BASEPATH') || exit('No direct script access allowed');
  *
  * @subpackage controllers
  *
- * @module Report Abusive User
+ * @module Report Abusive
  *
- * @class Report_abusive_user.php
+ * @class Report_abusive.php
  *
- * @path application\webservice\misc\controllers\Report_abusive_user.php
+ * @path application\webservice\misc\controllers\Report_abusive.php
  *
  * @version 4.4
  *
  * @author CIT Dev Team
  *
- * @since 03.05.2019
+ * @since 02.05.2019
  */
 
-class Report_abusive_user extends Cit_Controller
+class Report_abusive_for_missing_post extends Cit_Controller
 {
     public $settings_params;
     public $output_params;
@@ -44,17 +44,18 @@ class Report_abusive_user extends Cit_Controller
         $this->block_result = array();
 
         $this->load->library('wsresponse');
-        $this->load->model('report_abusive_user_model');
+        $this->load->model('report_abusive_for_missing_post_model');
+        //$this->load->model("basic_appineers_master/user_store_review_model");
     }
 
     /**
-     * rules_report_abusive_user method is used to validate api input params.
+     * rules_report_abusive method is used to validate api input params.
      * @created  | 02.05.2019
      * @modified priyanka chillakuru | 02.05.2019
      * @param array $request_arr request_arr array is used for api input.
      * @return array $valid_res returns output response of API.
      */
-    public function rules_report_abusive_user($request_arr = array())
+    public function rules_report_abusive_for_missing_post($request_arr = array())
     {
         $valid_arr = array(
             "user_id" => array(
@@ -64,11 +65,11 @@ class Report_abusive_user extends Cit_Controller
                     "message" => "user_id_required",
                 )
             ),
-            "report_on" => array(
+            "missing_pets_id" => array(
                 array(
                     "rule" => "required",
                     "value" => TRUE,
-                    "message" => "report_on_required",
+                    "message" => "missing_pets_id_required",
                 )
             ),
             "message" => array(
@@ -79,24 +80,25 @@ class Report_abusive_user extends Cit_Controller
                 )
             )
         );
-        $valid_res = $this->wsresponse->validateInputParams($valid_arr, $request_arr, "report_abusive_user");
+        $valid_res = $this->wsresponse->validateInputParams($valid_arr, $request_arr, "report_abusive_for_missing_post");
 
         return $valid_res;
     }
 
     /**
-     * start_report_abusive_user method is used to initiate api execution flow.
+     * start_report_abusive method is used to initiate api execution flow.
      * @created  | 02.05.2019
      * @modified priyanka chillakuru | 02.05.2019
      * @param array $request_arr request_arr array is used for api input.
      * @param bool $inner_api inner_api flag is used to idetify whether it is inner api request or general request.
      * @return array $output_response returns output response of API.
      */
-    public function start_report_abusive_user($request_arr = array(), $inner_api = FALSE)
+    public function start_report_abusive_for_missing_post($request_arr = array(), $inner_api = FALSE)
     {
+        //print_r($request_arr);exit();
         try
         {
-            $validation_res = $this->rules_report_abusive_user($request_arr);
+            $validation_res = $this->rules_report_abusive_for_missing_post($request_arr);
             if ($validation_res["success"] == "-5")
             {
                 if ($inner_api === TRUE)
@@ -155,16 +157,23 @@ class Report_abusive_user extends Cit_Controller
             {
                 $params_arr["user_id"] = $input_params["user_id"];
             }
+            if (isset($input_params["missing_pets_id"]))
+            {
+                $params_arr["missing_pets_id"] = $input_params["missing_pets_id"];
+            }
             if (isset($input_params["message"]))
             {
                 $params_arr["message"] = $input_params["message"];
             }
-            if (isset($input_params["report_on"]))
-            {
-                $params_arr["report_on"] = $input_params["report_on"];
-            }
+            
             $params_arr["_dtaddedat"] = "NOW()";
-            $this->block_result = $this->report_abusive_user_model->insert_report($params_arr);
+            $this->block_result = $this->report_abusive_for_missing_post_model->insert_report($params_arr);
+           
+           /* $params_arr['iAbusiveReportsForReviewId'] = $this->block_result["data"][0]["insert_id"];
+            $params_arr['review_id'] = intval($params_arr["review_id"]);
+            $params_arr['dtUpdatedAt'] = "NOW()";
+            $res = $this->user_store_review_model->update($params_arr);*/
+
         }
         catch(Exception $e)
         {
@@ -232,7 +241,7 @@ class Report_abusive_user extends Cit_Controller
         $output_array["settings"]["fields"] = $output_fields;
         $output_array["data"] = $input_params;
 
-        $func_array["function"]["name"] = "report_abusive_user";
+        $func_array["function"]["name"] = "report_abusive_pets_post";
         $func_array["function"]["single_keys"] = $this->single_keys;
 
         $this->wsresponse->setResponseStatus(200);
@@ -262,7 +271,7 @@ class Report_abusive_user extends Cit_Controller
         $output_array["settings"]["fields"] = $output_fields;
         $output_array["data"] = $input_params;
 
-        $func_array["function"]["name"] = "report_abusive_user";
+        $func_array["function"]["name"] = "report_abusive_pets_post";
         $func_array["function"]["single_keys"] = $this->single_keys;
 
         $this->wsresponse->setResponseStatus(200);

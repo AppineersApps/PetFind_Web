@@ -509,6 +509,41 @@ $config["delete_api_log"] = array(
     )
 );
 
+//  Busive report user API 
+$config["report_abusive_user"] = array(
+    "title" => "report_abusive_user",
+    "folder" => "basic_appineers_master",
+    "method" => "GET_POST",
+    "params" => array(
+        "user_id",
+        "report_on",
+        "message"
+    ),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+
+// Abusive report for missing pet API
+$config["report_abusive_for_missing_post"] = array(
+    "title" => "report_abusive_for_missing_post",
+    "folder" => "basic_appineers_master",
+    "method" => "GET_POST",
+    "params" => array(
+        "user_id",
+        "user_access_token",
+        "missing_pets_id",
+        "message"
+    ),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+
 //  Missing Pet Module Api
 $config["missing_pet"] = array(
     "title" => "missing_pet",

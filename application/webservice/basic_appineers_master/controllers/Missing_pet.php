@@ -206,19 +206,18 @@ class Missing_pet extends Cit_Controller
                 if('pet_list'==$request_arr['page_code'])
                 {
                     $output_response =  $this->get_missing_pets($request_arr);
-                     echo'<pre>';print_r($request_arr);exit;
 
                 }
                 else
                 {
-                    echo'<pre>';print_r($request_arr);exit;
+                    $output_response =  $this->get_missing_pets($request_arr);
                 }
-                $output_response =  $this->search_item_serial_number($request_arr);
+            
             }
             else
             {
                  
-               $output_response =  $this->get_item($request_arr);
+               $output_response =  $this->get_missing_pets($request_arr);
             }
 
             return  $output_response;
@@ -1362,76 +1361,119 @@ class Missing_pet extends Cit_Controller
      * @param array $input_params input_params array to process loop flow.
      * @return array $responce_arr returns responce array of api.
      */
-    public function get_item_finish_success($input_params = array())
+    public function get_missing_pet_finish_success($input_params = array())
     {
-       
-        $setting_fields = array(
+        if($input_params['page_code']=='pet_list' || $input_params['page_code']=='my_pet_list')
+        {
+            $setting_fields = array(
             "success" => "1",
-            "message" => "get_item_finish_success"
+            "message" => "Fetched Missing pet list successfully"
+             );
+        }
+        else
+        {
+            $setting_fields = array(
+            "success" => "1",
+            "message" => "Fetch Missing Pet Information Successfully"
         );
+        }
+       
+        
        
         $output_fields = array(
-            "item_id",
-            "item_description",
-            "item_name",
-            "item_status",
-            "item_report_status",
-            "item_serial_number",
-            "store_name",
-            "item_purchase_street_address",
-            "item_purchase_date",
-            "item_purchase_city",
-            "item_purchase_state",
-            "item_purchase_zip_code",
-            "item_lost_date",
-            "item_lost_street_address",
-            "item_lost_state",
-            "item_lost_city",
-            "item_lost_zip_code",
-            "item_lost_latitude",
-            "item_lost_longitude",
-            "item_found_date",
-            "item_found_street_address",
-            "item_found_state",
-            "item_found_city",
-            "item_found_zip_code",
-            "item_found_latitude",
-            "item_found_longitude",
-            "item_store_name",
+             "missing_pet_id",
+            "user_id",
+            "dog_name",
+            "date_of_birth",
+            "last_seen_date",
+            "last_seen_street",
+            "last_seen_city",
+            "last_seen_state",
+            "last_seen_zip_code",
+            "last_seen_latitude",
+            "last_seen_longitude",
+            "hair_color",
+            "eye_color",
+            "height",
+            "weight",
+            "gender",
+            "breed",
+            "identity_mark",
+            "body_type",
+            "dog_details",
+            "pet_status",
+            "found_user_id",
+            "found_user_first_name",
+            "found_user_last_name",
+            "pet_found_street_address",
+            "pet_found_city",
+            "pet_found_state",
+            "pet_found_latitude",
+            "pet_found_longitude",
+            "pet_found_date",
+            "user_first_name",
+            "user_last_name",
+            "user_apt_suit",
+            "user_address",
+            "user_city",
+            "user_state",
+            "user_zip_code",
+            "user_profile_image",
+            "user_lattitude",
+            "user_longitude",
+            "total_tags",
+            "total_comments",
+            "found_user_first_name",
+            "found_user_last_name",
             "images"
 
         );
-        $output_keys = array(
-            'get_all_items',
+         $output_keys = array(
+            'get_all_missing_pets',
         );
         $ouput_aliases = array(
-           "item_id" => "item_id",
-            "item_description" => "item_description",
-            "item_name" => "item_name",
-            "item_status" => "item_status",
-            "item_report_status" => "item_report_status",
-            "item_serial_number" => "item_serial_number",
-            "store_name" => "store_name",
-            "item_purchase_street_address" => "item_purchase_street_address",
-            "item_purchase_date" => "item_purchase_date",
-            "item_purchase_city" => "item_purchase_city",
-            "item_purchase_state" => "item_purchase_state",
-            "item_purchase_zip_code" => "item_purchase_zipcode",
-            "item_lost_date" => "item_lost_date",
-            "item_lost_street_address" => "item_lost_street_address",
-            "item_lost_state" => "item_lost_state",
-            "item_lost_city" => "item_lost_city",
-            "item_lost_zip" => "item_lost_zip",
-            "item_lost_latitude" => "item_lost_latitude",
-            "item_lost_longitude" =>"item_lost_longitude",
-            "item_found_date" => "item_found_date",
-            "item_found_street_address" => "item_found_street_address",
-            "item_found_state" => "item_found_state",
-            "item_found_city" => "item_found_city",
-            "item_found_zip_code" => "item_found_zip_code",
-            "item_found_latitude" => "item_found_latitude",
-            "item_found_longitude" => "item_found_longitude",
-            "item_store_name" => "item_store_name"
+            "missing_pet_id" => "missing_pet_id",
+            "user_id" => "user_id",
+            "dog_name" => "dog_name",
+            "date_of_birth" => "date_of_birth",
+            "last_seen_date" => "last_seen_date",
+            "last_seen_street" => "last_seen_street",
+            "last_seen_city" =>"last_seen_city",
+            "last_seen_state" => "last_seen_state",
+            "last_seen_zip_code" => "last_seen_zip_code",
+            "last_seen_latitude" => "last_seen_latitude",
+            "last_seen_longitude" => "last_seen_longitude",
+            "hair_color" => "hair_color",
+            "eye_color" => "eye_color",
+            "height" => "height",
+            "weight" => "weight",
+            "gender" => "gender",
+            "breed" => "breed",
+            "identity_mark" => "identity_mark",
+            "body_type" => "body_type",
+            "dog_details" => "dog_details",
+            "pet_status" => "pet_status",
+            "found_user_id" => "found_user_id",
+            "pet_found_street_address" => "pet_found_street_address",
+            "pet_found_city" => "pet_found_city",
+            "pet_found_state" => "pet_found_state",
+            "pet_found_latitude" => "pet_found_latitude",
+            "pet_found_longitude" => "pet_found_longitude",
+            "pet_found_date" => "pet_found_date",
+            "user_last_name" => "user_last_name",
+            "user_first_name" => "user_first_name",
+            "user_apt_suit" => "user_apt_suit",
+            "user_address" => "user_address",
+            "user_city" => "user_city",
+            "user_state" => "user_state.",
+            "user_zip_code" => "user_zip_code",
+            "user_profile_image" => "user_profile_image",
+            "user_lattitude" => "user_lattitude",
+            "user_longitude" => "user_longitude",
+            "total_tags" => "total_tags",
+            "total_comments" => "total_comments",
+            "found_user_first_name" => "found_user_first_name",
+            "found_user_last_name" => "found_user_last_name"
         );
         
         $output_array["settings"] = $setting_fields;
@@ -1439,7 +1481,7 @@ class Missing_pet extends Cit_Controller
         $output_array["data"] = $input_params;
         //print_r($input_params);exit;
 
-        $func_array["function"]["name"] = "add_missing_pet";
+        $func_array["function"]["name"] = "get_missing_pets";
         $func_array["function"]["output_keys"] = $output_keys;
         $func_array["function"]["output_alias"] = $ouput_aliases;
         $func_array["function"]["single_keys"] = $this->single_keys;
@@ -2261,9 +2303,11 @@ class Missing_pet extends Cit_Controller
      */
     public function rules_get_missing_pets($request_arr = array())
     {
-        
-       
-           $valid_arr = array(            
+
+
+        if($request_arr['page_code']=='pet_list'|| $request_arr['page_code']=='my_pet_list' )
+        {
+            $valid_arr = array(            
         
            "user_id" => array(
                     array(
@@ -2280,7 +2324,27 @@ class Missing_pet extends Cit_Controller
                 )
             )
             );
-
+        }
+        else
+        {
+            $valid_arr = array(            
+        
+           "user_id" => array(
+                    array(
+                        "rule" => "number",
+                        "value" => true,
+                        "message" => "user_id_number"
+                    )
+                ),
+            "missing_pet_id" => array(
+                array(
+                    "rule" => "required",
+                    "value" => true,
+                    "message" => "missing_pet_id_required"
+                )
+            )
+            );
+        }
         
         $valid_res = $this->wsresponse->validateInputParams($valid_arr, $request_arr, "get_missing_pets");
 
@@ -2317,19 +2381,19 @@ class Missing_pet extends Cit_Controller
             $input_params = $validation_res['input_params'];
             $output_array = $func_array = array();
             $input_params = $this->get_all_missing_pets($input_params);
-             print_r($input_params);exit;
+            
             $condition_res = $this->is_posted($input_params);
             if ($condition_res["success"])
             {
                 
-                $output_response = $this->get_item_finish_success($input_params);
+                $output_response = $this->get_missing_pet_finish_success($input_params);
                 return $output_response;
             }
 
             else
             {
  
-                $output_response = $this->get_item_finish_success_1($input_params);
+                $output_response = $this->get_missing_pet_finish_success_1($input_params);
                 return $output_response;
             }
         }
@@ -2361,7 +2425,7 @@ class Missing_pet extends Cit_Controller
 
             $this->block_result = $this->missing_pet_model->get_missing_pet_details($arrResult);
 
-            echo'<pre>';print_r($this->block_result);echo'<pre>';exit;
+            // echo'<pre>';print_r($this->block_result);echo'<pre>';exit;
             if (!$this->block_result["success"])
             {
                 throw new Exception("No records found.");
@@ -2383,13 +2447,14 @@ class Missing_pet extends Cit_Controller
                             {
                                 $data = $data_arr["image_".$i];
                                 $image_arr = array();
+                                $aws_folder_name = $this->config->item("AWS_FOLDER_NAME");
                                 $image_arr["image_name"] = $data;
                                 $image_arr["ext"] = implode(",", $this->config->item("IMAGE_EXTENSION_ARR"));
-                                $p_key = ($data_arr["item_id"] != "") ? $data_arr["item_id"] : $input_params["item_id"];
+                                $p_key = ($data_arr["missing_pet_id"] != "") ? $data_arr["missing_pet_id"] : $input_params["missing_pet_id"];
                                 $image_arr["pk"] = $p_key;
                                 $image_arr["color"] = "FFFFFF";
                                 $image_arr["no_img"] = FALSE;
-                                $image_arr["path"] = "serialize_it/item_image";
+                                $image_arr["path"] =$aws_folder_name. "/missing_pet_image";
                                 $data = $this->general->get_image_aws($image_arr);
                                 array_push($selected, $data);
                                 if(false == empty($selected)){
@@ -2416,7 +2481,7 @@ class Missing_pet extends Cit_Controller
             $success = 0;
             $this->block_result["data"] = array();
         }
-        $input_params["get_all_items"] = $this->block_result["data"];
+        $input_params["get_all_missing_pets"] = $this->block_result["data"];
         
         $input_params = $this->wsresponse->assignSingleRecord($input_params, $this->block_result["data"]);
        return $input_params;

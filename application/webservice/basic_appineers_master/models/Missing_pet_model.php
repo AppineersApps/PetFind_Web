@@ -266,15 +266,32 @@ class Missing_pet_model extends CI_Model
             $this->db->select("i.vImageId_3 AS image_3");
             $this->db->select("i.vImageId_4 AS image_4");
             $this->db->select("i.vImageId_5 AS image_5");
-            $this->db->select("u.vLastName AS owner_last_name");
-            $this->db->select("u.vFirstName AS owner_first_name");
-            $this->db->select("u.vAptSuite AS owner_apt_suit");
-            $this->db->select("u.tAddress AS owner_apt_suit");
+            $this->db->select("u.vLastName AS user_last_name");
+            $this->db->select("u.vFirstName AS user_first_name");
+            $this->db->select("u.vAptSuite AS user_apt_suit");
+            $this->db->select("u.tAddress AS user_address");
+            $this->db->select("u.vCity AS user_city");
+            $this->db->select("u.vStateName AS user_state");
+            $this->db->select("u.vZipCode AS user_zip_code");
+            $this->db->select("u.vProfileImage AS user_profile_image");
+            $this->db->select("u.dLatitude AS user_lattitude");
+            $this->db->select("u.dLongitude AS user_longitude");
+            $this->db->select("count(t.iTagId) AS total_tags");
+            $this->db->select("count(c.iCommentId) AS total_comments");
             $this->db->join("users as u","i.iUserId = u.iUserId", "left");
+            $this->db->join("tag_people as t","i.iMissingPetId = t.iMissingPetId", "left");
+            $this->db->join("comments as c","i.iMissingPetId = c.iMissingPetId", "left");
 
             $strWhere = "ePostStatus ='Active'";
 
-            if(false == empty($arrResult['user_id']))
+            if(false == empty($arrResult['user_id']) && $arrResult['page_code']=='pet_list')
+            {
+                // $strWhere.= "AND i.iUserId ='".$arrResult['user_id']."'";
+                $strWhere.= "AND i.ePetStatus = 'missing'";
+               
+            } 
+
+            if(false == empty($arrResult['user_id']) && $arrResult['page_code']=='my_pet_list')
             {
                 $strWhere.= "AND i.iUserId ='".$arrResult['user_id']."'";
                
@@ -291,16 +308,61 @@ class Missing_pet_model extends CI_Model
             }
             if(false == empty($arrResult['missing_pet_id']))
             {
-                $strWhere.= " AND iMissingPetId = '".$arrResult['missing_pet_id']."'";
+                $strWhere.= " AND i.iMissingPetId = '".$arrResult['missing_pet_id']."'";
                 
             }
              $this->db->where($strWhere);
+             $this->db->group_by("i.iMissingPetId");
+             $this->db->order_by("i.iMissingPetId",'desc');
 
             $result_obj = $this->db->get();
-
-            // echo $this->db->last_query();exit;
             
             $result_arr = is_object($result_obj) ? $result_obj->result_array() : array();
+//  here we recreate array for fetching user profile image from aws and add it to final array
+            $result_arr = array_map(function (array $arr) {
+
+                
+
+                if($arr["found_user_id"]!=null)
+                {
+                    $this->db->select("u.vFirstName AS found_user_first_name");
+                    $this->db->select("u.vLastName AS found_user_last_name");
+                    $this->db->from("users AS u");
+                    $this->db->join("missing_pets as i","u.iUserId = i.vFoundUser", "left");
+                    $this->db->where("i.iMissingPetId='".$arr['missing_pet_id']."'");
+                    $result_found_arr = $this->db->get();
+                    $result_found = is_object($result_found_arr) ? $result_found_arr->result_array() : array();
+
+                    $found_user_first_name=$result_found[0]['found_user_first_name'];
+                    $found_user_last_name=$result_found[0]['found_user_last_name'];
+
+                     
+                }
+                else
+                {
+                    $found_user_first_name='';
+                    $found_user_last_name='';
+                }
+
+                $data_1 = $arr["user_profile_image"];
+                $image_arr = array();
+                $aws_folder_name = $this->config->item("AWS_FOLDER_NAME");
+                $image_arr["image_name"] = $data_1;
+                $image_arr["ext"] = implode(",", $this->config->item("IMAGE_EXTENSION_ARR"));
+                $p_key = ($arr["user_id"] != "") ? $arr["user_id"] : $arr["user_id"];
+                    $image_arr["pk"] = $p_key;
+                $image_arr["color"] = "FFFFFF";
+                $image_arr["no_img"] = false;
+                $image_arr["path"] =$aws_folder_name. "/user_profile";
+                $data_1 = $this->general->get_image_aws($image_arr);
+                $arr['user_profile_image'] = $data_1;
+                $arr['found_user_first_name'] = $found_user_first_name;
+                $arr['found_user_last_name'] = $found_user_last_name;
+
+                return $arr;
+            }, $result_arr);
+
+
             if (!is_array($result_arr) || count($result_arr) == 0)
             {
                 throw new Exception('No records found.');
