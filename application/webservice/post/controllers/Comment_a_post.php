@@ -215,23 +215,7 @@ class Comment_a_post extends Cit_Controller
                 throw new Exception("No records found.");
             }
             $result_arr = $this->block_result["data"];
-            // if (is_array($result_arr) && count($result_arr) > 0)
-            // {
-            //     $i = 0;
-            //     foreach ($result_arr as $data_key => $data_arr)
-            //     {
-
-            //         $data = $data_arr["p_title"];
-            //         if (method_exists($this, "get_limit_characters"))
-            //         {
-            //             $data = $this->get_limit_characters($data, $result_arr[$data_key], $i, $input_params);
-            //         }
-            //         $result_arr[$data_key]["p_title"] = $data;
-
-            //         $i++;
-            //     }
-            //     $this->block_result["data"] = $result_arr;
-            // }
+            
         }
         catch(Exception $e)
         {
@@ -294,17 +278,11 @@ class Comment_a_post extends Cit_Controller
         {
 
             $params_arr = array();
-            // echo '<pre>';
-            // print_r($array);
-            // exit();
+
             if (isset($input_params["missing_pets_id"]))
             {
                 $params_arr["missing_pets_id"] = $input_params["missing_pets_id"];
             }
-            // if (isset($input_params["comment_id"]))
-            // {
-            //     $params_arr["comment_id"] = $input_params["comment_id"];
-            // }
             if (isset($input_params["comments"]))
             {
                 $params_arr["comments"] = $input_params["comments"];
@@ -378,42 +356,15 @@ class Comment_a_post extends Cit_Controller
         {
 
             $insert_id = isset($input_params["insert_id"]) ? $input_params["insert_id"] : "";
-            //echo $comment_id;exit();
+            
             $this->block_result = $this->comments_model->get_comments($insert_id);
-            //echo $this->block_result;exit();
+            
             if (!$this->block_result["success"])
             {
                 throw new Exception("No records found.");
             }
             $result_arr = $this->block_result["data"];
-            // if (is_array($result_arr) && count($result_arr) > 0)
-            // {
-            //     $i = 0;
-            //     foreach ($result_arr as $data_key => $data_arr)
-            //     {
-
-            //         $data = $data_arr["c_added_at"];
-            //         if (method_exists($this->general, "prepareDateFormat"))
-            //         {
-            //             $data = $this->general->prepareDateFormat($data, $result_arr[$data_key], $i, $input_params);
-            //         }
-            //         $result_arr[$data_key]["c_added_at"] = $data;
-
-            //         $data = $data_arr["u_profile_image"];
-            //         $image_arr = array();
-            //         $image_arr["image_name"] = $data;
-            //         $image_arr["ext"] = implode(",", $this->config->item("IMAGE_EXTENSION_ARR"));
-            //         $image_arr["no_img"] = FALSE;
-            //         $dest_path = "user_images";
-            //         $image_arr["path"] = $this->general->getImageNestedFolders($dest_path);
-            //         $data = $this->general->get_image($image_arr);
-
-            //         $result_arr[$data_key]["u_profile_image"] = $data;
-
-            //         $i++;
-            //     }
-            //     $this->block_result["data"] = $result_arr;
-            // }
+            
         }
         catch(Exception $e)
         {
@@ -446,10 +397,7 @@ class Comment_a_post extends Cit_Controller
             'c_added_at',
             'c_comment_id',
             'c_comment_from'
-            //'p_post_id_1',
-            //'u_missing_pets_id_2',
-            //'u_first_name_1',
-            //'u_profile_image',
+            
         );
         $output_keys = array(
             'get_comments',
@@ -509,60 +457,7 @@ class Comment_a_post extends Cit_Controller
         return $responce_arr;
     }
 
-    /**
-     * get_commented_user_details method is used to process query block.
-     * @created Chetan Dvs | 13.09.2019
-     * @modified Chetan Dvs | 18.09.2019
-     * @param array $input_params input_params array to process loop flow.
-     * @return array $input_params returns modfied input_params array.
-     */
-    // public function get_commented_user_details($input_params = array())
-    // {
-
-    //     $this->block_result = array();
-    //     try
-    //     {
-
-    //         $user_id = isset($input_params["user_id"]) ? $input_params["user_id"] : "";
-    //         $this->block_result = $this->users_model->get_commented_user_details($user_id);
-    //         if (!$this->block_result["success"])
-    //         {
-    //             throw new Exception("No records found.");
-    //         }
-    //         $result_arr = $this->block_result["data"];
-    //         if (is_array($result_arr) && count($result_arr) > 0)
-    //         {
-    //             $i = 0;
-    //             foreach ($result_arr as $data_key => $data_arr)
-    //             {
-
-    //                 $data = $data_arr["u_profile_image_1"];
-    //                 $image_arr = array();
-    //                 $image_arr["image_name"] = $data;
-    //                 $image_arr["ext"] = implode(",", $this->config->item("IMAGE_EXTENSION_ARR"));
-    //                 $image_arr["no_img"] = FALSE;
-    //                 $dest_path = "user_images";
-    //                 $image_arr["path"] = $this->general->getImageNestedFolders($dest_path);
-    //                 $data = $this->general->get_image($image_arr);
-
-    //                 $result_arr[$data_key]["u_profile_image_1"] = $data;
-
-    //                 $i++;
-    //             }
-    //             $this->block_result["data"] = $result_arr;
-    //         }
-    //     }
-    //     catch(Exception $e)
-    //     {
-    //         $success = 0;
-    //         $this->block_result["data"] = array();
-    //     }
-    //     $input_params["get_commented_user_details"] = $this->block_result["data"];
-    //     $input_params = $this->wsresponse->assignSingleRecord($input_params, $this->block_result["data"]);
-
-    //     return $input_params;
-    // }
-
+    
     /**
      * prepare_message method is used to process custom function.
      * @created Chetan Dvs | 13.09.2019
@@ -589,145 +484,7 @@ class Comment_a_post extends Cit_Controller
         return $input_params;
     }
 
-    /**
-     * insert_comments_v1 method is used to process query block.
-     * @created Chetan Dvs | 13.09.2019
-     * @modified Chetan Dvs | 16.09.2019
-     * @param array $input_params input_params array to process loop flow.
-     * @return array $input_params returns modfied input_params array.
-     */
-    // public function insert_comments_v1($input_params = array())
-    // {
-
-    //     $this->block_result = array();
-    //     try
-    //     {
-
-    //         $params_arr = array();
-    //         if (isset($input_params["user_id"]))
-    //         {
-    //             $params_arr["user_id"] = $input_params["user_id"];
-    //         }
-    //         if (isset($input_params["post_id"]))
-    //         {
-    //             $params_arr["post_id"] = $input_params["post_id"];
-    //         }
-    //         if (isset($input_params["comments"]))
-    //         {
-    //             $params_arr["comments"] = $input_params["comments"];
-    //         }
-    //         $params_arr["_dtaddedat"] = "NOW()";
-    //         $params_arr["_estatus"] = "Active";
-    //         $this->block_result = $this->comments_model->insert_comments_v1($params_arr);
-    //     }
-    //     catch(Exception $e)
-    //     {
-    //         $success = 0;
-    //         $this->block_result["data"] = array();
-    //     }
-    //     $input_params["insert_comments_v1"] = $this->block_result["data"];
-    //     $input_params = $this->wsresponse->assignSingleRecord($input_params, $this->block_result["data"]);
-
-    //     return $input_params;
-    // }
-
-    /**
-     * insert_notification method is used to process query block.
-     * @created Chetan Dvs | 13.09.2019
-     * @modified Chetan Dvs | 18.09.2019
-     * @param array $input_params input_params array to process loop flow.
-     * @return array $input_params returns modfied input_params array.
-     */
-    // public function insert_notification($input_params = array())
-    // {
-
-    //     $this->block_result = array();
-    //     try
-    //     {
-
-    //         $params_arr = array();
-    //         if (isset($input_params["message"]))
-    //         {
-    //             $params_arr["message"] = $input_params["message"];
-    //         }
-    //         if (isset($input_params["p_user_id"]))
-    //         {
-    //             $params_arr["p_user_id"] = $input_params["p_user_id"];
-    //         }
-    //         $params_arr["_dtcreatedat"] = "NOW()";
-    //         $this->block_result = $this->notifications_ws_model->insert_notification($params_arr);
-    //     }
-    //     catch(Exception $e)
-    //     {
-    //         $success = 0;
-    //         $this->block_result["data"] = array();
-    //     }
-    //     $input_params["insert_notification"] = $this->block_result["data"];
-    //     $input_params = $this->wsresponse->assignSingleRecord($input_params, $this->block_result["data"]);
-
-    //     return $input_params;
-    // }
-
-    /**
-     * get_comments_v1 method is used to process query block.
-     * @created CIT Dev Team
-     * @modified Chetan Dvs | 20.09.2019
-     * @param array $input_params input_params array to process loop flow.
-     * @return array $input_params returns modfied input_params array.
-     */
-    // public function get_comments_v1($input_params = array())
-    // {
-
-    //     $this->block_result = array();
-    //     try
-    //     {
-
-    //         $insert_id1 = isset($input_params["insert_id1"]) ? $input_params["insert_id1"] : "";
-    //         $this->block_result = $this->comments_model->get_comments_v1($insert_id1);
-    //         if (!$this->block_result["success"])
-    //         {
-    //             throw new Exception("No records found.");
-    //         }
-    //         $result_arr = $this->block_result["data"];
-    //         if (is_array($result_arr) && count($result_arr) > 0)
-    //         {
-    //             $i = 0;
-    //             foreach ($result_arr as $data_key => $data_arr)
-    //             {
-
-    //                 $data = $data_arr["c_added_at_v1"];
-    //                 if (method_exists($this->general, "prepareDateFormat"))
-    //                 {
-    //                     $data = $this->general->prepareDateFormat($data, $result_arr[$data_key], $i, $input_params);
-    //                 }
-    //                 $result_arr[$data_key]["c_added_at_v1"] = $data;
-
-    //                 $data = $data_arr["u_profile_image_v1"];
-    //                 $image_arr = array();
-    //                 $image_arr["image_name"] = $data;
-    //                 $image_arr["ext"] = implode(",", $this->config->item("IMAGE_EXTENSION_ARR"));
-    //                 $image_arr["no_img"] = FALSE;
-    //                 $dest_path = "user_images";
-    //                 $image_arr["path"] = $this->general->getImageNestedFolders($dest_path);
-    //                 $data = $this->general->get_image($image_arr);
-
-    //                 $result_arr[$data_key]["u_profile_image_v1"] = $data;
-
-    //                 $i++;
-    //             }
-    //             $this->block_result["data"] = $result_arr;
-    //         }
-    //     }
-    //     catch(Exception $e)
-    //     {
-    //         $success = 0;
-    //         $this->block_result["data"] = array();
-    //     }
-    //     $input_params["get_comments_v1"] = $this->block_result["data"];
-    //     $input_params = $this->wsresponse->assignSingleRecord($input_params, $this->block_result["data"]);
-
-    //     return $input_params;
-    // }
+    
 
     /**
      * condition method is used to process conditions.
@@ -853,102 +610,6 @@ class Comment_a_post extends Cit_Controller
      * @param array $input_params input_params array to process loop flow.
      * @return array $responce_arr returns responce array of api.
      */
-    // public function posts_finish_success_1($input_params = array())
-    // {
-
-
-
-    //     $setting_fields = array(
-    //         "success" => "1",
-    //         "message" => "posts_finish_success_1",
-    //     );
-    //     $output_fields = array(
-    //         'c_comment_v1',
-    //         'c_added_at_v1',
-    //         'p_post_id_1_v1',
-    //         'u_user_id_2_v1',
-    //         'u_first_name_1_v1',
-    //         'u_profile_image_v1',
-    //     );
-    //     $output_keys = array(
-    //         'get_comments_v1',
-    //     );
-    //     $ouput_aliases = array(
-    //         "get_comments_v1" => "get_all_comments",
-    //         "c_comment_v1" => "comments",
-    //         "c_added_at_v1" => "added_at",
-    //         "p_post_id_1_v1" => "post_id",
-    //         "u_user_id_2_v1" => "user_id",
-    //         "u_first_name_1_v1" => "commented_by",
-    //         "u_profile_image_v1" => "profile_image",
-    //     );
-
-    //     $output_array["settings"] = $setting_fields;
-    //     $output_array["settings"]["fields"] = $output_fields;
-    //     $output_array["data"] = $input_params;
-
-    //     $func_array["function"]["name"] = "comment_a_post";
-    //     $func_array["function"]["output_keys"] = $output_keys;
-    //     $func_array["function"]["output_alias"] = $ouput_aliases;
-    //     $func_array["function"]["single_keys"] = $this->single_keys;
-    //     $func_array["function"]["multiple_keys"] = $this->multiple_keys;
-
-    //     $this->wsresponse->setResponseStatus(200);
-
-    //     $responce_arr = $this->wsresponse->outputResponse($output_array, $func_array);
-
-    //     return $responce_arr;
-    // }
-
-    // /**
-    //  * posts_finish_success method is used to process finish flow.
-    //  * @created Chetan Dvs | 13.09.2019
-     // * @modified saikrishna bellamkonda | 18.09.2019
-     // * @param array $input_params input_params array to process loop flow.
-     // * @return array $responce_arr returns responce array of api.
-     // */
-    // public function posts_finish_success($input_params = array())
-    // {
-
-    //     $setting_fields = array(
-    //         "success" => "1",
-    //         "message" => "posts_finish_success",
-    //     );
-    //     $output_fields = array(
-    //         'c_comment_v1',
-    //         'c_added_at_v1',
-    //         'p_post_id_1_v1',
-    //         'u_user_id_2_v1',
-    //         'u_first_name_1_v1',
-    //         'u_profile_image_v1',
-    //     );
-    //     $output_keys = array(
-    //         'get_comments_v1',
-    //     );
-    //     $ouput_aliases = array(
-    //         "get_comments_v1" => "get_all_comments",
-    //         "c_comment_v1" => "comments",
-    //         "c_added_at_v1" => "added_at",
-    //         "p_post_id_1_v1" => "post_id",
-    //         "u_user_id_2_v1" => "user_id",
-    //         "u_first_name_1_v1" => "commented_by",
-    //         "u_profile_image_v1" => "profile_image",
-    //     );
-
-    //     $output_array["settings"] = $setting_fields;
-    //     $output_array["settings"]["fields"] = $output_fields;
-    //     $output_array["data"] = $input_params;
-
-    //     $func_array["function"]["name"] = "comment_a_post";
-    //     $func_array["function"]["output_keys"] = $output_keys;
-    //     $func_array["function"]["output_alias"] = $ouput_aliases;
-    //     $func_array["function"]["single_keys"] = $this->single_keys;
-    //     $func_array["function"]["multiple_keys"] = $this->multiple_keys;
-
-    //     $this->wsresponse->setResponseStatus(200);
-
-    //     $responce_arr = $this->wsresponse->outputResponse($output_array, $func_array);
-
-    //     return $responce_arr;
-    // }
+    
+    
 }

@@ -544,8 +544,7 @@ $config["comment_a_post"] = array(
     "method" => "GET_POST",
     "params" => array(
         "missing_pets_id",
-        "comments",
-        "comments_from"
+        "comments"
     ),
     "token" => "",
     "payload" => array(

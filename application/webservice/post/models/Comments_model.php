@@ -184,55 +184,6 @@ class Comments_model extends CI_Model
     }
     
     
-    /**
-     * insert_comments_v1 method is used to execute database queries for Comment A post API.
-     * @created Chetan Dvs | 13.09.2019
-     * @modified Chetan Dvs | 16.09.2019
-     * @param array $params_arr params_arr array to process query block.
-     * @return array $return_arr returns response of query block.
-     */
-    // public function insert_comments_v1($params_arr = array())
-    // {
-    //     try {
-    //         $result_arr = array();
-                        
-    //         if(!is_array($params_arr) || count($params_arr) == 0){
-    //             throw new Exception("Insert data not found.");
-    //         }
-
-            
-    //         if(isset($params_arr["user_id"])){
-    //             $this->db->set("iUsersId", $params_arr["user_id"]);
-    //         }
-    //         if(isset($params_arr["post_id"])){
-    //             $this->db->set("iPostId", $params_arr["post_id"]);
-    //         }
-    //         if(isset($params_arr["comments"])){
-    //             $this->db->set("tComment", $params_arr["comments"]);
-    //         }
-    //         $this->db->set($this->db->protect("dtAddedAt"), $params_arr["_dtaddedat"], FALSE);
-    //         $this->db->set("eStatus", $params_arr["_estatus"]);
-    //         $this->db->insert("comments");
-    //         $insert_id = $this->db->insert_id();
-    //         if(!$insert_id){
-    //              throw new Exception("Failure in insertion.");
-    //         }
-    //         $result_param = "insert_id1";
-    //         $result_arr[0][$result_param] = $insert_id;
-    //         $success = 1;
-            
-    //     } catch (Exception $e) {
-    //         $success = 0;
-    //         $message = $e->getMessage();
-    //     }
-        
-    //     $this->db->_reset_all();
-    //     //echo $this->db->last_query();
-    //     $return_arr["success"] = $success;
-    //     $return_arr["message"] = $message;
-    //     $return_arr["data"] = $result_arr;
-    //     return $return_arr;
-    // }
     
     
     /**

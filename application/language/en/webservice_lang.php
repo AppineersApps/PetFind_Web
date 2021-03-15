@@ -294,4 +294,9 @@ $lang["report_abusive_user"]["user_id_required"] = "User Id is required." ;
 
  $lang["report_abusive_pets_post"]["user_id_required"] = "User ID is required" ;    
     $lang["report_abusive_pets_post"]["abusive_reports_finish_success"] = "#message# missing reported" ;    
-    $lang["report_abusive_pets_post"]["abusive_reports_finish_success_1"] = "#message# not reported" ;    
+    $lang["report_abusive_pets_post"]["abusive_reports_finish_success_1"] = "#message# not reported" ;   
+
+$lang["comment_a_post"]["missing_pets_id_required"] = "Missing Pet ID is required" ;    
+    $lang["comment_a_post"]["comments_required"] = "Comment is required field" ;    
+    $lang["comment_a_post"]["comments_finish_success_1"] = "Comments added successfully" ;   
+    $lang["comment_listing"]["comments_finish_success"] = "Comments fetched  successfully" ;   
