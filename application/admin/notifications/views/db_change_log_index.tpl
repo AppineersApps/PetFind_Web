@@ -19,9 +19,9 @@
                                     </div>
                                     <div class="inner-content">
                                         <h3 class="title">{%mdc_date_added%}</h3>
-                                        <div class="pk">#{%mdc_primary_key%}</div>
+                                      
                                         <p class="description">
-                                            {{description}} -- {%mdc_field_data%}
+                                            {%mdc_entity_name%} -- {%mdc_field_data%}
                                         </p>
                                     </div>
                                 </div>
@@ -91,7 +91,7 @@
     el_grid_settings['status_lang_arr'] = $.parseJSON('<%$status_label|@json_encode%>');
                 
     el_grid_settings['hide_add_btn'] = '';
-    el_grid_settings['hide_del_btn'] = '';
+    el_grid_settings['hide_del_btn'] = '1';
     el_grid_settings['hide_status_btn'] = '';
     el_grid_settings['hide_export_btn'] = '1';
     el_grid_settings['hide_columns_btn'] = 'No';
@@ -156,10 +156,6 @@
     {
         "name": "mdc_operation",
         "label": "<%$list_config['mdc_operation']['label_lang']%>"
-    },
-    {
-        "name": "mdc_primary_key",
-        "label": "<%$list_config['mdc_primary_key']['label_lang']%>"
     },
     {
         "name": "mdc_field_data",
@@ -277,46 +273,6 @@
         "default_value": "<%$list_config['mdc_operation']['default']%>",
         "filterSopt": "in",
         "stype": "select"
-    },
-    {
-        "name": "mdc_primary_key",
-        "index": "mdc_primary_key",
-        "label": "<%$list_config['mdc_primary_key']['label_lang']%>",
-        "labelClass": "header-align-center",
-        "resizable": true,
-        "width": "<%$list_config['mdc_primary_key']['width']%>",
-        "search": <%if $list_config['mdc_primary_key']['search'] eq 'No' %>false<%else%>true<%/if%>,
-        "export": <%if $list_config['mdc_primary_key']['export'] eq 'No' %>false<%else%>true<%/if%>,
-        "sortable": <%if $list_config['mdc_primary_key']['sortable'] eq 'No' %>false<%else%>true<%/if%>,
-        "hidden": <%if $list_config['mdc_primary_key']['hidden'] eq 'Yes' %>true<%else%>false<%/if%>,
-        "hideme": <%if $list_config['mdc_primary_key']['hideme'] eq 'Yes' %>true<%else%>false<%/if%>,
-        "addable": <%if $list_config['mdc_primary_key']['addable'] eq 'Yes' %>true<%else%>false<%/if%>,
-        "editable": <%if $list_config['mdc_primary_key']['editable'] eq 'Yes' %>true<%else%>false<%/if%>,
-        "align": "center",
-        "edittype": "text",
-        "editrules": {
-            "infoArr": []
-        },
-        "searchoptions": {
-            "attr": {
-                "aria-grid-id": el_tpl_settings.main_grid_id,
-                "aria-module-name": "db_change_log",
-                "aria-unique-name": "mdc_primary_key",
-                "autocomplete": "off"
-            },
-            "sopt": numSearchOpts,
-            "searchhidden": <%if $list_config['mdc_primary_key']['search'] eq 'Yes' %>true<%else%>false<%/if%>
-        },
-        "editoptions": {
-            "aria-grid-id": el_tpl_settings.main_grid_id,
-            "aria-module-name": "db_change_log",
-            "aria-unique-name": "mdc_primary_key",
-            "placeholder": "",
-            "class": "inline-edit-row "
-        },
-        "ctrl_type": "textbox",
-        "default_value": "<%$list_config['mdc_primary_key']['default']%>",
-        "filterSopt": "eq"
     },
     {
         "name": "mdc_field_data",

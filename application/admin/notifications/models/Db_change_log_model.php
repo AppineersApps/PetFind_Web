@@ -73,7 +73,6 @@ class Db_change_log_model extends CI_Model
         $this->grid_fields = array(
             "mdc_table_name",
             "mdc_operation",
-            "mdc_primary_key",
             "mdc_field_data",
             "mdc_source",
             "mdc_entity_name",
@@ -355,7 +354,7 @@ class Db_change_log_model extends CI_Model
             }
             $this->db->select("mdc.vTableName AS mdc_table_name");
             $this->db->select("mdc.eOperation AS mdc_operation");
-            $this->db->select("mdc.iPrimaryKey AS mdc_primary_key");
+            //$this->db->select("mdc.iPrimaryKey AS mdc_primary_key");
             $this->db->select("mdc.tFieldData AS mdc_field_data");
             $this->db->select("mdc.eSource AS mdc_source");
             $this->db->select("mdc.vEntityName AS mdc_entity_name");
@@ -369,7 +368,7 @@ class Db_change_log_model extends CI_Model
             $this->db->select("mdc.iDBChangelogId AS mdc_db_changelog_id");
             $this->db->select("mdc.vTableName AS mdc_table_name");
             $this->db->select("mdc.eOperation AS mdc_operation");
-            $this->db->select("mdc.iPrimaryKey AS mdc_primary_key");
+            //$this->db->select("mdc.iPrimaryKey AS mdc_primary_key");
             $this->db->select("mdc.tFieldData AS mdc_field_data");
             $this->db->select("mdc.eSource AS mdc_source");
             $this->db->select("mdc.iLoggedById AS mdc_logged_by_id");
@@ -504,7 +503,7 @@ class Db_change_log_model extends CI_Model
         }
         $this->db->select("mdc.vTableName AS mdc_table_name");
         $this->db->select("mdc.eOperation AS mdc_operation");
-        $this->db->select("mdc.iPrimaryKey AS mdc_primary_key");
+        //$this->db->select("mdc.iPrimaryKey AS mdc_primary_key");
         $this->db->select("mdc.tFieldData AS mdc_field_data");
         $this->db->select("mdc.eSource AS mdc_source");
         $this->db->select("mdc.vEntityName AS mdc_entity_name");
@@ -626,7 +625,7 @@ class Db_change_log_model extends CI_Model
         }
         $this->db->select("mdc.vTableName AS mdc_table_name");
         $this->db->select("mdc.eOperation AS mdc_operation");
-        $this->db->select("mdc.iPrimaryKey AS mdc_primary_key");
+        //$this->db->select("mdc.iPrimaryKey AS mdc_primary_key");
         $this->db->select("mdc.tFieldData AS mdc_field_data");
         $this->db->select("mdc.eSource AS mdc_source");
         $this->db->select("mdc.vEntityName AS mdc_entity_name");

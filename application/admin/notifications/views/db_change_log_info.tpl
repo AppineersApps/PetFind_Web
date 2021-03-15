@@ -15,8 +15,20 @@
             <div class="title">
                 <h4>
                     <span class="icon12 icomoon-icon-equalizer-2"></span>
-                    <span>Table :: <%$db_log['vTableName']%></span>
+                    <span>Table :: <%$db_log['vTableName']%> 
                 </h4>
+            </div>
+            <div class="box" style="padding-left:25px">
+                <h2>  
+                    <span>Title :: <%$db_log['vEntityName']%> </span>
+                </h2>
+                <h2>
+        
+                    <span> Performed By :: <%$db_log['vLoggedName']%> </span>
+                </h2>
+                <h2>
+                    <span> Operation :: <%$db_log['eOperation']%> </span>
+                </h2>
             </div>
             <div class="content">
                 <%if $db_log['eOperation'] eq 'Added' || $db_log['eOperation'] eq 'Deleted'%>
@@ -45,8 +57,7 @@
                         <tr>
                             <th width='5%'>#</th>
                             <th width='25%'>Field Name</th>
-                            <th width='30%'>Old Value</th>
-                            <th width='30%'>New Value</th>
+                            <th width='30%'>Value</th>
                         </tr>
                         </tr>
                     </thead>
@@ -55,8 +66,7 @@
                         <tr>
                             <td></td>
                             <td><%$k%></td>
-                            <td><%$v['oldValue']%></td>
-                            <td><%$v['newValue']%></td>
+                            <td><%$v%></td>
                         </tr>
                         <%/foreach%>
 
