@@ -70,6 +70,13 @@ class Report_abusive_user extends Cit_Controller
                     "value" => TRUE,
                     "message" => "report_on_required",
                 )
+            ),
+            "message" => array(
+                array(
+                    "rule" => "required",
+                    "value" => TRUE,
+                    "message" => "message_required",
+                )
             )
         );
         $valid_res = $this->wsresponse->validateInputParams($valid_arr, $request_arr, "report_abusive_user");
