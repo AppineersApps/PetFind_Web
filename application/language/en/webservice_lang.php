@@ -298,9 +298,13 @@ $lang["report_abusive_pets_post"]["user_id_required"] = "User ID is required" ;
 $lang["report_abusive_pets_post"]["missing_pets_id_required"] = "Missing Pet ID is required" ;
 $lang["report_abusive_pets_post"]["message_required"] = "Message is required" ;    
 $lang["report_abusive_pets_post"]["abusive_reports_finish_success"] = "#message# missing reported" ;    
-$lang["report_abusive_pets_post"]["abusive_reports_finish_success_1"] = "#message# not reported" ;    
+$lang["report_abusive_pets_post"]["abusive_reports_finish_success_1"] = "#message# not reported" ;   
 
-
+//  Comment API messages
+$lang["comment_a_post"]["missing_pets_id_required"] = "Missing Pet ID is required" ;    
+$lang["comment_a_post"]["comments_required"] = "Comment is required field" ;    
+$lang["comment_a_post"]["comments_finish_success_1"] = "Comment added successfully" ;   
+$lang["comment_listing"]["comments_finish_success"] = "Comments fetched  successfully" ; 
 
 //  Message for missing pet updated successfully
 $lang["update_missing_pet"]["get_update_finish_success"] = "Updated Missing pet Successfully" ;

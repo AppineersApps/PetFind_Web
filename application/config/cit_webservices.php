@@ -544,6 +544,44 @@ $config["report_abusive_for_missing_post"] = array(
 );
 
 
+// Comment API for missing pet post
+$config["comment_a_post"] = array(
+    "title" => "comment_a_post",
+    "folder" => "post",
+    "method" => "GET_POST",
+    "params" => array(
+        "missing_pets_id",
+        "comments"
+    ),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+$config["comment_listing"] = array(
+    "title" => "comment_listing",
+    "folder" => "post",
+    "method" => "GET_POST",
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+// Created by Snehal Comment API for missing pet post
+$config["comments"] = array(
+    "title" => "comments",
+    "folder" => "post",
+    "method" => $_SERVER['REQUEST_METHOD'],
+    "params" => array(),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+
 //  Missing Pet Module Api
 $config["missing_pet"] = array(
     "title" => "missing_pet",
