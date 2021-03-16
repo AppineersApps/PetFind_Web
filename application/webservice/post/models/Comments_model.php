@@ -331,6 +331,11 @@ class Comments_model extends CI_Model
             $this->db->select("c.iCommentId AS c_comment_id");
             $this->db->select("concat_ws(' ' , use.vFirstName,use.vLastName) AS user_name");
             $this->db->select("use.vProfileImage AS user_profile_image");
+            $this->db->select("use.tAddress AS user_address");
+            $this->db->select("use.vCity AS user_city");
+            $this->db->select("use.vStateName AS user_state");
+            $this->db->select("use.dLatitude AS user_lattitude");
+            $this->db->select("use.dLongitude AS user_longitude");
 
             $settings_params['count'] = $total_records;
             
@@ -472,7 +477,7 @@ class Comments_model extends CI_Model
     }
 
 
-    
+
     
     
 }

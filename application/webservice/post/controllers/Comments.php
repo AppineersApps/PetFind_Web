@@ -859,6 +859,11 @@ class Comments extends Cit_Controller
             'c_missing_pets_id',
             'user_name',
             'user_profile_image',
+            'user_address',
+            'user_city',
+            'user_state',
+            'user_lattitude',
+            'user_longitude',
             'c_comment_id',
         );
         $output_keys = array(
@@ -870,6 +875,11 @@ class Comments extends Cit_Controller
             "c_missing_pets_id" => "missing_pets_id",
             "user_name" => "user_name",
             "user_profile_image" => "user_profile_image",
+            "user_address" => "user_address",
+            "user_city" => "user_city",
+            "user_state" => "user_state",
+            "user_lattitude" => "user_lattitude",
+            "user_longitude" => "user_longitude",
             "c_comment_id" => "comment_id",
         );
 
