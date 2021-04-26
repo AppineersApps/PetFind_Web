@@ -508,6 +508,183 @@ $config["delete_api_log"] = array(
     )
 );
 
+
+//  ABusive report user API 
+$config["report_abusive_user"] = array(
+    "title" => "report_abusive_user",
+    "folder" => "basic_appineers_master",
+    "method" => "GET_POST",
+    "params" => array(
+        "user_id",
+        "report_on",
+        "message"
+    ),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+
+// Abusive report for missing pet API
+$config["report_abusive_for_missing_post"] = array(
+    "title" => "report_abusive_for_missing_post",
+    "folder" => "basic_appineers_master",
+    "method" => "GET_POST",
+    "params" => array(
+        "user_id",
+        "user_access_token",
+        "missing_pets_id",
+        "message"
+    ),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+
+// Comment API for missing pet post
+$config["comment_a_post"] = array(
+    "title" => "comment_a_post",
+    "folder" => "post",
+    "method" => "GET_POST",
+    "params" => array(
+        "missing_pets_id",
+        "comments"
+    ),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+$config["comment_listing"] = array(
+    "title" => "comment_listing",
+    "folder" => "post",
+    "method" => "GET_POST",
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+// Created by Snehal Comment API for missing pet post
+$config["comments"] = array(
+    "title" => "comments",
+    "folder" => "post",
+    "method" => $_SERVER['REQUEST_METHOD'],
+    "params" => array(),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+
+
+//  Missing Pet Module Api (add,edit,delete post, get missing pet list,particular missing pet post details)
+$config["missing_pet"] = array(
+    "title" => "missing_pet",
+    "folder" => "basic_appineers_master",
+    "method" => $_SERVER['REQUEST_METHOD'],
+    "params" => array(),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+//  Search API (tag page search and home page search)
+$config["search"] = array(
+    "title" => "search",
+    "folder" => "basic_appineers_master",
+    "method" => $_SERVER['REQUEST_METHOD'],
+    "params" => array(),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+
+//  Api for tagged_people(tagged people list,untag people)
+$config["tagged_people"] = array(
+    "title" => "tagged_people", 
+    "folder" => "tagged_people",
+    "method" => $_SERVER['REQUEST_METHOD'],
+    "params" => array(),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+// Api for notification(notify user about pet is in near my area,notification list)
+$config["notification"] = array(
+    "title" => "Notification",
+    "folder" => "notification",
+    "method" => $_SERVER['REQUEST_METHOD'],
+    "params" => array(),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+// Api for Block user
+$config["block_user"] = array(
+    "title" => "block user",
+    "folder" => "block_user",
+    "method" => $_SERVER['REQUEST_METHOD'],
+    "params" => array(),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+// send sms/chat message 
+$config["send_message"] = array(
+    "title" => "Send Message",
+    "folder" => "chat",
+    "method" => $_SERVER['REQUEST_METHOD'],
+    "params" => array(),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+// send chat notification
+$config["send_chat_notification"] = array(
+    "title" => "Send Chat Notification",
+    "folder" => "chat",
+    "method" => "POST",
+    "params" => array(
+    ),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+
+// pet Image deletion
+$config["delete_image"] = array(
+    "title" => " Delete Image",
+    "folder" => "basic_appineers_master",
+    "method" => "delete",
+    "params" => array(
+        "image_id"
+    ),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+
 #####GENERATED_CONFIG_SETTINGS_END#####
 
 /* End of file cit_webservices.php */

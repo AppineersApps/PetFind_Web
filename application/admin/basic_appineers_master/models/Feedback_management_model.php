@@ -72,6 +72,7 @@ class Feedback_management_model extends CI_Model
         $this->physical_data_remove = "Yes";
         $this->grid_fields = array(
             "u_first_name",
+            "u_user_name",
             "uq_feedback",
             "uq_added_at",
             "uq_status",
@@ -133,6 +134,10 @@ class Feedback_management_model extends CI_Model
         $this->db->insert($this->table_name, $data);
         $insert_id = $this->db->insert_id();
         $this->insert_id = $insert_id;
+
+        if ($insert_id > 0) {
+            $this->general->dbChanageLog($this->table_name, $this->primary_key, $this->db->affected_rows(), $data, $where, $this->module_name, "Added");
+        }
         return $insert_id;
     }
 
@@ -207,6 +212,9 @@ class Feedback_management_model extends CI_Model
             }
             $res = $this->db->update($this->table_name, $data);
         }
+
+        $this->general->dbChanageLog($this->table_name, $this->primary_key, $this->db->affected_rows(), $data, $where, $this->module_name, "Modified");
+
         return $res;
     }
 
@@ -258,6 +266,7 @@ class Feedback_management_model extends CI_Model
                     }
                     $update_query = "UPDATE ".$this->db->protect($this->table_name)." AS ".$this->db->protect($this->table_alias)." ".$join_tbls." SET ".implode(", ", $set_cond)." ".$extra_cond;
                     $res = $this->db->query($update_query);
+                    $this->general->dbChanageLog($this->table_name, $this->primary_key, $this->db->affected_rows(), $data, $where, $this->module_name, "Deleted");
                 }
                 else
                 {
@@ -274,6 +283,7 @@ class Feedback_management_model extends CI_Model
                         return FALSE;
                     }
                     $res = $this->db->update($this->table_name." AS ".$this->table_alias, $data);
+                    $this->general->dbChanageLog($this->table_name, $this->primary_key, $this->db->affected_rows(), $data, $where, "Deleted");
                 }
             }
             else
@@ -292,6 +302,7 @@ class Feedback_management_model extends CI_Model
                 }
                 $data = $this->general->getPhysicalRecordUpdate();
                 $res = $this->db->update($this->table_name, $data);
+                $this->general->dbChanageLog($this->table_name, $this->primary_key, $this->db->affected_rows(), $data, $where, "Deleted");
             }
         }
         else
@@ -324,6 +335,8 @@ class Feedback_management_model extends CI_Model
                     return FALSE;
                 }
                 $res = $this->db->query($del_query);
+
+                $this->general->dbChanageLog($this->table_name, $this->primary_key, $this->db->affected_rows(), $data, $where, "Deleted");
             }
             else
             {
@@ -340,6 +353,7 @@ class Feedback_management_model extends CI_Model
                     return FALSE;
                 }
                 $res = $this->db->delete($this->table_name);
+                $this->general->dbChanageLog($this->table_name, $this->primary_key, $this->db->affected_rows(), $data, $where, "Deleted");
             }
         }
         return $res;
@@ -359,6 +373,7 @@ class Feedback_management_model extends CI_Model
      */
     public function getData($extra_cond = "", $fields = "", $order_by = "", $group_by = "", $limit = "", $join = "No", $having_cond = '', $list = FALSE)
     {
+
         if (is_array($fields))
         {
             $this->listing->addSelectFields($fields);
@@ -465,6 +480,7 @@ class Feedback_management_model extends CI_Model
      */
     public function getListingData($config_arr = array())
     {
+
         $page = $config_arr['page'];
         $rows = $config_arr['rows'];
         $sidx = $config_arr['sidx'];
@@ -543,7 +559,7 @@ class Feedback_management_model extends CI_Model
             $this->db->select($this->table_alias.".".$this->primary_key." AS ".$this->primary_alias);
         }
         $this->db->select("concat(u.vFirstName,\" \",u.vLastName) AS u_first_name");
-        //$this->db->select("u.vUserName AS u_user_name");
+
         $this->db->select("uq.tFeedback AS uq_feedback");
         // $this->db->select("uq.tNote AS uq_note");
         $this->db->select("uq.dtAddedAt AS uq_added_at");
@@ -578,8 +594,9 @@ class Feedback_management_model extends CI_Model
         $this->db->flush_cache();
         $listing_data = $this->listing->getDataForJqGrid($return_data, $filter_config, $page, $total_pages, $total_records);
         $this->listing_data = $return_data;
-        #echo $this->db->last_query();
+       
         return $listing_data;
+
     }
 
     /**
@@ -750,32 +767,6 @@ class Feedback_management_model extends CI_Model
                 "custom_link" => "Yes",
                 "php_func" => "controller::replaceNull",
             ),
-           /* "u_user_name" => array(
-                "name" => "u_user_name",
-                "table_name" => "users",
-                "table_alias" => "u",
-                "field_name" => "vUserName",
-                "source_field" => "",
-                "display_query" => "u.vUserName",
-                "entry_type" => "Table",
-                "data_type" => "",
-                "show_in" => "Both",
-                "type" => "textbox",
-                "align" => "left",
-                "label" => "Username",
-                "lang_code" => "FEEDBACK_MANAGEMENT_USERNAME",
-                "label_lang" => $this->lang->line('FEEDBACK_MANAGEMENT_USERNAME'),
-                "width" => 50,
-                "search" => "Yes",
-                "export" => "Yes",
-                "sortable" => "Yes",
-                "addable" => "No",
-                "editable" => "No",
-                "viewedit" => "No",
-                "edit_link" => "Yes",
-                "custom_link" => "Yes",
-                "php_func" => "controller::replaceNull",
-            ),*/
             "uq_feedback" => array(
                 "name" => "uq_feedback",
                 "table_name" => "user_query",

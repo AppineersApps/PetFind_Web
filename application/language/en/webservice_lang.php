@@ -287,3 +287,89 @@
 
 //delete_api_log Messages
     $lang["delete_api_log"]["api_accesslogs_finish_success"] = "Success" ;
+
+//  Abusive report messages
+$lang["report_abusive_user"]["user_id_required"] = "User Id is required." ;  
+$lang["report_abusive_user"]["report_on_required"] = "Reporter ID is required." ;    
+$lang["report_abusive_user"]["message_required"] = "Message is required." ;    
+$lang["report_abusive_user"]["abusive_reports_finish_success_1"] = "#message# not reported" ;    
+$lang["report_abusive_user"]["abusive_reports_finish_success"] = "#message# reported" ;      
+
+// Abusive report for missing pet post messages
+$lang["report_abusive_pets_post"]["user_id_required"] = "User ID is required" ;    
+$lang["report_abusive_pets_post"]["missing_pets_id_required"] = "Missing Pet ID is required" ;
+$lang["report_abusive_pets_post"]["message_required"] = "Message is required" ;    
+$lang["report_abusive_pets_post"]["abusive_reports_finish_success"] = "#message# missing reported" ;    
+$lang["report_abusive_pets_post"]["abusive_reports_finish_success_1"] = "#message# not reported" ;   
+
+//  Comment API messages
+$lang["comment_a_post"]["missing_pets_id_required"] = "Missing Pet ID is required" ;    
+$lang["comment_a_post"]["comments_required"] = "Comment is required field" ;    
+$lang["comment_a_post"]["comments_finish_success_1"] = "Comment added successfully" ;   
+$lang["comment_listing"]["comments_finish_success"] = "Comments fetched  successfully" ; 
+$lang["comment_listing"]["comments_finish_success_1"] = "No Comments found." ; 
+
+//  Message for missing pet Addition
+$lang["add_missing_pet"]["missing_pet_finish_success"] = "Missing pet added successfully" ;
+$lang["add_missing_pet"]["missing_pet_finish_success_1"] = "Failed to add missing pet post" ;
+//  Message for missing pet list and details 
+$lang["get_missing_pets"]["get_missing_pet_finish_success"] = "Fetched Missing pet list successfully" ;
+$lang["get_missing_pets"]["get_missing_pet_finish_success_1"] = "Missing pet List is empty" ;
+$lang["get_missing_pets"]["get_missing_pet_finish_no_data"] = "Missing pet List is empty" ;
+$lang["get_missing_pets"]["get_missing_pet_details_finish_success"] = "Fetch Missing Pet Information Successfully" ;
+//  Message for missing pet updation
+$lang["update_missing_pet"]["get_update_finish_success"] = "Updated Missing pet post Successfully" ;
+$lang["update_missing_pet"]["get_found_update_finish_success"] = "Found Status Updated Successfully" ;
+$lang["update_missing_pet"]["get_update_finish_success_1"] = "Failed to Update Missing pet post" ;
+//  Message for missing pet Deletion 
+$lang["delete_missing_pet"]["delete_missing_pet_finish_success"] = "Missing Pet post deleted successfully!" ;
+$lang["delete_missing_pet"]["delete_missing_pet_finish_success_1"] = "Failed to Delete Missing pet post" ;
+
+//  Message for Home page search results
+$lang["get_missing_pets"]["home_search_success"] = "Search found" ;
+$lang["get_missing_pets"]["home_search_failed"] = "No search found" ;
+// Message for Tag page search results
+$lang["get_tag_people"]["tag_search_success"] = "Search found" ;
+$lang["get_tag_people"]["tag_search_failed"] = "No search found" ;
+
+// Message for Tagged people results
+$lang["get_tagged_people"]["get_tagged_people_finish_success"] = "Fetched tagged people list successfully" ;
+$lang["get_tagged_people"]["get_tagged_people_finish_failed"] = "No peoples tagged to this post" ;
+$lang["untag_tagged_people"]["untag_tagged_people_no_data"] = "User is not tagged to this  missing post" ;
+$lang["untag_tagged_people"]["untag_tagged_people_failed"] = "failed to untag user" ;
+$lang["untag_tagged_people"]["untag_tagged_people_success"] = "Untag user successfully" ;
+
+// Message for Tagged people results
+$lang["send_message"]["messages_finish_success"] = "Notified people as pet found in near your area successfully" ;
+$lang["send_message"]["messages_found_finish_success"] = "Missing pet mark as found successfully" ;
+$lang["send_message"]["messages_finish_failure"] = "Failed to notify as pet found in near your area" ;
+$lang["send_message"]["messages_blocked_finish_failure"] = "Pet Owner blocked you so you cant notify." ;
+$lang["get_notification"]["notification_finish_success_1"] = "Fetch notification list successfully" ;
+$lang["get_notification"]["notify_finish_success_1"] = "Fetch Notified user list successfully" ;
+$lang["get_notification"]["notification_finish_failure"] = "Failed to notify as pet found in near your area" ;
+
+//  block user 
+$lang["block_user"]["block_user_success"] = "Block user successfully" ;
+$lang["block_user"]["unblock_user_success"] = "Un-block user successfully" ;
+$lang["block_user"]["block_user_failed"] = "Failed to block user" ;
+$lang["block_user"]["unblock_user_failed"] = "Failed to Un-block user" ;
+$lang["block_user"]["block_user_already_available"] = "Already Blocked to this user" ;
+$lang["block_user"]["block_user_not_available"] = "Blocked user not available" ;
+
+$lang["get_blocked_users"]["get_blocked_users_success"] = "Fetched Block user list successfully" ;
+$lang["get_blocked_users"]["get_blocked_users_no_data"] = "No Blocked users" ;
+
+// send message
+    $lang["send_message"]["user_id_required"] = "Please enter a value for the user id." ;
+    $lang["send_message"]["receiver_id_required"] = "Please enter a value for the receiver id." ;
+    $lang["send_message"]["message_required"] = "Please enter message." ;
+    $lang["send_message"]["messages_finish_success"] = "Message sent successfully." ;
+    $lang["send_message"]["messages_finish_success_1"] = "Message sent successfully." ;
+    $lang["send_message"]["blocked_user_finish_success"] = "You cannot communicate with each other." ;
+    $lang["send_message"]["no_missing_pet_post_available"] = "Missing pet post not available" ;
+
+
+//  delete missing pet image
+$lang["delete_image"]["delete_image_finish_success"] = "Image deleted successfully" ;
+$lang["delete_image"]["delete_image_finish_failure"] = "Failed to delete image" ;
+$lang["delete_image"]["delete_image_not_available"] = "Image is not available to delete" ;

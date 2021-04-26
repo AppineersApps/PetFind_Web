@@ -815,6 +815,7 @@ class Users_model extends CI_Model
      */
     public function create_user_social($params_arr = array())
     {
+        // print_r($params_arr);exit;
         try
         {
             $result_arr = array();
@@ -969,6 +970,7 @@ class Users_model extends CI_Model
             $this->db->select("u.vStateName AS u_state_name");
             $this->db->select("u.vZipCode AS u_zip_code");
             $this->db->select("u.eStatus AS u_status");
+            $this->db->select("u.eIsLogin AS u_is_login");
             $this->db->select("(concat(u.vFirstName,' ',u.vLastName)) AS email_user_name", FALSE);
             $this->db->select("u.eEmailVerified AS u_email_verified");
             $this->db->select("u.vAccessToken AS u_access_token");
@@ -1151,6 +1153,7 @@ class Users_model extends CI_Model
             $this->db->select("u.vDeviceOS AS u_device_os");
             $this->db->select("u.vDeviceToken AS u_device_token");
             $this->db->select("u.eStatus AS u_status");
+            $this->db->select("u.eIsLogin AS u_is_login");
             $this->db->select("u.dtAddedAt AS u_added_at");
             $this->db->select("u.dtUpdatedAt AS u_updated_at");
             $this->db->select("(".$this->db->escape("".$auth_token."").") AS auth_token1", FALSE);
@@ -1188,6 +1191,48 @@ class Users_model extends CI_Model
         $return_arr["data"] = $result_arr;
         return $return_arr;
     }
+
+      /**
+     * update_is_login_status method is used to execute database queries for update is login status after login.
+     * @created Snehal Shinde | 09-04-2021
+     * @param array $params_arr params_arr array to process query block.
+     * @param array $where_arr where_arr are used to process where condition(s).
+     * @return array $return_arr returns response of query block.
+     */
+    public function update_is_login_status($params_arr = array(), $where_arr = array())
+    {
+        try
+        {
+            $result_arr = array();
+            if (isset($where_arr) && $where_arr != "")
+            {
+                $this->db->where($where_arr);
+            }
+             $this->db->set("eIsLogin", '1');
+            $res = $this->db->update("users as u");
+            $affected_rows = $this->db->affected_rows();
+            if (!$res || $affected_rows == -1)
+            {
+                throw new Exception("Failure in updation.");
+            }
+            $result_param = "affected_rows";
+            $result_arr[0][$result_param] = $affected_rows;
+            $success = 1;
+        }
+        catch(Exception $e)
+        {
+            $success = 0;
+            $message = $e->getMessage();
+        }
+        $this->db->flush_cache();
+        $this->db->_reset_all();
+        //echo $this->db->last_query();
+        $return_arr["success"] = $success;
+        $return_arr["message"] = $message;
+        $return_arr["data"] = $result_arr;
+        return $return_arr;
+    }
+
 
     /**
      * update_device_details method is used to execute database queries for User Login Email API.
@@ -1419,6 +1464,7 @@ class Users_model extends CI_Model
             $this->db->select("u.vDeviceOS AS u_device_os");
             $this->db->select("u.vDeviceToken AS u_device_token");
             $this->db->select("u.eStatus AS u_status");
+            $this->db->select("u.eIsLogin AS u_is_login");
             $this->db->select("u.dtAddedAt AS u_added_at");
             $this->db->select("u.dtUpdatedAt AS u_updated_at");
             $this->db->select("(".$this->db->escape("".$auth_token."").") AS auth_token1", FALSE);

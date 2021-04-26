@@ -70,30 +70,7 @@ class Edit_profile extends Cit_Controller
                     "message" => "user_id_required",
                 )
             ),
-            "first_name" => array(
-                array(
-                    "rule" => "minlength",
-                    "value" => 1,
-                    "message" => "first_name_minlength",
-                ),
-                array(
-                    "rule" => "maxlength",
-                    "value" => 80,
-                    "message" => "first_name_maxlength",
-                )
-            ),
-            "last_name" => array(
-                array(
-                    "rule" => "minlength",
-                    "value" => 1,
-                    "message" => "last_name_minlength",
-                ),
-                array(
-                    "rule" => "maxlength",
-                    "value" => 80,
-                    "message" => "last_name_maxlength",
-                )
-            ),
+            
             "zipcode" => array(
                 array(
                     "rule" => "minlength",
@@ -106,7 +83,6 @@ class Edit_profile extends Cit_Controller
                     "message" => "zipcode_maxlength",
                 )
             ),
-            
             "mobile_number" => array(
                 array(
                     "rule" => "number",
