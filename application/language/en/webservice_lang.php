@@ -14,14 +14,14 @@
     $lang["update_push_notification_settings"]["user_id_required"] = "Please enter a value for the user_id field." ;
     $lang["update_push_notification_settings"]["notification_required"] = "Please enter a value for the notification field." ;
     $lang["update_push_notification_settings"]["users_finish_success"] = "Notifications updated successfully." ;
-    $lang["update_push_notification_settings"]["users_finish_success_1"] = "something went wrong, Please try again a while!" ;
+    $lang["update_push_notification_settings"]["users_finish_success_1"] = "Failed to update. Please contact admin." ;
 
 //Post a Feedback Messages
     $lang["post_a_feedback"]["device_type_required"] = "Please enter a value for the device_type field." ;
     $lang["post_a_feedback"]["device_model_required"] = "Please enter a value for the device_model field." ;
     $lang["post_a_feedback"]["device_os_required"] = "Please enter a value for the device_os field." ;
     $lang["post_a_feedback"]["images_count_required"] = "Please enter a value for the images_count field." ;
-    $lang["post_a_feedback"]["user_query_finish_success_1"] = "Something went wrong, please try again a while!" ;
+    $lang["post_a_feedback"]["user_query_finish_success_1"] = "Failed to create query. Please contact admin." ;
     $lang["post_a_feedback"]["user_query_finish_success"] = "You have successfully posted your feedback." ;
 
 //Static Pages Messages
@@ -74,9 +74,9 @@
     $lang["user_sign_up_email"]["device_model_required"] = "Please enter a value for the device_model field." ;
     $lang["user_sign_up_email"]["device_os_required"] = "Please enter a value for the device_os field." ;
     $lang["user_sign_up_email"]["finish_success_1"] = "#message# " ;
-    $lang["user_sign_up_email"]["users_finish_success_1"] = "Something went wrong, Please try again a while!" ;
+    $lang["user_sign_up_email"]["users_finish_success_1"] = "Failed to create user. Please contact admin." ;
     $lang["user_sign_up_email"]["users_finish_success"] = "You have successfully registered. Please check your email and confirm your registration." ;
-
+    $lang["user_sign_up_email"]["dob_formate"] = "Please enter valid date formate (Y-m-d) for the dob field." ;
 //User Sign Up Phone Messages
     $lang["user_sign_up_phone"]["first_name_minlength"] = "Please enter minimum 1 character for the first name field." ;
     $lang["user_sign_up_phone"]["first_name_maxlength"] = "Please enter maximum 80 character for the first name field." ;
@@ -97,8 +97,9 @@
     $lang["user_sign_up_phone"]["device_model_required"] = "Please enter a value for the device_model field." ;
     $lang["user_sign_up_phone"]["device_os_required"] = "Please enter a value for the device_os field." ;
     $lang["user_sign_up_phone"]["finish_success_1"] = "#message# " ;
-    $lang["user_sign_up_phone"]["users_finish_success_1"] = "Something went wrong, Please try again a while!" ;
+    $lang["user_sign_up_phone"]["users_finish_success_1"] = "Failed to create user. Please contact admin." ;
     $lang["user_sign_up_phone"]["users_finish_success"] = "You have successfully registered." ;
+    $lang["user_sign_up_phone"]["dob_formate"] = "Please enter valid date formate (Y-m-d) for the dob field." ;
 
 //Social Sign Up Messages
     $lang["social_sign_up"]["first_name_minlength"] = "Please enter minimum 1 character for the first name field." ;
@@ -119,9 +120,10 @@
     $lang["social_sign_up"]["device_os_required"] = "Please enter a value for the device_os field." ;
     $lang["social_sign_up"]["social_login_type_required"] = "Please enter a value for the social_login_type field." ;
     $lang["social_sign_up"]["social_login_id_required"] = "Please enter a value for the social_login_id field." ;
-    $lang["social_sign_up"]["users_finish_success_1"] = "Something went wrong, Please try again a while!" ;
+    $lang["social_sign_up"]["users_finish_success_1"] = "Failed to create user. Please contact admin." ;
     $lang["social_sign_up"]["finish_success_1"] = "#message# " ;
     $lang["social_sign_up"]["users_finish_success"] = "You have successfully registered." ;
+    $lang["social_sign_up"]["dob_formate"] = "Please enter valid date formate (Y-m-d) for the dob field." ;
 
 //Check Unique User Messages
     $lang["check_unique_user"]["type_required"] = "Please enter a value for the type field." ;
@@ -190,7 +192,7 @@
 //Reset Password Messages
     $lang["reset_password"]["new_password_required"] = "Please enter a value for the new_password field." ;
     $lang["reset_password"]["reset_key_required"] = "Please enter a value for the reset_key field." ;
-    $lang["reset_password"]["users_finish_success"] = "Something went wrong, Please try again a while!" ;
+    $lang["reset_password"]["users_finish_success"] = "PFailed to update password. Please contact admin." ;
     $lang["reset_password"]["users_finish_success_1"] = "Password reset successfully." ;
 
 //Forgot Password Phone Messages
@@ -241,8 +243,8 @@
     $lang["edit_profile"]["user_name_maxlength"] = "Please enter maximum 80 characters for the user name field." ;
     $lang["edit_profile"]["mobile_number_number"] = "Please enter valid number for the phone number field." ;
     $lang["edit_profile"]["mobile_number_minlength"] = "Please enter minimum 10 digits for the phone number field." ;
-    $lang["edit_profile"]["mobile_number_maxlength"] = "Please enter maximum 13 digits for the phone number field." ;
-    $lang["edit_profile"]["users_finish_success"] = "Something went wrong, Please try again a while!" ;
+    $lang["edit_profile"]["mobile_number_maxlength"] = "Please enter maximum 14 digits for the phone number field." ;
+    $lang["edit_profile"]["users_finish_success"] = "Failed to create user. Please contact admin." ;
     $lang["edit_profile"]["users_finish_success_1"] = "Invalid user." ;
     $lang["edit_profile"]["users_finish_success_3"] = "#message# " ;
     $lang["edit_profile"]["users_finish_success_2"] = "Profile updated successfully." ;
@@ -253,12 +255,12 @@
 
 //Delete Account Messages
     $lang["delete_account"]["user_id_required"] = "Please enter a value for the user_id field." ;
-    $lang["delete_account"]["users_finish_success"] = "Something went wrong. Please try again a while!" ;
+    $lang["delete_account"]["users_finish_success"] = "Qury failed. Please check logs!!" ;
     $lang["delete_account"]["users_finish_success_1"] = "You have successfully deleted your account." ;
 
 //Update Page Version Messages
     $lang["update_page_version"]["page_type_required"] = "Please enter a value for the page_type field." ;
-    $lang["update_page_version"]["finish_success_1"] = "Something went wrong, Please try again a  while!" ;
+    $lang["update_page_version"]["finish_success_1"] = "Failed to update page. Please contact admin." ;
     $lang["update_page_version"]["finish_success"] = "#message# " ;
 
 //Country List Messages
@@ -305,9 +307,69 @@ $lang["comment_a_post"]["missing_pets_id_required"] = "Missing Pet ID is require
 $lang["comment_a_post"]["comments_required"] = "Comment is required field" ;    
 $lang["comment_a_post"]["comments_finish_success_1"] = "Comment added successfully" ;   
 $lang["comment_listing"]["comments_finish_success"] = "Comments fetched  successfully" ; 
+$lang["comment_listing"]["comments_finish_success_1"] = "No Comments found." ; 
 
-//  Message for missing pet updated successfully
-$lang["update_missing_pet"]["get_update_finish_success"] = "Updated Missing pet Successfully" ;
-$lang["update_missing_pet"]["get_update_finish_success_1"] = "Failed to Update Missing pet" ;
-$lang["delete_missing_pet"]["delete_missing_pet_finish_success"] = "Deleted Missing pet Successfully" ;
-$lang["delete_missing_pet"]["delete_missing_pet_finish_success_1"] = "Failed to Delete Missing pet" ;
+//  Message for missing pet Addition
+$lang["add_missing_pet"]["missing_pet_finish_success"] = "Missing pet added successfully" ;
+$lang["add_missing_pet"]["missing_pet_finish_success_1"] = "Failed to add missing pet post" ;
+//  Message for missing pet list and details 
+$lang["get_missing_pets"]["get_missing_pet_finish_success"] = "Fetched Missing pet list successfully" ;
+$lang["get_missing_pets"]["get_missing_pet_finish_success_1"] = "Missing pet List is empty" ;
+$lang["get_missing_pets"]["get_missing_pet_finish_no_data"] = "Missing pet List is empty" ;
+$lang["get_missing_pets"]["get_missing_pet_details_finish_success"] = "Fetch Missing Pet Information Successfully" ;
+//  Message for missing pet updation
+$lang["update_missing_pet"]["get_update_finish_success"] = "Updated Missing pet post Successfully" ;
+$lang["update_missing_pet"]["get_found_update_finish_success"] = "Found Status Updated Successfully" ;
+$lang["update_missing_pet"]["get_update_finish_success_1"] = "Failed to Update Missing pet post" ;
+//  Message for missing pet Deletion 
+$lang["delete_missing_pet"]["delete_missing_pet_finish_success"] = "Missing Pet post deleted successfully!" ;
+$lang["delete_missing_pet"]["delete_missing_pet_finish_success_1"] = "Failed to Delete Missing pet post" ;
+
+//  Message for Home page search results
+$lang["get_missing_pets"]["home_search_success"] = "Search found" ;
+$lang["get_missing_pets"]["home_search_failed"] = "No search found" ;
+// Message for Tag page search results
+$lang["get_tag_people"]["tag_search_success"] = "Search found" ;
+$lang["get_tag_people"]["tag_search_failed"] = "No search found" ;
+
+// Message for Tagged people results
+$lang["get_tagged_people"]["get_tagged_people_finish_success"] = "Fetched tagged people list successfully" ;
+$lang["get_tagged_people"]["get_tagged_people_finish_failed"] = "No peoples tagged to this post" ;
+$lang["untag_tagged_people"]["untag_tagged_people_no_data"] = "User is not tagged to this  missing post" ;
+$lang["untag_tagged_people"]["untag_tagged_people_failed"] = "failed to untag user" ;
+$lang["untag_tagged_people"]["untag_tagged_people_success"] = "Untag user successfully" ;
+
+// Message for Tagged people results
+$lang["send_message"]["messages_finish_success"] = "Notified people as pet found in near your area successfully" ;
+$lang["send_message"]["messages_found_finish_success"] = "Missing pet mark as found successfully" ;
+$lang["send_message"]["messages_finish_failure"] = "Failed to notify as pet found in near your area" ;
+$lang["send_message"]["messages_blocked_finish_failure"] = "Pet Owner blocked you so you cant notify." ;
+$lang["get_notification"]["notification_finish_success_1"] = "Fetch notification list successfully" ;
+$lang["get_notification"]["notify_finish_success_1"] = "Fetch Notified user list successfully" ;
+$lang["get_notification"]["notification_finish_failure"] = "Failed to notify as pet found in near your area" ;
+
+//  block user 
+$lang["block_user"]["block_user_success"] = "Block user successfully" ;
+$lang["block_user"]["unblock_user_success"] = "Un-block user successfully" ;
+$lang["block_user"]["block_user_failed"] = "Failed to block user" ;
+$lang["block_user"]["unblock_user_failed"] = "Failed to Un-block user" ;
+$lang["block_user"]["block_user_already_available"] = "Already Blocked to this user" ;
+$lang["block_user"]["block_user_not_available"] = "Blocked user not available" ;
+
+$lang["get_blocked_users"]["get_blocked_users_success"] = "Fetched Block user list successfully" ;
+$lang["get_blocked_users"]["get_blocked_users_no_data"] = "No Blocked users" ;
+
+// send message
+    $lang["send_message"]["user_id_required"] = "Please enter a value for the user id." ;
+    $lang["send_message"]["receiver_id_required"] = "Please enter a value for the receiver id." ;
+    $lang["send_message"]["message_required"] = "Please enter message." ;
+    $lang["send_message"]["messages_finish_success"] = "Message sent successfully." ;
+    $lang["send_message"]["messages_finish_success_1"] = "Message sent successfully." ;
+    $lang["send_message"]["blocked_user_finish_success"] = "You cannot communicate with each other." ;
+    $lang["send_message"]["no_missing_pet_post_available"] = "Missing pet post not available" ;
+
+
+//  delete missing pet image
+$lang["delete_image"]["delete_image_finish_success"] = "Image deleted successfully" ;
+$lang["delete_image"]["delete_image_finish_failure"] = "Failed to delete image" ;
+$lang["delete_image"]["delete_image_not_available"] = "Image is not available to delete" ;

@@ -2,19 +2,19 @@
 defined('BASEPATH') || exit('No direct script access allowed');
 
 /**
- * Description of Missing Pet Controller
+ * Description of Comments Controller
  *
  * @category webservice
  *
- * @package basic_appineers_master
+ * @package post
  * 
  * @subpackage controllers
  *
- * @module Missing pet
+ * @module Comments
+
+ * @class Comments.php
  *
- * @class Missing_pet.php
- *
- * @path application\webservice\basic_appineers_master\controllers\Missing_pet.php
+ * @path application\webservice\post\controllers\Comments.php
  *
  * @version 4.4
  *
@@ -62,9 +62,8 @@ class Comments extends Cit_Controller
 
 
     /**
-     * start_missing_pet method is used to initiate api execution flow.
-     * @created Snehal Shinde | 01.03.2021
-     * @modified Snehal Shinde | 01.03.2021
+     * start_comments method is used to initiate api execution flow.
+     * @created Snehal Shinde | 15.03.2021
      * @param array $request_arr request_arr array is used for api input.
      * @param bool $inner_api inner_api flag is used to idetify whether it is inner api request or general request.
      * @return array $output_response returns output response of API.
@@ -83,7 +82,6 @@ class Comments extends Cit_Controller
                break;
 
           case 'POST':
-
                 $output_response =  $this->post_comment($request_arr);
                 return  $output_response;
                  break;
@@ -98,7 +96,7 @@ class Comments extends Cit_Controller
 
     /**
      * post_comment method is used to initiate api execution flow.
-     * @created Snehal Shinde | 13.09.2019
+     * @created Snehal Shinde | 15.03.2021
      * @param array $request_arr request_arr array is used for api input.
      * @param bool $inner_api inner_api flag is used to idetify whether it is inner api request or general request.
      * @return array $output_response returns output response of API.
@@ -123,27 +121,21 @@ class Comments extends Cit_Controller
             }
             $output_response = array();
             $input_params = $validation_res['input_params'];
-            //echo $input_params;exit();
             $output_array = $func_array = array();
 
             $input_params = $this->get_posted_by_user_details($input_params);
-            //print_r($input_params);exit();
 
             $condition_res = $this->if_same_user($input_params);
-            //print_r($condition_res);exit();
             if ($condition_res["success"])
             {
 
                 $input_params = $this->insert_comment($input_params);
-                //print_r($input_params);exit();
 
                 $condition_res = $this->check_if_inserted($input_params);
-                //print_r($condition_res);exit();
                 if ($condition_res["success"])
                 {
 
                     $input_params = $this->get_comments($input_params);
-                    //print_r($input_params);exit(); 
                     $output_response = $this->comments_finish_success_1($input_params);
                     return $output_response;
                 }
@@ -151,43 +143,16 @@ class Comments extends Cit_Controller
                 else
                 {
 
-                    $output_response = $this->comments_finish_success($input_params);
+                    $output_response = $this->comments_finish_success2($input_params);
                     return $output_response;
                 }
             }
 
             else
             {
-
-                $input_params = $this->get_commented_user_details($input_params);
-
-                $input_params = $this->prepare_message($input_params);
-                    
-                $input_params = $this->insert_comments_v1($input_params);
-
-                $input_params = $this->insert_notification($input_params);
-
-
-                $input_params = $this->get_comments_v1($input_params);
-
-
-                $condition_res = $this->condition($input_params);
-                if ($condition_res["success"])
-                {
-
-                    $input_params = $this->push_notification($input_params);
-                    
-        
-                    $output_response = $this->posts_finish_success_1($input_params);
+                   $output_response = $this->comments_finish_success2($input_params);
                     return $output_response;
-                }
-
-                else
-                {
-
-                    $output_response = $this->posts_finish_success($input_params);
-                    return $output_response;
-                }
+               
             }
         }
         catch(Exception $e)
@@ -228,14 +193,28 @@ class Comments extends Cit_Controller
 
         /**
      * rules_comment_listing method is used to validate api input params.
-     * @created Chetan Dvs | 16.09.2019
-     * @modified Chetan Dvs | 20.09.2019
+     * @created Snehal Shinde | 15-03-2021
      * @param array $request_arr request_arr array is used for api input.
      * @return array $valid_res returns output response of API.
      */
     public function rules_comment_listing($request_arr = array())
     {
-        $valid_arr = array();
+        $valid_arr = array(
+        "user_id" => array(
+                array(
+                    "rule" => "required",
+                    "value" => TRUE,
+                    "message" => "user_id_required",
+                )
+            ),
+        "missing_pet_id" => array(
+                array(
+                    "rule" => "required",
+                    "value" => TRUE,
+                    "message" => "missing_pet_id_required",
+                )
+            )
+    );
         $valid_res = $this->wsresponse->validateInputParams($valid_arr, $request_arr, "comment_listing");
 
         return $valid_res;
@@ -243,14 +222,12 @@ class Comments extends Cit_Controller
 
 /**
      * get_posted_by_user_details method is used to process query block.
-     * @created Chetan Dvs | 13.09.2019
-     * @modified Chetan Dvs | 18.09.2019
+     * @created Snehal Shinde | 15-03-2021
      * @param array $input_params input_params array to process loop flow.
      * @return array $input_params returns modfied input_params array.
      */
     public function get_posted_by_user_details($input_params = array())
     {
-        //print_r($input_params);exit();
 
         $this->block_result = array();
         try
@@ -279,20 +256,18 @@ class Comments extends Cit_Controller
 
     /**
      * if_same_user method is used to process conditions.
-     * @created Chetan Dvs | 13.09.2019
-     * @modified Chetan Dvs | 13.09.2019
+     * @created Snehal Shinde | 15-03-2021
      * @param array $input_params input_params array to process condition flow.
      * @return array $block_result returns result of condition block as array.
      */
     public function if_same_user($input_params = array())
     {
-        //print_r($input_params);exit();
         $this->block_result = array();
         try
         {
 
-            $cc_lo_0 = $input_params["p_user_id"];
-            $cc_ro_0 = $input_params["user_id"];
+            $cc_lo_0 = $input_params['get_posted_by_user_details']["p_user_id"];
+            $cc_ro_0 = $input_params['get_posted_by_user_details']["p_post_id"];
 
             $cc_fr_0 = ($cc_lo_0 == $cc_ro_0) ? TRUE : FALSE;
             if (!$cc_fr_0)
@@ -314,8 +289,7 @@ class Comments extends Cit_Controller
 
     /**
      * insert_comment method is used to process query block.
-     * @created Chetan Dvs | 13.09.2019
-     * @modified Chetan Dvs | 13.09.2019
+     * @created Snehal Shinde | 15-03-2021
      * @param array $input_params input_params array to process loop flow.
      * @return array $input_params returns modfied input_params array.
      */
@@ -340,6 +314,10 @@ class Comments extends Cit_Controller
             {
                 $params_arr["comments_from"] = $input_params["user_id"];
             }
+             if (isset($input_params["unix_timestamp"]))
+            {
+                $params_arr["unix_timestamp"] = $input_params["unix_timestamp"];
+            }
             $params_arr["_dtaddedat"] = "NOW()";
             //$params_arr["_estatus"] = "Active";
             $this->block_result = $this->comments_model->insert_comment($params_arr);
@@ -357,8 +335,7 @@ class Comments extends Cit_Controller
 
     /**
      * check_if_inserted method is used to process conditions.
-     * @created Chetan Dvs | 13.09.2019
-     * @modified Chetan Dvs | 13.09.2019
+     * @created Snehal Shinde | 15-03-2021
      * @param array $input_params input_params array to process condition flow.
      * @return array $block_result returns result of condition block as array.
      */
@@ -392,14 +369,12 @@ class Comments extends Cit_Controller
 
     /**
      * get_comments method is used to process query block.
-     * @created Chetan Dvs | 17.09.2019
-     * @modified Chetan Dvs | 20.09.2019
+     * @created Snehal Shinde | 15-03-2021
      * @param array $input_params input_params array to process loop flow.
      * @return array $input_params returns modfied input_params array.
      */
     public function get_comments($input_params = array())
     {
-        //print_r($input_params);exit();
         $this->block_result = array();
         try
         {
@@ -407,12 +382,47 @@ class Comments extends Cit_Controller
             $insert_id = isset($input_params["insert_id"]) ? $input_params["insert_id"] : "";
             
             $this->block_result = $this->comments_model->get_comments($insert_id);
+                    // print_r($this->block_result);exit();
+
             
             if (!$this->block_result["success"])
             {
                 throw new Exception("No records found.");
             }
-            $result_arr = $this->block_result["data"];
+             $result_arr = $this->block_result["data"];
+
+            if (is_array($result_arr) && count($result_arr) > 0)
+            {
+                $i = 0;
+                foreach ($result_arr as $data_key => $data_arr)
+                {
+
+                    $data = $data_arr["c_added_at"];
+                    if (method_exists($this->general, "prepareDateFormat"))
+                    {
+                        $data = $this->general->prepareDateFormat($data, $result_arr[$data_key], $i, $input_params);
+                    }
+                    $result_arr[$data_key]["c_added_at"] = $data;
+
+                    $aws_folder_name = $this->config->item("AWS_FOLDER_NAME");
+                    $data = $data_arr["user_profile_image"];
+                    $image_arr = array();
+                    $p_key = ($data_arr["c_comment_from"] != "") ? $data_arr["c_comment_from"] : $data_arr["c_comment_from"];
+                    $image_arr["pk"] = $p_key;
+                    $image_arr["image_name"] = $data;
+                    $image_arr["ext"] = implode(",", $this->config->item("IMAGE_EXTENSION_ARR"));
+                    $image_arr["color"] = "FFFFFF";
+                    $image_arr["no_img"] = FALSE;
+                    $image_arr["path"] =$aws_folder_name. "/user_profile";
+                    $data = $this->general->get_image_aws($image_arr);
+
+                    $result_arr[$data_key]["user_profile_image"] = $data;
+
+                    $i++;
+                }
+
+                $this->block_result["data"] = $result_arr;
+            }
             
         }
         catch(Exception $e)
@@ -428,8 +438,7 @@ class Comments extends Cit_Controller
 
     /**
      * comments_finish_success_1 method is used to process finish flow.
-     * @created Chetan Dvs | 13.09.2019
-     * @modified saikrishna bellamkonda | 18.09.2019
+     * @created Snehal Shinde | 15-03-2021
      * @param array $input_params input_params array to process loop flow.
      * @return array $responce_arr returns responce array of api.
      */
@@ -440,24 +449,39 @@ class Comments extends Cit_Controller
             "success" => "1",
             "message" => "comments_finish_success_1",
         );
-        $output_fields = array(
-            'c_missing_pets_id',
-            'c_comment',
-            'c_added_at',
-            'c_comment_id',
-            'c_comment_from'
+       $output_fields = array(
+            'missing_pets_id',
+            'comments',
+            'unix_timestamp',
+            'added_at',
+            'comment_id',
+            'comment_from',
+            'user_name',
+            'user_profile_image',
+            'user_address',
+            'user_city',
+            'user_state',
+            'user_lattitude',
+            'user_longitude'
             
         );
         $output_keys = array(
             'get_comments',
         );
         $output_aliases = array(
-            //"get_comments" => "get_all_comments",
-            "c_missing_pets_id"=>"missing_pets_id",
-            "c_comment" => "comments",
-            "c_added_at" => "added_at",
-            "c_comment_id"=>"comment_id",
-            "c_comment_from"=>"comment_from"
+            "missing_pets_id"=>"missing_pets_id",
+            "comments" => "comments",
+            "unix_timestamp" => "unix_timestamp",
+            "added_at" => "added_at",
+            "comment_id"=>"comment_id",
+            "comment_from"=>"comment_from",
+            "user_name" => "user_name",
+            "user_profile_image" => "user_profile_image",
+            "user_address" => "user_address",
+            "user_city" => "user_city",
+            "user_state" => "user_state",
+            "user_lattitude" => "user_lattitude",
+            "user_longitude" => "user_longitude"
         );
 
         $output_array["settings"] = $setting_fields;
@@ -477,13 +501,12 @@ class Comments extends Cit_Controller
     }
 
     /**
-     * comments_finish_success method is used to process finish flow.
-     * @created Chetan Dvs | 13.09.2019
-     * @modified Chetan Dvs | 13.09.2019
+     * comments_finish_success2 method is used to process finish flow.
+     * @created Snehal Shinde | 15-03-2021
      * @param array $input_params input_params array to process loop flow.
      * @return array $responce_arr returns responce array of api.
      */
-    public function comments_finish_success($input_params = array())
+    public function comments_finish_success2($input_params = array())
     {
 
         $setting_fields = array(
@@ -509,8 +532,7 @@ class Comments extends Cit_Controller
     
     /**
      * prepare_message method is used to process custom function.
-     * @created Chetan Dvs | 13.09.2019
-     * @modified Chetan Dvs | 13.09.2019
+     * @created Snehal Shinde | 15-03-2021
      * @param array $input_params input_params array to process loop flow.
      * @return array $input_params returns modfied input_params array.
      */
@@ -537,8 +559,7 @@ class Comments extends Cit_Controller
 
     /**
      * condition method is used to process conditions.
-     * @created Chetan Dvs | 13.09.2019
-     * @modified Chetan Dvs | 13.09.2019
+     * @created Snehal Shinde | 15-03-2021
      * @param array $input_params input_params array to process condition flow.
      * @return array $block_result returns result of condition block as array.
      */
@@ -580,7 +601,7 @@ class Comments extends Cit_Controller
     /**
      * push_notification method is used to process mobile push notification.
      * @created Chetan Dvs | 13.09.2019
-     * @modified Chetan Dvs | 24.09.2019
+     * @modified Snehal Shinde | 15-03-2021
      * @param array $input_params input_params array to process loop flow.
      * @return array $input_params returns modfied input_params array.
      */
@@ -655,7 +676,7 @@ class Comments extends Cit_Controller
     /**
      * get_comment_list method is used to initiate api execution flow.
      * @created Chetan Dvs | 16.09.2019
-     * @modified Chetan Dvs | 20.09.2019
+     * @modified Snehal Shinde | 15-03-2021
      * @param array $request_arr request_arr array is used for api input.
      * @param bool $inner_api inner_api flag is used to idetify whether it is inner api request or general request.
      * @return array $output_response returns output response of API.
@@ -695,7 +716,7 @@ class Comments extends Cit_Controller
             else
             {
 
-                $output_response = $this->comments_list_finish_success($input_params);
+                $output_response = $this->comments_list_finish_success_1($input_params);
                 return $output_response;
             }
         }
@@ -709,7 +730,7 @@ class Comments extends Cit_Controller
     /**
      * get_all_comments method is used to process query block.
      * @created Chetan Dvs | 16.09.2019
-     * @modified Chetan Dvs | 19.09.2019
+     * @modified Snehal Shinde | 15-03-2021
      * @param array $input_params input_params array to process loop flow.
      * @return array $input_params returns modfied input_params array.
      */
@@ -720,11 +741,9 @@ class Comments extends Cit_Controller
         try
         {
 
-            $perpage_record = isset($input_params["perpage_record"]) ? $input_params["perpage_record"] : "";
             $missing_pet_id = isset($input_params["missing_pet_id"]) ? $input_params["missing_pet_id"] : "";
             $comment_id = isset($input_params["comment_id"]) ? $input_params["comment_id"] : "";
-            $page_index = isset($input_params["page_index"]) ? $input_params["page_index"] : 1;
-            $this->block_result = $this->comments_model->get_all_comments($perpage_record, $comment_id, $page_index, $this->settings_params,$missing_pet_id);
+            $this->block_result = $this->comments_model->get_all_comments($comment_id, $missing_pet_id);
 
 
             if (!$this->block_result["success"])
@@ -737,6 +756,7 @@ class Comments extends Cit_Controller
                 $i = 0;
                 foreach ($result_arr as $data_key => $data_arr)
                 {
+
                     $data = $data_arr["c_added_at"];
                     if (method_exists($this->general, "prepareDateFormat"))
                     {
@@ -761,7 +781,6 @@ class Comments extends Cit_Controller
                     $i++;
                 }
 
-                // print_r($result_arr);exit;
                 $this->block_result["data"] = $result_arr;
             }
         }
@@ -778,7 +797,7 @@ class Comments extends Cit_Controller
     /**
      * if_comments_available method is used to process conditions.
      * @created Chetan Dvs | 16.09.2019
-     * @modified Chetan Dvs | 16.09.2019
+     * @modified Snehal Shinde | 15-03-2021
      * @param array $input_params input_params array to process condition flow.
      * @return array $block_result returns result of condition block as array.
      */
@@ -813,7 +832,7 @@ class Comments extends Cit_Controller
     /**
      * custom_function method is used to process custom function.
      * @created Chetan Dvs | 19.09.2019
-     * @modified Chetan Dvs | 19.09.2019
+     * @modified Snehal Shinde | 15-03-2021
      * @param array $input_params input_params array to process loop flow.
      * @return array $input_params returns modfied input_params array.
      */
@@ -842,7 +861,7 @@ class Comments extends Cit_Controller
     /**
      * comments_finish_success method is used to process finish flow.
      * @created Chetan Dvs | 16.09.2019
-     * @modified Chetan Dvs | 19.09.2019
+     * @modified Snehal Shinde | 15-03-2021
      * @param array $input_params input_params array to process loop flow.
      * @return array $responce_arr returns responce array of api.
      */
@@ -855,6 +874,7 @@ class Comments extends Cit_Controller
         );
         $output_fields = array(
             'c_comment',
+            'unix_timestamp',
             'c_added_at',
             'c_missing_pets_id',
             'user_name',
@@ -871,6 +891,7 @@ class Comments extends Cit_Controller
         );
         $ouput_aliases = array(
             "c_comment" => "comments",
+            "unix_timestamp" => "unix_timestamp",
             "c_added_at" => "added_at",
             "c_missing_pets_id" => "missing_pets_id",
             "user_name" => "user_name",
@@ -904,7 +925,7 @@ class Comments extends Cit_Controller
     /**
      * comments_list_finish_success_1 method is used to process finish flow.
      * @created Chetan Dvs | 16.09.2019
-     * @modified Chetan Dvs | 16.09.2019
+     * @modified Snehal Shinde | 15-03-2021
      * @param array $input_params input_params array to process loop flow.
      * @return array $responce_arr returns responce array of api.
      */

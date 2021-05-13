@@ -582,7 +582,8 @@ $config["comments"] = array(
 );
 
 
-//  Missing Pet Module Api
+
+//  Missing Pet Module Api (add,edit,delete post, get missing pet list,particular missing pet post details)
 $config["missing_pet"] = array(
     "title" => "missing_pet",
     "folder" => "basic_appineers_master",
@@ -593,6 +594,96 @@ $config["missing_pet"] = array(
     ),
     "target" => ""
 );
+
+//  Search API (tag page search and home page search)
+$config["search"] = array(
+    "title" => "search",
+    "folder" => "basic_appineers_master",
+    "method" => $_SERVER['REQUEST_METHOD'],
+    "params" => array(),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+
+//  Api for tagged_people(tagged people list,untag people)
+$config["tagged_people"] = array(
+    "title" => "tagged_people", 
+    "folder" => "tagged_people",
+    "method" => $_SERVER['REQUEST_METHOD'],
+    "params" => array(),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+// Api for notification(notify user about pet is in near my area,notification list)
+$config["notification"] = array(
+    "title" => "Notification",
+    "folder" => "notification",
+    "method" => $_SERVER['REQUEST_METHOD'],
+    "params" => array(),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+// Api for Block user
+$config["block_user"] = array(
+    "title" => "block user",
+    "folder" => "block_user",
+    "method" => $_SERVER['REQUEST_METHOD'],
+    "params" => array(),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+// send sms/chat message 
+$config["send_message"] = array(
+    "title" => "Send Message",
+    "folder" => "chat",
+    "method" => $_SERVER['REQUEST_METHOD'],
+    "params" => array(),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+// send chat notification
+$config["send_chat_notification"] = array(
+    "title" => "Send Chat Notification",
+    "folder" => "chat",
+    "method" => "POST",
+    "params" => array(
+    ),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+
+// pet Image deletion
+$config["delete_image"] = array(
+    "title" => " Delete Image",
+    "folder" => "basic_appineers_master",
+    "method" => "delete",
+    "params" => array(
+        "image_id"
+    ),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
 
 #####GENERATED_CONFIG_SETTINGS_END#####
 

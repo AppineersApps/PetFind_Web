@@ -820,7 +820,7 @@ class Pushnotifications_model extends CI_Model
                 "addable" => "No",
                 "editable" => "No",
                 "viewedit" => "No",
-                "format" => 'Y-m-d',
+                "format" => 'Y-m-d h:i:s',
             ),
             "mpn_status" => array(
                 "name" => "mpn_status",

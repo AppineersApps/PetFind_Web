@@ -28,7 +28,7 @@ public function uploadQueryImages($input_params=array()){
     $user_id=$input_params['user_id'];
     $img_name="image_";
     $query_id=$input_params['query_id'];
-    $folder_name="whitelable_v2/query_images/".$query_id."/";
+    $folder_name="pet_find/query_images/".$query_id."/";
   
     $return_arr = array();
     $insert_arr = array();

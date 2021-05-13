@@ -329,6 +329,48 @@ class User_model extends CI_Model
         $return_arr["data"] = $result_arr;
         return $return_arr;
     }
+          /**
+     * update_is_login_status method is used to execute database queries for update is login status after login.
+     * @created Snehal Shinde | 09-04-2021
+     * @param array $params_arr params_arr array to process query block.
+     * @param array $where_arr where_arr are used to process where condition(s).
+     * @return array $return_arr returns response of query block.
+     */
+    public function update_is_login_status($params_arr = array(), $where_arr = array())
+    {
+        try
+        {
+            $result_arr = array();
+            if (isset($where_arr) && $where_arr != "")
+            {
+                $this->db->where($where_arr);
+            }
+             $this->db->set("eIsLogin", '1');
+            $res = $this->db->update("users as u");
+            $affected_rows = $this->db->affected_rows();
+            if (!$res || $affected_rows == -1)
+            {
+                throw new Exception("Failure in updation.");
+            }
+            $result_param = "affected_rows";
+            $result_arr[0][$result_param] = $affected_rows;
+            $success = 1;
+        }
+        catch(Exception $e)
+        {
+            $success = 0;
+            $message = $e->getMessage();
+        }
+        $this->db->flush_cache();
+        $this->db->_reset_all();
+        //echo $this->db->last_query();
+        $return_arr["success"] = $success;
+        $return_arr["message"] = $message;
+        $return_arr["data"] = $result_arr;
+        return $return_arr;
+    }
+
+
     /**
      * get_updated_details method is used to execute database queries for Edit Profile API.
      * @created priyanka chillakuru | 18.09.2019

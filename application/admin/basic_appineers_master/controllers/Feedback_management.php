@@ -117,6 +117,8 @@ class Feedback_management extends Cit_Controller
      */
     public function index()
     {
+
+
         $params_arr = $this->params_arr;
         $extra_qstr = $extra_hstr = '';
         try
@@ -165,6 +167,8 @@ class Feedback_management extends Cit_Controller
             );
 
             $list_config = $this->feedback_management_model->getListConfiguration();
+
+
             $this->processConfiguration($list_config, $add_access, $edit_access, TRUE);
             $this->general->trackModuleNavigation("Module", "List", "Viewed", $this->mod_enc_url["index"], "feedback_management");
             if (method_exists($this->filter, "setListFieldCapability"))
@@ -199,6 +203,9 @@ class Feedback_management extends Cit_Controller
                 ),
                 'default_filters' => $this->feedback_management_model->default_filters,
             );
+
+           // print_r($data_recs);exit;
+          
             $this->smarty->assign($render_arr);
             if (!empty($render_arr['overwrite_view']))
             {
@@ -222,6 +229,9 @@ class Feedback_management extends Cit_Controller
      */
     public function listing()
     {
+
+        
+
         $params_arr = $this->params_arr;
         $page = $params_arr['page'];
         $rows = $params_arr['rows'];
@@ -257,12 +267,18 @@ class Feedback_management extends Cit_Controller
         $data_config['having_cond'] = $having_cond;
         $data_config['order_by'] = $orderby_cond;
 
+        //print_r($data_config);exit;
+
         $data_recs = $this->feedback_management_model->getListingData($data_config);
+
         $data_recs['no_records_msg'] = $this->general->processMessageLabel('ACTION_NO_FEEDBACK_MANAGEMENT_DATA_FOUND_C46_C46_C33');
 
         $data_recs = $this->feedback_management_model->processCustomLinks($data_recs, $list_config);
 
+      
+
         echo json_encode($data_recs);
+
         $this->skip_template_view();
     }
 

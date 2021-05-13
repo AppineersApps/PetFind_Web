@@ -107,6 +107,9 @@ class Query_images_model extends CI_Model
         $this->db->insert($this->table_name, $data);
         $insert_id = $this->db->insert_id();
         $this->insert_id = $insert_id;
+        if ($insert_id > 0) {
+            $this->general->dbChanageLog($this->table_name, $this->primary_key, $this->db->affected_rows(), $data, $where, $this->module_name, "Added");
+        }
         return $insert_id;
     }
 
@@ -181,6 +184,9 @@ class Query_images_model extends CI_Model
             }
             $res = $this->db->update($this->table_name, $data);
         }
+
+        $this->general->dbChanageLog($this->table_name, $this->primary_key, $this->db->affected_rows(), $data, $where, $this->module_name, "Modified");
+
         return $res;
     }
 
@@ -232,6 +238,7 @@ class Query_images_model extends CI_Model
                     }
                     $update_query = "UPDATE ".$this->db->protect($this->table_name)." AS ".$this->db->protect($this->table_alias)." ".$join_tbls." SET ".implode(", ", $set_cond)." ".$extra_cond;
                     $res = $this->db->query($update_query);
+                    $this->general->dbChanageLog($this->table_name, $this->primary_key, $this->db->affected_rows(), $data, $where, $this->module_name, "Deleted");
                 }
                 else
                 {
@@ -248,6 +255,7 @@ class Query_images_model extends CI_Model
                         return FALSE;
                     }
                     $res = $this->db->update($this->table_name." AS ".$this->table_alias, $data);
+                    $this->general->dbChanageLog($this->table_name, $this->primary_key, $this->db->affected_rows(), $data, $where, $this->module_name, "Deleted");
                 }
             }
             else
@@ -266,6 +274,7 @@ class Query_images_model extends CI_Model
                 }
                 $data = $this->general->getPhysicalRecordUpdate();
                 $res = $this->db->update($this->table_name, $data);
+                $this->general->dbChanageLog($this->table_name, $this->primary_key, $this->db->affected_rows(), $data, $where, $this->module_name, "Deleted");
             }
         }
         else
@@ -298,6 +307,7 @@ class Query_images_model extends CI_Model
                     return FALSE;
                 }
                 $res = $this->db->query($del_query);
+                $this->general->dbChanageLog($this->table_name, $this->primary_key, $this->db->affected_rows(), $data, $where, $this->module_name, "Deleted");
             }
             else
             {
@@ -314,8 +324,12 @@ class Query_images_model extends CI_Model
                     return FALSE;
                 }
                 $res = $this->db->delete($this->table_name);
+                $this->general->dbChanageLog($this->table_name, $this->primary_key, $this->db->affected_rows(), $data, $where, $this->module_name, "Deleted");
             }
         }
+
+        $this->general->dbChanageLog($this->table_name, $this->primary_key, $this->db->affected_rows(), $data, $where, $this->module_name, "Modified");
+
         return $res;
     }
 
@@ -807,7 +821,7 @@ class Query_images_model extends CI_Model
                 "label_lang" => $this->lang->line('QUERY_IMAGES_IMAGE'),
                 "file_upload" => "Yes",
                 "file_server" => "amazon",
-                "file_folder" => "whitelable_v2/query_images",
+                "file_folder" => $this->config->item("AWS_FOLDER_NAME")."/query_images",
                 "file_keep" => "uqi_user_query_id",
                 "file_width" => "50",
                 "file_height" => "50",

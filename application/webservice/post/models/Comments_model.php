@@ -40,7 +40,7 @@ class Comments_model extends CI_Model
     /**
      * get_post_comments method is used to execute database queries for Post Listing API.
      * @created Chetan Dvs | 13.09.2019
-     * @modified Chetan Dvs | 13.09.2019
+     * @modified Snehal Shinde | 15-03-2021
      * @param string $p_post_id p_post_id is used to process query block.
      * @return array $return_arr returns response of query block.
      */
@@ -87,7 +87,7 @@ class Comments_model extends CI_Model
     /**
      * fetch_post_comments method is used to execute database queries for Post Listing API.
      * @created Chetan Dvs | 13.09.2019
-     * @modified Chetan Dvs | 13.09.2019
+     * @modified Snehal Shinde | 15-03-2021
      * @param string $p_post_id_1 p_post_id_1 is used to process query block.
      * @return array $return_arr returns response of query block.
      */
@@ -133,7 +133,7 @@ class Comments_model extends CI_Model
     /**
      * insert_comment method is used to execute database queries for Comment A post API.
      * @created Chetan Dvs | 13.09.2019
-     * @modified Chetan Dvs | 13.09.2019
+     * @modified Snehal Shinde | 15-03-2021
      * @param array $params_arr params_arr array to process query block.
      * @return array $return_arr returns response of query block.
      */
@@ -150,9 +150,9 @@ class Comments_model extends CI_Model
             if(isset($params_arr["missing_pets_id"])){
                 $this->db->set("iMissingPetId", $params_arr["missing_pets_id"]);
             }
-            // if(isset($params_arr["comment_id"])){
-            //     $this->db->set("iCommentId", $params_arr["comment_id"]);
-            // }
+            if(isset($params_arr["unix_timestamp"])){
+                $this->db->set("vUnixTimestamp", $params_arr["unix_timestamp"]);
+            }
             if(isset($params_arr["comments_from"])){
                 $this->db->set("iCommentFrom", $params_arr["comments_from"]);
             }
@@ -189,7 +189,7 @@ class Comments_model extends CI_Model
     /**
      * get_comments method is used to execute database queries for Comment A post API.
      * @created Chetan Dvs | 17.09.2019
-     * @modified Chetan Dvs | 20.09.2019
+     * @modified Snehal Shinde | 15-03-2021
      * @param string $insert_id insert_id is used to process query block.
      * @return array $return_arr returns response of query block.
      */
@@ -200,18 +200,21 @@ class Comments_model extends CI_Model
             $result_arr = array();
                                 
             $this->db->from("comments AS c");
-            //$this->db->join("posts AS p", "c.iPostId = p.iPostId", "left");
             $this->db->join("missing_pets AS u", "c.iMissingPetId = u.iMissingPetId", "left");
-            $this->db->join("users AS us","u.iUserId = us.iUserId","left");
-            $this->db->select("c.iMissingPetId AS c_missing_pets_id");
-            $this->db->select("c.vComment AS c_comment");
-            $this->db->select("c.dtAddedAt AS c_added_at");
-            $this->db->select("c.iCommentId AS c_comment_id");
-            $this->db->select("c.iCommentFrom AS c_comment_from"); 
-            //$this->db->select("p.iPostId AS p_post_id_1");
-            //$this->db->select("u.iMissingPetId AS u_missing_pets_id_2");
-            // $this->db->select("concat_ws(' ' , u.vFirstName , u.vLastName ) AS u_first_name_1");
-            // $this->db->select("u.vProfileImage AS u_profile_image");
+            $this->db->join("users AS us","c.iCommentFrom = us.iUserId","left");
+            $this->db->select("c.iMissingPetId AS missing_pets_id");
+            $this->db->select("c.vComment AS comments");
+            $this->db->select("c.vUnixTimestamp AS unix_timestamp");
+            $this->db->select("c.dtAddedAt AS added_at");
+            $this->db->select("c.iCommentId AS comment_id");
+            $this->db->select("c.iCommentFrom AS comment_from"); 
+            $this->db->select("concat_ws(' ' , us.vFirstName,us.vLastName) AS user_name");
+            $this->db->select("us.vProfileImage AS user_profile_image");
+            $this->db->select("us.tAddress AS user_address");
+            $this->db->select("us.vCity AS user_city");
+            $this->db->select("us.vStateName AS user_state");
+            $this->db->select("us.dLatitude AS user_lattitude");
+            $this->db->select("us.dLongitude AS user_longitude");
             if(isset($insert_id) && $insert_id != ""){ 
                 $this->db->where("c.iCommentId =", $insert_id);
             }
@@ -239,79 +242,25 @@ class Comments_model extends CI_Model
         $return_arr["data"] = $result_arr;
         return $return_arr;
     }
-    
-    
-    /**
-     * get_comments_v1 method is used to execute database queries for Comment A post API.
-     * @created CIT Dev Team
-     * @modified Chetan Dvs | 20.09.2019
-     * @param string $insert_id1 insert_id1 is used to process query block.
-     * @return array $return_arr returns response of query block.
-     */
-    // public function get_comments_v1($insert_id1 = '')
-    // {
-    //     try {
-    //         $result_arr = array();
-                                
-    //         $this->db->from("comments AS c");
-    //         $this->db->join("posts AS p", "c.iPostId = p.iPostId", "left");
-    //         $this->db->join("users AS u", "c.iUsersId = u.iUserId", "left");
-            
-    //         $this->db->select("c.iUsersId AS c_users_id_v1");
-    //         $this->db->select("c.tComment AS c_comment_v1");
-    //         $this->db->select("c.dtAddedAt AS c_added_at_v1");
-    //         $this->db->select("p.iPostId AS p_post_id_1_v1");
-    //         $this->db->select("u.iUserId AS u_user_id_2_v1");
-    //         $this->db->select("concat_ws(' ' , u.vFirstName , u.vLastName ) AS u_first_name_1_v1");
-    //         $this->db->select("u.vProfileImage AS u_profile_image_v1");
-    //         if(isset($insert_id1) && $insert_id1 != ""){ 
-    //             $this->db->where("c.iCommentsId =", $insert_id1);
-    //         }
-            
-            
-            
-    //         $this->db->limit(1);
-            
-    //         $result_obj = $this->db->get();
-    //         $result_arr = is_object($result_obj) ? $result_obj->result_array() : array();
-            
-    //         if(!is_array($result_arr) || count($result_arr) == 0){
-    //             throw new Exception('No records found.');
-    //         }
-    //         $success = 1;
-    //     } catch (Exception $e) {
-    //         $success = 0;
-    //         $message = $e->getMessage();
-    //     }
-        
-    //     $this->db->_reset_all();
-    //     //echo $this->db->last_query();
-    //     $return_arr["success"] = $success;
-    //     $return_arr["message"] = $message;
-    //     $return_arr["data"] = $result_arr;
-    //     return $return_arr;
-    // }
-    
+ 
     
     /**
      * get_all_comments method is used to execute database queries for Comment Listing API.
      * @created Chetan Dvs | 16.09.2019
-     * @modified Chetan Dvs | 19.09.2019
+     * @modified Snehal Shinde | 15-03-2021
      * @param string $perpage_record perpage_record is used to process query block.
      * @param string $post_id post_id is used to process query block.
      * @param array $settings_params settings_params are used for paging parameters.
      * @return array $return_arr returns response of query block.
      */
-    public function get_all_comments($perpage_record = '', $comment_id = '', $page_index = 1, &$settings_params = array(),$missing_pet_id)
+    public function get_all_comments($comment_id = '', $missing_pet_id)
     {
-      // print_r($missing_pet_id);exit;
         try {
             $result_arr = array();
                         
             $this->db->start_cache();
             $this->db->from("comments AS c");
             $this->db->join("users AS use", "c.iCommentFrom = use.iUserId", "left");
-            //$this->db->join("posts AS p", "c.iPostId = p.iPostId", "left");
             $this->db->join("missing_pets AS u", "c.iMissingPetId = u.iMissingPetId", "left");
             
             if(isset($comment_id) && $comment_id != ""){ 
@@ -325,6 +274,7 @@ class Comments_model extends CI_Model
             $total_records = $this->db->count_all_results();
             
             $this->db->select("c.vComment AS c_comment");
+            $this->db->select("c.vUnixTimestamp AS unix_timestamp");
             $this->db->select("c.dtAddedAt AS c_added_at");
             $this->db->select("c.iCommentFrom AS comment_user_id");
             $this->db->select("c.iMissingPetId AS c_missing_pets_id");
@@ -337,23 +287,8 @@ class Comments_model extends CI_Model
             $this->db->select("use.dLatitude AS user_lattitude");
             $this->db->select("use.dLongitude AS user_longitude");
 
-            $settings_params['count'] = $total_records;
-            
-            $record_limit = intval("".$perpage_record."");
-            $current_page = intval($page_index) > 0 ? intval($page_index) : 1;
-            $total_pages = getTotalPages($total_records, $record_limit);
-            $start_index = getStartIndex($total_records, $current_page, $record_limit);
-            $settings_params['per_page'] = $record_limit;
-            $settings_params['curr_page'] = $current_page;
-            $settings_params['prev_page'] = ($current_page > 1) ? 1 : 0;
-            $settings_params['next_page'] = ($current_page + 1 > $total_pages) ? 0 : 1;
-            
             $this->db->order_by("c.dtAddedAt", "desc");
-            $this->db->limit($record_limit, $start_index);
             $result_obj = $this->db->get();
-
-                        // echo $this->db->last_query();exit;
-
 
             $result_arr = is_object($result_obj) ? $result_obj->result_array() : array();
             $this->db->flush_cache();
@@ -379,7 +314,7 @@ class Comments_model extends CI_Model
     /**
      * update_post_status method is used to execute database queries for Delete Account API.
      * @created priyanka chillakuru | 22.03.2019
-     * @modified priyanka chillakuru | 22.03.2019
+     * @modified Snehal Shinde | 15-03-2021
      * @param array $params_arr params_arr array to process query block.
      * @param array $where_arr where_arr are used to process where condition(s).
      * @return array $return_arr returns response of query block.
@@ -416,21 +351,11 @@ class Comments_model extends CI_Model
         $return_arr["data"] = $result_arr;
         return $return_arr;
     }
-    
-    
-    /**
-     * get_pending_posts_of_user method is used to execute database queries for Make Archieved User Post As InActive API.
-     * @created priyanka chillakuru | 22.03.2019
-     * @modified priyanka chillakuru | 22.03.2019
-     * @param string $user_id user_id is used to process query block.
-     * @return array $return_arr returns response of query block.
-     */
-    
-    
+
     /**
      * get_posted_by_user_details method is used to execute database queries for Comment A post API.
      * @created Chetan Dvs | 13.09.2019
-     * @modified Chetan Dvs | 18.09.2019
+     * @modified Snehal Shinde | 15-03-2021
      * @param string $post_id post_id is used to process query block.
      * @return array $return_arr returns response of query block.
      */

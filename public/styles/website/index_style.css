@@ -1,0 +1,130 @@
+.header-transparrent 
+{
+    position: relative;
+}
+
+
+.et_pb_text_6 {
+    font-weight: 300;
+    font-size: 30px;
+    line-height: 1.3em;
+    padding-top: 61px!important;
+}
+
+.app-img {
+    width: 100%;;
+}
+.best-features-area .single-features .features-icon span
+{
+    background-image: -webkit-linear-gradient(90deg, #4A2DAF 0%, #02B0C5 100%);
+
+}
+.sticky-bar
+{
+    background: #FAFAFA;
+}
+.btn {
+    background: #02B0C5;
+    }
+.slider-area .hero__caption .slider-btns a.video-btn {
+    background: #02B0C5;
+}
+
+.available-app-area {
+    background-image: -webkit-linear-gradient(90deg, #140647 0%, #4fabb6 100%);
+
+    }
+.header-sticky.sticky-bar.sticky .main-menu ul>li>a {
+    color: #02B0C5;
+}
+.btn-group-vertical>.btn-group:after, .btn-group-vertical>.btn-group:before, .btn-toolbar:after, .btn-toolbar:before, .clearfix:after, .clearfix:before, .container-fluid:after, .container-fluid:before, .container:after, .container:before, .dl-horizontal dd:after, .dl-horizontal dd:before, .form-horizontal .form-group:after, .form-horizontal .form-group:before, .modal-footer:after, .modal-footer:before, .modal-header:after, .modal-header:before, .nav:after, .nav:before, .navbar-collapse:after, .navbar-collapse:before, .navbar-header:after, .navbar-header:before, .navbar:after, .navbar:before, .pager:after, .pager:before, .panel-body:after, .panel-body:before, .row:after, .row:before
+{
+    content: unset;
+}
+.nav>li>a:focus, .nav>li>a:hover {
+    background-color: unset;
+}
+.btn:hover::before {
+    background: #02B0C5;
+}
+.btn::before {
+    background: #02B0C5;
+    }
+    #scrollUp {
+    background: #02B0C5;
+}
+
+.main-header .main-menu ul li>a::before
+{
+   
+    background: #2b044d;
+}
+.logo {
+    width: 90%;
+}
+
+.custom-dev
+{
+    padding: 50px 0;
+}
+@media (max-width: 768px) {
+  .back-to-top {
+    bottom: 15px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .cta-section h2 {
+    font-size: 2rem;
+  }
+}
+
+
+@media only screen and (max-width: 600px) and (min-width: 360px)  
+{
+    .section-tittle h2 {
+    margin-bottom: 33px;
+}
+
+    .logo
+{
+    width:40%;
+}
+.custom-dev
+{
+    padding: 0px 15px;
+}
+.applic-apps .owl-carousel .owl-item img {
+    display: block;
+    width: 90%;
+}
+.video-section-text
+{
+    display:none;
+}
+.app-btn
+{
+        display: inline-flex;
+}
+.available-app-area .app-caption .app-btn .app-btn1
+{
+    padding-top: 10px;
+}
+.white-top
+{
+  display: none;
+}
+.sticky-wrapper
+{
+  background-color: #fff;
+}
+.burger:before, .burger span, .burger:after
+{
+  background: #000;
+}
+.custom-li
+{
+  display: block !important;
+}
+
+}

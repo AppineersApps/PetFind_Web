@@ -28,6 +28,15 @@ public function returnConfigParams(&$input_params=array()){
     $return_arr['terms_conditions_updated']='';
     $return_arr['privacy_policy_updated']  ='';
     $return_arr['log_status_updated']  ='';
+       $return_arr['log_status_updated']  ='';
+     $return_arr['premium_status']  ='';
+
+      $current_timezone = date_default_timezone_get();
+    // convert the current timezone to UTC
+     date_default_timezone_set('UTC');
+    $current_date = date("Y-m-d H:i:s");
+    // Again coverting into local timezone
+    date_default_timezone_set($current_timezone);
  
     //check for login user 
     
@@ -53,13 +62,17 @@ public function returnConfigParams(&$input_params=array()){
     if(!empty($userid)){
         $return_arr['terms_conditions_updated']=1;
         $return_arr['privacy_policy_updated']  =1;
-        $this->db->select('vTermsConditionsVersion,vPrivacyPolicyVersion,eLogStatus');
+        $this->db->select('vTermsConditionsVersion,vPrivacyPolicyVersion,eLogStatus,eIsSubscribed,vSubscriptionId');
         $this->db->from('users');
+
         $this->db->where('iUserId',$userid);
         $version_data=$this->db->get()->row_array();
         $terms_conditions_version=$version_data['vTermsConditionsVersion'];
         $privacy_policy_version  =$version_data['vPrivacyPolicyVersion'];
         $return_arr['log_status_updated']=$version_data['eLogStatus']; 
+    
+        $subscription = array();    
+     $return_arr['subscription']= $subscription;
        
     }
    //terms and conditions
@@ -95,28 +108,24 @@ public function returnConfigParams(&$input_params=array()){
     $return_arr['android_version_number'] =$this->config->item('ANDROID_VERSION_NUMBER');
     $return_arr['iphone_version_number']  =$this->config->item('IPHONE_VERSION_NUMBER');
 
-     $return_arr['ios_app_id']  =($this->config->item('PROJECT_DEBUG_LEVEL') == 'development') ? $this->config->item('IOS_APP_ID_DEVELOPMENT') : $this->config->item('IOS_APP_ID_PRODUCTION') ;
+    $return_arr['ios_app_id']  =$this->config->item('IOS_APP_ID');
+    $return_arr['ios_banner_id']  =$this->config->item('IOS_BANNER_AD_ID');
+    $return_arr['ios_interstitial_id']  =$this->config->item('IOS_INTERSTITIAL_AD_ID');
+    $return_arr['ios_native_id']  =$this->config->item('IOS_NATIVE_AD_ID');
+    $return_arr['ios_rewarded_id']  =$this->config->item('IOS_REWARDED_AD_ID');
 
-    $return_arr['ios_banner_id']  =($this->config->item('PROJECT_DEBUG_LEVEL') == 'development') ? $this->config->item('IOS_BANNER_AD_ID_DEVELOPMENT') : $this->config->item('IOS_BANNER_AD_ID_PRODUCTION') ;
+    $return_arr['android_app_id']  =$this->config->item('ANDROID_APP_ID');
+    $return_arr['android_banner_id']  =$this->config->item('ANDROID_BANNER_AD_ID');
+    $return_arr['android_interstitial_id']  =$this->config->item('ANDROID_INTERSTITIAL_AD_ID');
+    $return_arr['android_native_id']  =$this->config->item('ANDROID_NATIVE_AD_ID');
+    $return_arr['android_rewarded_id']  =$this->config->item('ANDROID_REWARDED_AD_ID');
 
-    $return_arr['ios_interstitial_id']  =($this->config->item('PROJECT_DEBUG_LEVEL') == 'development') ? $this->config->item('IOS_INTERSTITIAL_AD_ID_DEVELOPMENT') : $this->config->item('IOS_INTERSTITIAL_AD_ID_PRODUCTION');
-
-    $return_arr['ios_native_id']  =($this->config->item('PROJECT_DEBUG_LEVEL') == 'development') ? $this->config->item('IOS_NATIVE_AD_ID_DEVELOPMENT') : $this->config->item('IOS_NATIVE_AD_ID_PRODUCTION') ;
-
-    $return_arr['ios_rewarded_id']  =($this->config->item('PROJECT_DEBUG_LEVEL') == 'development') ? $this->config->item('IOS_REWARDED_AD_ID_DEVELOPMENT') : $this->config->item('IOS_REWARDED_AD_ID_PRODUCTION') ;
-    
-   
-    $return_arr['android_app_id']  =($this->config->item('PROJECT_DEBUG_LEVEL') == 'development') ? $this->config->item('ANDROID_APP_ID_DEVELOPMENT') : $this->config->item('ANDROID_APP_ID_PRODUCTION') ;
-
-    $return_arr['android_banner_id']  =($this->config->item('PROJECT_DEBUG_LEVEL') == 'development') ? $this->config->item('ANDROID_BANNER_AD_ID_DEVELOPMENT') : $this->config->item('ANDROID_BANNER_AD_ID_PRODUCTION') ;
-
-    $return_arr['android_interstitial_id']  =($this->config->item('PROJECT_DEBUG_LEVEL') == 'development') ? $this->config->item('ANDROID_INTERSTITIAL_AD_ID_DEVELOPMENT') : $this->config->item('ANDROID_INTERSTITIAL_AD_ID_PRODUCTION');
-
-    $return_arr['android_native_id']  =($this->config->item('PROJECT_DEBUG_LEVEL') == 'development') ? $this->config->item('ANDROID_NATIVE_AD_ID_DEVELOPMENT') : $this->config->item('ANDROID_NATIVE_AD_ID_PRODUCTION');
-
-    $return_arr['android_rewarded_id']  =($this->config->item('PROJECT_DEBUG_LEVEL') == 'development') ? $this->config->item('ANDROID_REWARDED_AD_ID_DEVELOPMENT') : $this->config->item('ANDROID_REWARDED_AD_ID_PRODUCTION');
+    $return_arr['project_debug_level']  =$this->config->item('PROJECT_DEBUG_LEVEL');
 
     $return_arr['version_check_message']  = str_replace('|appname|',$app_name,$message);
+
+
+
     return $return_arr;
 }
 }

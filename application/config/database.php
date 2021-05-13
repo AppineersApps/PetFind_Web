@@ -80,7 +80,7 @@ if (strstr($_SERVER['HTTP_HOST'], '18.211.58.235')) {
       'hostname' => 'database-1.cubyuiyvifow.us-east-1.rds.amazonaws.com',
       'username' => 'admin',
       'password' => 'success2020!!',
-      'database' => 'appineers_v2',
+      'database' => 'pet_find',
       'port' => '',
       'dbdriver' => 'mysqli',
       'dbprefix' => '',
@@ -88,8 +88,8 @@ if (strstr($_SERVER['HTTP_HOST'], '18.211.58.235')) {
       'db_debug' => TRUE,
       'cache_on' => FALSE,
       'cachedir' => '',
-      'char_set' => 'utf8',
-      'dbcollat' => 'utf8_general_ci',
+      'char_set' => 'utf8mb4',
+      'dbcollat' => 'utf8mb4_unicode_ci',
       'swap_pre' => '',
       'encrypt' => FALSE,
       'compress' => FALSE,
@@ -99,7 +99,35 @@ if (strstr($_SERVER['HTTP_HOST'], '18.211.58.235')) {
       'save_queries' => TRUE
   );
 
-} else { 
+} 
+else if (strstr($_SERVER['HTTP_HOST'], '3.225.83.133')) {
+
+  $db['default'] = array(
+      'dsn' => '',
+      'hostname' => 'localhost',
+      'username' => 'root',
+      'password' => 'Aws!2020',
+      'database' => 'pet_find',
+      'port' => '',
+      'dbdriver' => 'mysqli',
+      'dbprefix' => '',
+      'pconnect' => FALSE,
+      'db_debug' => TRUE,
+      'cache_on' => FALSE,
+      'cachedir' => '',
+      'char_set' => 'utf8mb4',
+      'dbcollat' => 'utf8mb4_unicode_ci',
+      'swap_pre' => '',
+      'encrypt' => FALSE,
+      'compress' => FALSE,
+      'stricton' => FALSE,
+      'failover' => array(),
+      'timezone' => '',
+      'save_queries' => TRUE
+  );
+
+}
+else { 
 
   $db['default'] = array(
       'dsn' => '',
@@ -114,8 +142,8 @@ if (strstr($_SERVER['HTTP_HOST'], '18.211.58.235')) {
       'db_debug' => TRUE,
       'cache_on' => FALSE,
       'cachedir' => '',
-      'char_set' => 'utf8',
-      'dbcollat' => 'utf8_general_ci',
+      'char_set' => 'utf8mb4',
+      'dbcollat' => 'utf8mb4_unicode_ci',
       'swap_pre' => '',
       'encrypt' => FALSE,
       'compress' => FALSE,

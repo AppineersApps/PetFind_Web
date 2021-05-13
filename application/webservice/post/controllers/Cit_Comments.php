@@ -6,9 +6,9 @@
  * 
  * @module Extended Comment A post
  * 
- * @class Cit_Comment_a_post.php
+ * @class Cit_Comments.php
  * 
- * @path application\webservice\post\controllers\Cit_Comment_a_post.php
+ * @path application\webservice\post\controllers\Cit_Comments.php
  * 
  * @author CIT Dev Team
  * 

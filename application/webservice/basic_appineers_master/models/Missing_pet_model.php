@@ -2,7 +2,7 @@
 defined('BASEPATH') || exit('No direct script access allowed');
 
 /**
- * Description of User review Model
+ * Description of missing pet Model
  *
  * @category webservice
  *
@@ -12,9 +12,9 @@ defined('BASEPATH') || exit('No direct script access allowed');
  *
  * @module User review
  *
- * @class User_review_model.php
+ * @class Missing_pet_model.php
  *
- * @path application\webservice\basic_appineers_master\models\User_review_model.php
+ * @path application\webservice\basic_appineers_master\models\Missing_pet_model.php
  *
  * @version 4.4
  *
@@ -38,11 +38,10 @@ class Missing_pet_model extends CI_Model
     }
 
     /**
-     * post_a_feedback method is used to execute database queries for Post a Feedback API.
-     * @created CIT Dev Team
-     * @modified priyanka chillakuru | 16.09.2019
-     * @param array $params_arr params_arr array to process review block.
-     * @return array $return_arr returns response of review block.
+     * set_missing_pet method is used to execute database queries for Set missing pet post
+     * @created Snehal Shinde | 01-03-2021
+     * @param array $params_arr params_arr array to process input params.
+     * @return array $return_arr returns response of added missing pet post.
      */
     public function set_missing_pet($params_arr = array())
     {
@@ -54,8 +53,10 @@ class Missing_pet_model extends CI_Model
                 throw new Exception("Insert data not found.");
             }
 
+            // print_r($params_arr["_dtaddedat"]);exit;
+            // $this->db->set("dtAddedAt", $params_arr["_dtaddedat"]);
+             $this->db->set($this->db->protect("dtAddedAt"), $params_arr["_dtaddedat"], FALSE);
 
-            $this->db->set("dtAddedAt", $params_arr["_dtaddedat"]);
             $this->db->set("ePetStatus", $params_arr["ePetStatus"]);
             if (isset($params_arr["user_id"]))
             {
@@ -153,16 +154,111 @@ class Missing_pet_model extends CI_Model
         }
 
         //$this->db->_reset_all();
-        #echo $this->db->last_query();exit;
+        // echo $this->db->last_query();exit;
         $return_arr["success"] = $success;
         $return_arr["message"] = $message;
         $return_arr["data"] = $result_arr;
         return $return_arr;
     }
+ //  set tagged people to missing pet post
+/**
+     * set_tagged_people method is used to execute database queries for set tagged people to missing pet post
+     * @created Snehal Shinde | 01-03-2021
+     * @param array $params_arr params_arr array to process input params.
+     * @return array $return_arr returns tag id.
+*/
+
+    public function set_tagged_people($params_arr = array(),$inserted_missing_pet_id)
+    {
+       // echo '<pre>'; print_r($params_arr['tag_people']);exit;
+         try
+        {
+             $result_arr = array();
+             $blockedUserId = array();
+            if (!is_array($params_arr) || count($params_arr) == 0)
+            {
+                throw new Exception("Insert data not found.");
+            }
+             if (isset($params_arr["user_id"]))
+            {
+                $tagged_people=explode(",",$params_arr["tag_people"]);
+                // $current_date=date("Y-m-d H:i:s");
+                $current_date="NOW()";
+                $blocked_user_name=array();
+    
+               foreach ($tagged_people as $tag_people_value) {
+
+                $this->db->from("blocked_user AS bu");
+                $this->db->select("bu.iBlockedId  AS block_id");
+                $this->db->where("(bu.iBlockedTo = ".$tag_people_value." AND bu.iBlockedFrom = ".$params_arr["user_id"].") OR (bu.iBlockedTo = ".$params_arr["user_id"]." AND bu.iBlockedFrom = ".$tag_people_value.")", FALSE, FALSE);
+                $this->db->limit(1);
+                $result_obj = $this->db->get();
+                $blocked_user_data = is_object($result_obj) ? $result_obj->result_array() : array();
+
+
+
+                //  if user is not blocked then mark that user as tag user
+                if(count($blocked_user_data)=='0')
+                {
+                    $this->db->set("iMissingPetId", $inserted_missing_pet_id);
+                     $this->db->set("iTagFrom", $params_arr["user_id"]);
+                     $this->db->set("iTagTo", $tag_people_value);
+                     $this->db->set("dtAddedAt", $current_date);
+                      $this->db->insert("tag_people");
+                      $insert_id = $this->db->insert_id();
+
+                      if (!$insert_id)
+                        {
+                            throw new Exception("Failure in insertion.");
+                        }
+
+                }
+                else
+                {
+                     $blocked_user_id = $tag_people_value;
+                     $this->db->from("users AS us");
+                     $this->db->select("us.iUserId AS blocked_user_id");
+                     $this->db->select("concat(us.vFirstName,\" \",us.vLastName) AS user_name");
+                    $this->db->where("us.iUserId  ", $tag_people_value);
+                    $block_user_result=$this->db->get()->row();
+                    array_push($result_arr,$block_user_result->user_name);
+                    array_push($blockedUserId,$block_user_result->blocked_user_id);
+                    
+                }
+
+                }
+              
+            }
+               
+            $result_arr_1['blocked_user'] = $result_arr;
+            $result_arr_1['blocked_user_id'] = $blockedUserId;
+            $success = 1; 
+
+        }
+        catch(Exception $e)
+        {
+            $success = 0;
+            $message = $e->getMessage();
+        }
+
+        $this->db->_reset_all();
+        #echo $this->db->last_query();exit;
+        $return_arr["success"] = $success;
+        $return_arr["message"] = $message;
+        $return_arr["data"] = $result_arr_1;
+        return $return_arr;
+    }
 
 
  //  set tagged people to missing pet post
-    public function set_tagged_people($params_arr = array(),$inserted_missing_pet_id)
+/**
+     * set_tagged_people method is used to execute database queries for set tagged people to missing pet post
+     * @created Snehal Shinde | 01-03-2021
+     * @param array $params_arr params_arr array to process input params.
+     * @return array $return_arr returns tag id.
+*/
+
+    public function set_tagged_people_20_4($params_arr = array(),$inserted_missing_pet_id)
     {
        // echo '<pre>'; print_r($params_arr['tag_people']);exit;
          try
@@ -214,25 +310,60 @@ class Missing_pet_model extends CI_Model
     }
 
 
-
     /**
-     * get_review_details method is used to execute database queries for Post a Feedback API.
-     * @created priyanka chillakuru | 16.09.2019
-     * @modified priyanka chillakuru | 16.09.2019
-     * @param string $review_id review_id is used to process review block.
-     * @return array $return_arr returns response of review block.
+     * get_missing_pet_details method is used to get missing pet details 
+     * @created Snehal Shinde | 01-03-2021
+     * @param string $arrResult is used for input params .
+     * @return array $return_arr returns missing pet details.
      */
-    public function get_missing_pet_details($arrResult)
+    public function get_missing_pet_details($arrResult, &$settings_params)
     {
+        // print_r($arrResult);exit;
         try
         {
             $result_arr = array();
+             $this->db->start_cache();
+
             if(true == empty($arrResult)){
                 return false;
             }
             $strWhere ='';    
             
             $this->db->from("missing_pets AS i");
+            $this->db->join("users as u","i.iUserId = u.iUserId", "left");
+            $this->db->join("blocked_user AS bu", "bu.iBlockedTo = ".$arrResult['user_id']." AND bu.iBlockedFrom = i.iUserId AND u.eStatus ='Active'", "left");
+
+             $strWhere = "ePostStatus ='Active'";
+
+            if(false == empty($arrResult['user_id']) && $arrResult['page_code']=='pet_list')
+            {
+                // $strWhere.= "AND i.iUserId ='".$arrResult['user_id']."'";
+                $strWhere.= "AND i.ePetStatus = 'missing' AND i.iUserId !='".$arrResult['user_id']."' AND u.eStatus ='Active' ";
+               
+            } 
+            $strWhere.= " AND bu.iBlockedId IS NULL";
+            if(false == empty($arrResult['user_id']) && $arrResult['page_code']=='my_pet_list')
+            {
+                if(isset($arrResult['other_user_id']) && $arrResult['other_user_id'] != "")
+                {
+                    $strWhere.= "AND i.iUserId ='".$arrResult['other_user_id']."'";
+                }
+                else
+                {
+                    $strWhere.= "AND i.iUserId ='".$arrResult['user_id']."'";
+                }
+               
+            }
+            if(false == empty($arrResult['missing_pet_id']))
+            {
+                $strWhere.= " AND i.iMissingPetId = '".$arrResult['missing_pet_id']."'";
+                
+            }
+             $this->db->where($strWhere);
+            $this->db->stop_cache();
+            $total_records = $this->db->count_all_results();
+
+
             $this->db->select("i.iMissingPetId AS missing_pet_id"); 
             $this->db->select("i.iUserId AS user_id"); 
             $this->db->select("i.vDogsName AS dog_name");
@@ -276,65 +407,75 @@ class Missing_pet_model extends CI_Model
             $this->db->select("u.vProfileImage AS user_profile_image");
             $this->db->select("u.dLatitude AS user_lattitude");
             $this->db->select("u.dLongitude AS user_longitude");
-            $this->db->select("count(t.iTagId) AS total_tags");
-            $this->db->select("count(c.iCommentId) AS total_comments");
-            $this->db->join("users as u","i.iUserId = u.iUserId", "left");
-            $this->db->join("tag_people as t","i.iMissingPetId = t.iMissingPetId", "left");
-            $this->db->join("comments as c","i.iMissingPetId = c.iMissingPetId", "left");
-
-            $strWhere = "ePostStatus ='Active'";
-
-            if(false == empty($arrResult['user_id']) && $arrResult['page_code']=='pet_list')
-            {
-                // $strWhere.= "AND i.iUserId ='".$arrResult['user_id']."'";
-                $strWhere.= "AND i.ePetStatus = 'missing'";
-               
-            } 
-
-            if(false == empty($arrResult['user_id']) && $arrResult['page_code']=='my_pet_list')
-            {
-                $strWhere.= "AND i.iUserId ='".$arrResult['user_id']."'";
-               
-            }
-
-            if(false == empty($arrResult['pet_status']) && 'found' == $arrResult['pet_status'])
-            {
-                $strWhere.= " AND ePetStatus = '".$arrResult['pet_status']."'";
-               
-            }
-            if(false == empty($arrResult['pet_status']) && 'missing' == $arrResult['pet_status'] || 'found' == $arrResult['pet_status'])
-            {
-                $strWhere.= " AND ePetStatus in ('missing','found') ";
-            }
-            if(false == empty($arrResult['missing_pet_id']))
-            {
-                $strWhere.= " AND i.iMissingPetId = '".$arrResult['missing_pet_id']."'";
-                
-            }
-             $this->db->where($strWhere);
+             
+           
+            
+             $settings_params['count'] = $total_records;
+            $record_limit = intval("".$arrResult["perpage_record"]."");
+            $current_page = intval($arrResult["page_index"]) > 0 ? intval($arrResult["page_index"]) : 1;
+            $total_pages = getTotalPages($total_records, $record_limit);
+            $start_index = getStartIndex($total_records, $current_page, $record_limit);
+            $settings_params['per_page'] = $record_limit;
+            $settings_params['curr_page'] = $current_page;
+            $settings_params['prev_page'] = ($current_page > 1) ? 1 : 0;
+            $settings_params['next_page'] = ($current_page+1 > $total_pages) ? 0 : 1;
+            
+           
              $this->db->group_by("i.iMissingPetId");
              $this->db->order_by("i.iMissingPetId",'desc');
-
+             $this->db->limit($record_limit, $start_index);
             $result_obj = $this->db->get();
-            
+            $settings_params['count'] = $result_obj->num_rows();
             $result_arr = is_object($result_obj) ? $result_obj->result_array() : array();
+            $this->db->reset_query();
+            $this->db->_reset_all();
+// print_r($result_arr);exit;
+            // echo $this->db->last_query();exit;
+            
 //  here we recreate array for fetching user profile image from aws and add it to final array
-            $result_arr = array_map(function (array $arr) {
+            $result_arr = array_map(function (array $arr) { 
 
-                
+
+                $tagcomment_result = array();
+                    $strSql1="SELECT 
+                    
+                     count(t.iTagId) AS total_tags FROM tag_people AS t               
+                     WHERE t.iMissingPetId='".$arr['missing_pet_id']."'";
+                    $result_obj1 = $this->db->query($strSql1);
+                    $tag_result = is_object($result_obj1) ? $result_obj1->result_array() : array();
+                    $total_tags=$tag_result[0]['total_tags'];
+
+                    $comment_result = array();
+                    $strSql2="SELECT 
+                     count(c.iCommentId) AS total_comments
+                     FROM comments AS c WHERE c.iMissingPetId='".$arr['missing_pet_id']."'";
+                    $result_obj2 = $this->db->query($strSql2);
+                    $comment_result = is_object($result_obj2) ? $result_obj2->result_array() : array();
+                    $this->db->reset_query();
+                    $this->db->_reset_all();
+                    $total_comments=$comment_result[0]['total_comments'];
 
                 if($arr["found_user_id"]!=null)
                 {
-                    $this->db->select("u.vFirstName AS found_user_first_name");
-                    $this->db->select("u.vLastName AS found_user_last_name");
-                    $this->db->from("users AS u");
-                    $this->db->join("missing_pets as i","u.iUserId = i.vFoundUser", "left");
-                    $this->db->where("i.iMissingPetId='".$arr['missing_pet_id']."'");
-                    $result_found_arr = $this->db->get();
-                    $result_found = is_object($result_found_arr) ? $result_found_arr->result_array() : array();
+
+                   $result_found = array();
+                    $strSql="SELECT 
+                    u.iUserId AS found_user_id,
+                    u.vFirstName AS found_user_first_name,
+                     u.vLastName AS found_user_last_name,u.vProfileImage AS found_user_profile
+                     FROM users AS u      
+                     LEFT JOIN missing_pets AS i ON (u.iUserId = i.vFoundUser)             
+                     WHERE i.iMissingPetId='".$arr['missing_pet_id']."'";
+                    $result_obj = $this->db->query($strSql);
+
+                   // echo $this->db->last_query();exit;
+                    $result_found = is_object($result_obj) ? $result_obj->result_array() : array();
+                    $this->db->reset_query();
+                    $this->db->_reset_all();
 
                     $found_user_first_name=$result_found[0]['found_user_first_name'];
                     $found_user_last_name=$result_found[0]['found_user_last_name'];
+                    $found_user_profile=$result_found[0]['found_user_profile'];
 
                      
                 }
@@ -343,7 +484,55 @@ class Missing_pet_model extends CI_Model
                     $found_user_first_name='';
                     $found_user_last_name='';
                 }
+                 if($arr["height"]!=null)
+                {
+                        preg_match_all('!\d+!', $arr['height'], $height_split);
+                        $height_feet=$height_split[0][0];
+                        $height_inches=$height_split[0][1];
 
+                }
+                else
+                {   
+                        $height_feet='';
+                        $height_inches='';
+                }
+
+               
+// get missing pet images path 
+            if (isset($arr['missing_pet_id']) && $arr['missing_pet_id'] != "")
+            {
+                $this->db->from("missing_pet_images");
+                $this->db->select("Distinct(iImageId) AS image_id");
+                $this->db->select("vImage as image_url");
+                $this->db->where("iMissingPetId =", $arr['missing_pet_id']);
+                $this->db->where("iUserId =", $arr['user_id']);
+
+                $result_obj_img = $this->db->get();
+                $pet_images=$result_obj_img->result_array();
+                $missing_pet_id=$arr['missing_pet_id'];
+                //  get aws images path for each image 
+                $imgArr = [];
+                foreach ($pet_images as $key => $value)
+                {
+                   
+                    $data1 = $value["image_url"];
+                        $image_arr = array();
+                        $aws_folder_name = $this->config->item("AWS_FOLDER_NAME");
+                        $image_arr["image_name"] = $data1;
+                         $image_arr["ext"] = implode(",", $this->config->item("IMAGE_EXTENSION_ARR"));
+                         $image_arr["color"] = "FFFFFF";
+                        $image_arr["no_img"] = FALSE;
+                        $p_key = ($arr["missing_pet_id"] != "") ? $arr["missing_pet_id"] : $arr["missing_pet_id"];
+                        $image_arr["pk"] = $p_key;
+                        $image_arr["path"] =$aws_folder_name. "/missing_pet_image";
+                        $data1 = $this->general->get_image_aws($image_arr);
+                         $imgArr[$key]["image_id"]=$value["image_id"];
+                         $imgArr[$key]["image_url"]=$data1;
+                }                                 
+            }
+            $arr['missing_pet_image']=$imgArr;
+
+ // get dog owner image path from aws 
                 $data_1 = $arr["user_profile_image"];
                 $image_arr = array();
                 $aws_folder_name = $this->config->item("AWS_FOLDER_NAME");
@@ -355,9 +544,28 @@ class Missing_pet_model extends CI_Model
                 $image_arr["no_img"] = false;
                 $image_arr["path"] =$aws_folder_name. "/user_profile";
                 $data_1 = $this->general->get_image_aws($image_arr);
+
+ // get found user image path from aws 
+                $data_11 = $found_user_profile;
+                $image_arr1 = array();
+                $image_arr1["image_name"] = $data_11;
+                $image_arr1["ext"] = implode(",", $this->config->item("IMAGE_EXTENSION_ARR"));
+                $p_key1 = ($arr["found_user_id"] != "") ? $arr["found_user_id"] : $arr["found_user_id"];
+                $image_arr1["pk"] = $p_key1;
+                $image_arr1["color"] = "FFFFFF";
+                $image_arr1["no_img"] = false;
+                $image_arr1["path"] =$aws_folder_name. "/user_profile";
+                $data_11 = $this->general->get_image_aws($image_arr1);
+
+
+                $arr['found_user_profile'] = $data_11;
                 $arr['user_profile_image'] = $data_1;
+                 $arr['height_feet'] = $height_feet;
+                $arr['height_inches'] = $height_inches;
                 $arr['found_user_first_name'] = $found_user_first_name;
                 $arr['found_user_last_name'] = $found_user_last_name;
+                $arr['total_tags'] = $total_tags;
+                $arr['total_comments'] = $total_comments;
 
                 return $arr;
             }, $result_arr);
@@ -386,84 +594,212 @@ class Missing_pet_model extends CI_Model
 
 
 
-/**
-     * get_review_details method is used to execute database queries for Post a Feedback API.
-     * @created priyanka chillakuru | 16.09.2019
-     * @modified priyanka chillakuru | 16.09.2019
-     * @param string $review_id review_id is used to process review block.
-     * @return array $return_arr returns response of review block.
+    /**
+     * get_missing_pet_details method is used to get missing pet details 
+     * @created Snehal Shinde | 01-03-2021
+     * @param string $arrResult is used for input params .
+     * @return array $return_arr returns missing pet details.
      */
-    public function get_item_details_by_serial_number($arrResult)
+    public function get_missing_pet_details_22_4($arrResult, &$settings_params)
     {
         try
         {
             $result_arr = array();
+             $this->db->start_cache();
+
             if(true == empty($arrResult)){
                 return false;
             }
-            $strWhere ='';            
+            $strWhere ='';    
             
+            $this->db->from("missing_pets AS i");
+            $this->db->join("users as u","i.iUserId = u.iUserId", "left");
+            $this->db->join("blocked_user AS bu", "bu.iBlockedTo = ".$arrResult['user_id']." AND bu.iBlockedFrom = i.iUserId AND u.eStatus ='Active'", "left");
+             $strWhere = "ePostStatus ='Active'";
 
-            $strWhere = "eItemStatus ='Active'"; 
-            if(false == empty($arrResult['item_serial_number']))
+            if(false == empty($arrResult['user_id']) && $arrResult['page_code']=='pet_list')
             {
-                $strWhere = $strWhere." AND vItemSerialNumber = '".$arrResult['item_serial_number']."'";
+                // $strWhere.= "AND i.iUserId ='".$arrResult['user_id']."'";
+                $strWhere.= "AND i.ePetStatus = 'missing'";
+               
+            } 
+            $strWhere.= " AND bu.iBlockedId IS NULL";
+            if(false == empty($arrResult['user_id']) && $arrResult['page_code']=='my_pet_list')
+            {
+                $strWhere.= "AND i.iUserId ='".$arrResult['user_id']."'";
+               
             }
-            
-            $strSql="SELECT
+            if(false == empty($arrResult['missing_pet_id']))
+            {
+                $strWhere.= " AND i.iMissingPetId = '".$arrResult['missing_pet_id']."'";
+                
+            }
+             $this->db->where($strWhere);
+            $this->db->stop_cache();
+            $total_records = $this->db->count_all_results();
 
-                    i.iItemId AS item_id, 
-                    i.vItemName AS item_name,           
-                    i.vItemSerialNumber AS item_serial_number,
-                    i.dDateOfPurchase AS item_purchase_date,            
-                    i.vPurchasedStreetAddress AS item_purchase_street_address, 
-                    i.vPurchasedCity AS item_purchase_city,            
-                    i.vPurchasedState AS item_purchase_state,
-                    i.iPurchasedZipCode AS item_purchase_zip_code,
-                    i.vDescription AS item_description,
-                    i.vStoreName AS item_store_name,
-                    i.eItemStatus AS item_status,
-                    i.eItemReportStatus AS item_report_status,
-                    i.dDateOfLost AS item_lost_date,
-                    i.vLostStreetAddress AS item_lost_street_address, 
-                    i.vLostCity AS item_lost_city,            
-                    i.vLostState AS item_lost_state,
-                    i.iLostZipCode AS item_lost_zip_code,
-                    i.dLostLatitude AS item_lost_latitude, 
-                    i.dLostLongitude AS item_lost_longitude,
-                    i.dDateOfFound AS item_found_date, 
-                    i.vFoundStreetAddress AS item_found_street_address,
-                    i.vFoundCity AS item_found_city,            
-                    i.vFoundState AS item_found_state, 
-                    i.iFoundZipCode AS item_found_code,
-                    i.dFoundLatitude AS item_found_latitude, 
-                    i.dFoundLongitude AS item_found_longitude,
-                    i.vImage_ID1 AS image_1,
-                    i.vImage_ID2 AS image_2,
-                    i.vImage_ID3 AS image_3,
-                    i.vImage_ID4 AS image_4,
-                    i.vImage_ID5 AS image_5,
-                    concat(user.vFirstName,' ',user.vLastName) AS item_owner_name,
-                    user.vEmail AS item_owner_email,
-                    user.vMobileNo AS item_owner_phone,
-                    user.iUserId AS item_owner_userId,
-                    user.vProfileImage AS item_owner_image
-                    FROM
-                    item AS i
-                    LEFT JOIN users AS user ON user.iUserId = i.iUserId
-                    WHERE $strWhere";
-            $strFinalQuery = $strSql;
-            $result_obj = $this->db->query($strFinalQuery);
+
+            $this->db->select("i.iMissingPetId AS missing_pet_id"); 
+            $this->db->select("i.iUserId AS user_id"); 
+            $this->db->select("i.vDogsName AS dog_name");
+             $this->db->select("i.vDogsDob AS date_of_birth");           
+            $this->db->select("i.vDogLastSeen AS last_seen_date");
+            $this->db->select("i.vDogLastSeenStreet AS last_seen_street");            
+            $this->db->select("i.vLastSeenCity AS last_seen_city"); 
+            $this->db->select("i.vLastSeenState AS last_seen_state");            
+            $this->db->select("i.vLastSeenZipCode AS last_seen_zip_code"); 
+            $this->db->select("i.vLastSeenLattitude AS last_seen_latitude");           
+            $this->db->select("i.vLastSeenLongitude AS last_seen_longitude");
+            $this->db->select("i.vHairColor AS hair_color");
+            $this->db->select("i.vEyeColor AS eye_color");
+            $this->db->select("i.vHeight AS height"); 
+            $this->db->select("i.iWeight AS weight");            
+            $this->db->select("i.eGender AS gender");
+            $this->db->select("i.vBreed AS breed");  
+            $this->db->select("i.vIdentyMark AS identity_mark");  
+            $this->db->select("i.vBodyType AS body_type");  
+            $this->db->select("i.vdogDetails AS dog_details");  
+            $this->db->select("i.ePetStatus AS pet_status");  
+            $this->db->select("i.vFoundUser AS found_user_id");  
+            $this->db->select("i.vFoundStreetAddress AS pet_found_street_address"); 
+            $this->db->select("i.vFoundCity AS pet_found_city");            
+            $this->db->select("i.vFoundState AS pet_found_state"); 
+            $this->db->select("i.vFoundLattitude AS pet_found_latitude"); 
+            $this->db->select("i.vFoundLongitude AS pet_found_longitude");
+            $this->db->select("i.tUniqueTimeStamp AS pet_found_date");
+            $this->db->select("i.vImageId_1 AS image_1");
+            $this->db->select("i.vImageId_2 AS image_2");
+            $this->db->select("i.vImageId_3 AS image_3");
+            $this->db->select("i.vImageId_4 AS image_4");
+            $this->db->select("i.vImageId_5 AS image_5");
+            $this->db->select("u.vLastName AS user_last_name");
+            $this->db->select("u.vFirstName AS user_first_name");
+            $this->db->select("u.vAptSuite AS user_apt_suit");
+            $this->db->select("u.tAddress AS user_address");
+            $this->db->select("u.vCity AS user_city");
+            $this->db->select("u.vStateName AS user_state");
+            $this->db->select("u.vZipCode AS user_zip_code");
+            $this->db->select("u.vProfileImage AS user_profile_image");
+            $this->db->select("u.dLatitude AS user_lattitude");
+            $this->db->select("u.dLongitude AS user_longitude");
+             
+           
             
-            // echo $this->db->last_query();exit;
+             $settings_params['count'] = $total_records;
+            $record_limit = intval("".$arrResult["perpage_record"]."");
+            $current_page = intval($arrResult["page_index"]) > 0 ? intval($arrResult["page_index"]) : 1;
+            $total_pages = getTotalPages($total_records, $record_limit);
+            $start_index = getStartIndex($total_records, $current_page, $record_limit);
+            $settings_params['per_page'] = $record_limit;
+            $settings_params['curr_page'] = $current_page;
+            $settings_params['prev_page'] = ($current_page > 1) ? 1 : 0;
+            $settings_params['next_page'] = ($current_page+1 > $total_pages) ? 0 : 1;
             
+           
+             $this->db->group_by("i.iMissingPetId");
+             $this->db->order_by("i.iMissingPetId",'desc');
+             $this->db->limit($record_limit, $start_index);
+            $result_obj = $this->db->get();
+            $settings_params['count'] = $result_obj->num_rows();
             $result_arr = is_object($result_obj) ? $result_obj->result_array() : array();
+
+// print_r($result_arr);exit;
+           // echo $this->db->last_query();exit;
+            
+//  here we recreate array for fetching user profile image from aws and add it to final array
+            $result_arr = array_map(function (array $arr) { 
+
+
+                $tagcomment_result = array();
+                    $strSql1="SELECT 
+                    
+                     count(t.iTagId) AS total_tags FROM tag_people AS t               
+                     WHERE t.iMissingPetId='".$arr['missing_pet_id']."'";
+                    $result_obj1 = $this->db->query($strSql1);
+                    $tag_result = is_object($result_obj1) ? $result_obj1->result_array() : array();
+                    $total_tags=$tag_result[0]['total_tags'];
+
+                    $comment_result = array();
+                    $strSql2="SELECT 
+                     count(c.iCommentId) AS total_comments
+                     FROM comments AS c WHERE c.iMissingPetId='".$arr['missing_pet_id']."'";
+                    $result_obj2 = $this->db->query($strSql2);
+                    $comment_result = is_object($result_obj2) ? $result_obj2->result_array() : array();
+
+                    $total_comments=$comment_result[0]['total_comments'];
+
+                if($arr["found_user_id"]!=null)
+                {
+
+                   $result_found = array();
+                    $strSql="SELECT 
+                    
+                    u.vFirstName AS found_user_first_name,
+                     u.vLastName AS found_user_last_name
+                     FROM users AS u      
+                     LEFT JOIN missing_pets AS i ON (u.iUserId = i.vFoundUser)             
+                     WHERE i.iMissingPetId='".$arr['missing_pet_id']."'";
+                    $result_obj = $this->db->query($strSql);
+
+                   // echo $this->db->last_query();exit;
+                    $result_found = is_object($result_obj) ? $result_obj->result_array() : array();
+
+
+
+                    $found_user_first_name=$result_found[0]['found_user_first_name'];
+                    $found_user_last_name=$result_found[0]['found_user_last_name'];
+
+                     
+                }
+                else
+                {
+                    $found_user_first_name='';
+                    $found_user_last_name='';
+                }
+                 if($arr["height"]!=null)
+                {
+                        preg_match_all('!\d+!', $arr['height'], $height_split);
+                        $height_feet=$height_split[0][0];
+                        $height_inches=$height_split[0][1];
+
+                }
+                else
+                {   
+                        $height_feet='';
+                        $height_inches='';
+                }
+
+
+
+
+
+                $data_1 = $arr["user_profile_image"];
+                $image_arr = array();
+                $aws_folder_name = $this->config->item("AWS_FOLDER_NAME");
+                $image_arr["image_name"] = $data_1;
+                $image_arr["ext"] = implode(",", $this->config->item("IMAGE_EXTENSION_ARR"));
+                $p_key = ($arr["user_id"] != "") ? $arr["user_id"] : $arr["user_id"];
+                    $image_arr["pk"] = $p_key;
+                $image_arr["color"] = "FFFFFF";
+                $image_arr["no_img"] = false;
+                $image_arr["path"] =$aws_folder_name. "/user_profile";
+                $data_1 = $this->general->get_image_aws($image_arr);
+                $arr['user_profile_image'] = $data_1;
+                 $arr['height_feet'] = $height_feet;
+                $arr['height_inches'] = $height_inches;
+                $arr['found_user_first_name'] = $found_user_first_name;
+                $arr['found_user_last_name'] = $found_user_last_name;
+                $arr['total_tags'] = $total_tags;
+                $arr['total_comments'] = $total_comments;
+
+                return $arr;
+            }, $result_arr);
+
+
             if (!is_array($result_arr) || count($result_arr) == 0)
             {
                 throw new Exception('No records found.');
             }
-
-
             $success = 1;
         }
         catch(Exception $e)
@@ -478,19 +814,22 @@ class Missing_pet_model extends CI_Model
         $return_arr["data"] = $result_arr;
         return $return_arr;
     }
-    
+
+
+
+
 
 
    /**
-     * update_profile method is used to execute database queries for Edit Profile API.
-     * @created priyanka chillakuru | 18.09.2019
-     * @modified priyanka chillakuru | 25.09.2019
+     * update_missing_pet method is used to execute database queries for Edit Missing pet post details.
+     * @created Snehal Shinde | 01-03-2021
      * @param array $params_arr params_arr array to process query block.
      * @param array $where_arr where_arr are used to process where condition(s).
      * @return array $return_arr returns response of query block.
      */
     public function update_missing_pet($params_arr = array(), $where_arr = array())
     {
+        //print_r($params_arr);exit;
         try
         {
             $result_arr = array();
@@ -587,7 +926,7 @@ class Missing_pet_model extends CI_Model
                 {
                     $this->db->set("vFoundUser", $params_arr["missing_pet_found_user_id"]);
                 }
-                if (isset($params_arr["missing_pet_found_street_address"]))
+                if (isset($params_arr["missing_pet_found_street_address"])) 
                 {
                    $this->db->set("vFoundStreetAddress", $params_arr["missing_pet_found_street_address"]);
                 }
@@ -599,13 +938,17 @@ class Missing_pet_model extends CI_Model
                 {
                     $this->db->set("vFoundState", $params_arr["missing_pet_found_state"]);
                 }
+                if (isset($params_arr["missing_pet_found_zipcode"]))
+                {
+                    $this->db->set("vPetFoundZipCode", $params_arr["missing_pet_found_zipcode"]);
+                }
                 if (isset($params_arr["missing_pet_found_latitude"]))
                 {
-                   $this->db->set("dFoundLatitude", $params_arr["missing_pet_found_latitude"]);
+                   $this->db->set("vFoundLattitude", $params_arr["missing_pet_found_latitude"]);
                 }
                 if (isset($params_arr["missing_pet_found_longitude"]))
                 {
-                   $this->db->set("dFoundLongitude", $params_arr["missing_pet_found_longitude"]);
+                   $this->db->set("vFoundLongitude", $params_arr["missing_pet_found_longitude"]);
                 }
                 if (isset($params_arr["missing_pet_found_date"]))
                 {
@@ -631,9 +974,13 @@ class Missing_pet_model extends CI_Model
                 {
                     $this->db->set("vImageId_5", $params_arr["image_5"]);
                 }
+                if(isset($params_arr["ePetStatus"]))
+                {
+                    $this->db->set("ePetStatus", $params_arr["ePetStatus"]);
+                }
 
                 $res = $this->db->update("missing_pets");
-                //echo $this->db->last_query();exit;
+                // echo $this->db->last_query();exit;
                 $affected_rows = $this->db->affected_rows();
                 if (!$res || $affected_rows == -1)
                 {
@@ -659,9 +1006,8 @@ class Missing_pet_model extends CI_Model
     }
 
       /**
-     * delete_missing_pet method is used to execute database queries for Edit Profile API.
-     * @created priyanka chillakuru | 18.09.2019
-     * @modified priyanka chillakuru | 25.09.2019
+     * delete_missing_pet method is used to execute database queries for delete missing pet  post.
+     * @created Snehal Shinde | 01-03-2021
      * @param array $params_arr params_arr array to process query block.
      * @param array $where_arr where_arr are used to process where condition(s).
      * @return array $return_arr returns response of query block.
