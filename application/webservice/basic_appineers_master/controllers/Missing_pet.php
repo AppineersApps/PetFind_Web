@@ -1119,6 +1119,7 @@ class Missing_pet extends Cit_Controller
      */
     public function post_notification($input_params = array())
     {
+        // print_r($input_params);exit;
         $this->block_result = array();
         try
         {
@@ -1179,14 +1180,22 @@ class Missing_pet extends Cit_Controller
             }
             else
             {
-                $params_arr["_enotificationtype"] = "New missing pet post created";
+                
+               
                 if($input_params["notification_for"]=='near area')
                 {
+                    $params_arr["_enotificationtype"] = "missing pet in your area";
                     $params_arr["eNotifyType"] = "Pet";
+                    $params_arr["pet_found_street_address"] = $input_params["last_seen_street"];
+                    $params_arr["pet_found_city"] = $input_params["last_seen_city"];
+                    $params_arr["pet_found_state"] = $input_params["last_seen_state"];
+                    $params_arr["pet_found_zipcode"] = $input_params["last_seen_zip_code"];
+                    
                 }
                 else
                 {
-                    $params_arr["eNotifyType"] = "User";
+                    $params_arr["_enotificationtype"] = "tagged you in missing pet post";
+                    $params_arr["eNotifyType"] = "Pet";
                 }
 
             }
@@ -1302,13 +1311,21 @@ class Missing_pet extends Cit_Controller
             $send_arr['send_mode'] = $send_mode;
             
             $uni_id = $this->general->insertPushNotification($send_arr);
+
+           
             if (!$uni_id)
             {
+                 $success = 0;
+                 $message = "Failure in Push notification.";
                 throw new Exception('Failure in insertion of push notification batch entry.');
             }
+            else
+            {
+                 $success = 1;
+                 $message = "Push notification send succesfully."; 
+            }
 
-            $success = 1;
-            $message = "Push notification send succesfully.";
+           
         }
         catch(Exception $e)
         {

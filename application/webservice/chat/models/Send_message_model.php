@@ -292,6 +292,7 @@ class Send_message_model extends CI_Model
                 $result_param = "affected_rows";
                 $result_arr[0][$result_param] = $affected_rows;
                 $success = 1;
+
             }else{
 
                 $result_arr = array();
@@ -306,7 +307,8 @@ class Send_message_model extends CI_Model
                 if (isset($params_arr["receiver_id"]))
                 {
                     $this->db->set("iReceiverId", $params_arr["receiver_id"]);
-                }
+                } 
+
                 $this->db->set("vNotificationType",$params_arr["_enotificationtype"]);
                 $this->db->set("eNotifyType", $params_arr["eNotifyType"]);
                 $this->db->set($this->db->protect("dtAddedAt"), $params_arr["_dtaddedat"], FALSE);

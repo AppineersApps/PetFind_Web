@@ -159,8 +159,9 @@ class Notification_model extends CI_Model
                     u.iUserId AS sender_id, u.vProfileImage AS sender_profile,u.vMobileNo AS sender_phone,u.tAddress AS sender_street_address, u.vStateName AS sender_state, u.vCity AS sender_city, u.vZipCode AS sender_zip_code, u.dLatitude AS sender_lattitude,u.dLongitude AS sender_longitude,u.vEmail AS sender_email,m.vDogsName AS dog_name
 , (select mi.vImage from missing_pet_images as mi where mi.iMissingPetId = m.iMissingPetId limit 1) AS dog_image
 
- FROM notification m1 LEFT JOIN notification m2 ON (m1.`iSenderId` = m2.`iSenderId` AND m1.`iNotificationId` < m2.`iNotificationId`) INNER JOIN users AS u ON m1.iSenderId = u.iUserId
-INNER JOIN missing_pets AS m ON m.iMissingPetId = m1.iMissingPetId WHERE m2.iNotificationId IS NULL AND  m1.iMissingPetId='".$input_param['missing_pet_id']."' AND m1.vNotificationType='".$notification_type."' AND m1.iReceiverId='".$input_param['user_id']."' group by m1.iSenderId order by m1.iNotificationId desc ";
+ FROM notification m1 LEFT JOIN notification m2 ON (m1.`iSenderId` = m2.`iSenderId` AND m1.`iNotificationId` < m2.`iNotificationId`) LEFT JOIN users AS u ON m1.iSenderId = u.iUserId
+LEFT JOIN missing_pets AS m ON m.iMissingPetId = m1.iMissingPetId WHERE m2.iNotificationId IS NULL AND  m1.iMissingPetId='".$input_param['missing_pet_id']."' AND m1.vNotificationType='".$notification_type."' AND m1.iReceiverId='".$input_param['user_id']."' group by m1.iSenderId order by m1.iNotificationId desc ";
+
 
                     $result_obj = $this->db->query($strSql);
 
@@ -185,7 +186,7 @@ INNER JOIN missing_pets AS m ON m.iMissingPetId = m1.iMissingPetId WHERE m2.iNot
             $this->db->select("n.vPetFoundStreet AS pet_found_street");
             $this->db->select("n.vPetFoundCity AS pet_found_city");
             $this->db->select("n.vPetFoundState AS pet_found_state");
-            $this->db->select("n.vPetFoundZipCode AS pet_found_state");
+            $this->db->select("n.vPetFoundZipCode AS pet_found_zipcode");
             $this->db->select("n.vPetFoundDate AS pet_found_date");
             $this->db->select("n.vPetFoundLattitude AS pet_found_lattitude");
             $this->db->select("n.vPetFoundLongitude AS pet_found_longitude");
@@ -220,7 +221,7 @@ INNER JOIN missing_pets AS m ON m.iMissingPetId = m1.iMissingPetId WHERE m2.iNot
             $result_arr = is_object($result_obj) ? $result_obj->result_array() : array();
             }
            
-echo $this->db->last_query();exit;
+// echo $this->db->last_query();exit;
 
            
             $this->db->flush_cache();
@@ -322,7 +323,7 @@ echo $this->db->last_query();exit;
              FROM users AS s 
              LEFT JOIN tag_people as t ON s.iUserId=t.iTagTo 
              LEFT JOIN missing_pets as m ON t.iMissingPetId=m.iMissingPetId 
-              WHERE t.iMissingPetId = '".$missing_pet_id."'";
+              WHERE t.iMissingPetId = '".$missing_pet_id."' AND t.iTagTo != '".$user_id."'";
             $result_obj = $this->db->query($strSql);
             // echo $this->db->last_query();exit;
 

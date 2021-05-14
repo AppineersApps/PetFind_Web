@@ -1540,15 +1540,18 @@ Class General
 
     public function pushTestNotification($device_id = '', $sound = '',$notify_arr = array(), $device_type = '')
     {
-        if (empty($device_id)) {
-            return FALSE;
-        }
+
+        // if (empty($device_id) && $device_id=="") {
+        //     return FALSE;
+        // }
        /* if ($device_type == "android" || strlen($device_id) > 70) {
             $success = $this->androidNotification($device_id, $notify_arr['message'], $notify_arr);
         } else {
             $success = $this->iOSNotification($device_id, $notify_arr);
         }*/
         $success = $this->fcmNotification($device_id,$sound, $notify_arr['message'], $notify_arr);
+        // print_r($success);exit;
+
         return $success;
     }
 
@@ -1912,7 +1915,9 @@ Class General
                 }
             }
             $success = $this->pushTestNotification($push_arr['device_id'], $notify_arr['sound'], $notify_arr);
+           
         }
+
         $this->CI->load->model('tools/push');
         $insert_arr = array();
         $insert_arr['vUniqueId'] = $unique_id;
@@ -1933,10 +1938,13 @@ Class General
         if ($send_type == "runtime") {
             $insert_arr['tSendJSON'] = $this->getPushNotifyOutput("body");
             $insert_arr['dtExeDateTime'] = date("Y-m-d H:i:s");
-            if ($success) {
+
+             // print_r($success['success']);exit;
+
+            if ($success['success']=="1") {
                 $insert_arr['eStatus'] = "Executed";
             } else {
-                $insert_arr['tError'] = $this->getNotifyErrorOutput();
+                $insert_arr['tError'] = $success['message'];
                 $insert_arr['eStatus'] = 'Failed';
             }
         } else {
@@ -1944,10 +1952,10 @@ Class General
         }
         $pid = $this->CI->push->insertPushNotify($insert_arr);
         if ($send_type == "runtime") {
-            if (!$success) {
+            if (!$success['success']) {
                 return FALSE;
             }
-            return $success;
+            return $success['success'];
         } else {
             if (!$pid) {
                 return FALSE;
@@ -5668,6 +5676,7 @@ EOD;
 
      public function fcmNotification($device_id = '', $sound='',$message = '', $extra = array())
     {
+        // print_r($device_id);exit;
         $result = '';
         try {
             if (empty($device_id)) {
@@ -5757,14 +5766,28 @@ EOD;
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
             $result = curl_exec($ch);
             curl_close($ch);
+            $result_array=json_decode($result);
+            
+           
+            if(($result_array->failure)=="1")
+            {
+                $success = 0;
+                $message=$result_array->results[0]->error;
+                
+                throw new Exception($result_array->results[0]->error);
+            }
+            else
+            {
+                  $success = 1;
+                  $message = "Push notification send successfully..!";
+            }
 
             if (!$result) {
                 $error = curl_error($ch) || "CURL execution fails..!";
                 throw new Exception($error);
             }
 
-            $success = 1;
-            $message = "Push notification send successfully..!";
+          
         } catch (Exception $e) {
             $success = 0;
             $message = $e->getMessage();
@@ -5783,7 +5806,13 @@ EOD;
                 fclose($f);
             }
         }
-        return $success;
+
+        $result_final=[
+            "success"=>$success,
+            "message"=>$message
+    ];
+
+        return $result_final;
     }
 
 

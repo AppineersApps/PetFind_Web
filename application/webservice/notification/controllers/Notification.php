@@ -195,7 +195,7 @@ class Notification extends Cit_Controller
 
             // $input_params = $this->get_notified_user_list_details($input_params);
             $input_params = $this->get_notification_details($input_params);
-print_r($input_params);exit;
+
             $condition_res = $this->is_notify_found($input_params);
             if ($condition_res["success"])
             {
@@ -302,6 +302,7 @@ print_r($input_params);exit;
                 else
                 {
                     $input_params = $this->get_user_details_for_send_notifi($input_params);
+                    print_r($input_params);exit;
                     $input_params = $this->custom_function($input_params);
 
                     $input_params = $this->start_loop($input_params); 
@@ -373,7 +374,10 @@ print_r($input_params);exit;
             $user_id = isset($input_params["user_id"]) ? $input_params["user_id"] : "";
             $missing_pet_id = isset($input_params["missing_pet_id"]) ? $input_params["missing_pet_id"] : "";
             $receiver_user_id = isset($input_params["receiver_user_id"]) ? $input_params["receiver_user_id"] : "";
+            // print_r($input_params);exit;
            $tagged_user_result = $this->notification_model->get_tagged_user_details_for_send_notifi($user_id, $missing_pet_id);
+
+          
 
             if(isset($input_params["page_code"]) && 'found_my_pet'==$input_params["page_code"])
             {
@@ -387,7 +391,7 @@ print_r($input_params);exit;
                $this->block_result["data"]=array_merge($tagged_user_result['data'],$pet_owner_result['data']); 
             }
 
-           
+            // print_r($this->block_result["data"]);exit;
             // print_r($this->block_result['data']);exit;
 
             if (!$this->block_result['data'])
@@ -566,6 +570,8 @@ print_r($input_params);exit;
             $user_id = isset($input_params["user_id"]) ? $input_params["user_id"] : "";
 
             $this->block_result = $this->notification_model->get_notification_details($user_id, $input_params);
+
+            // print_r($this->block_result);exit;
             if (!$this->block_result["success"])
             {
                 throw new Exception("No records found.");
@@ -673,6 +679,10 @@ print_r($input_params);exit;
                     $dogImage_arr["path"] = $aws_folder_name . "/missing_pet_image";
                     $data_img = $this->general->get_image_aws($dogImage_arr);
 
+                    if($data_arr["notification_type"]=="Notify pet owner for found pet in my area" || $data_arr["notification_type"]=="tagged you in missing pet post" || $data_arr["notification_type"]=="Missing pet is found")
+                    {
+                        $result_arr[$data_key]["dog_name"]="";
+                    }
                     $result_arr[$data_key]["dog_image"] = $data_img;
                     $result_arr[$data_key]["sender_profile"] = $data;
 
@@ -755,6 +765,7 @@ print_r($input_params);exit;
             'pet_found_street',
             'pet_found_city',
             'pet_found_state',
+            'pet_found_zipcode',
             'pet_found_date',
             'pet_found_lattitude',
             'pet_found_longitude',
