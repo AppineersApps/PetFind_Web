@@ -1883,6 +1883,7 @@ Class General
 
     public function insertPushNotification($push_arr = array())
     {
+        
         $unique_id = $this->getPushNotifyUnique();
         if (isset($push_arr['send_mode'])) {
             if ($push_arr['send_mode'] == 'runtime') {
@@ -1914,6 +1915,7 @@ Class General
                     }
                 }
             }
+            
             $success = $this->pushTestNotification($push_arr['device_id'], $notify_arr['sound'], $notify_arr);
            
         }
@@ -1939,7 +1941,7 @@ Class General
             $insert_arr['tSendJSON'] = $this->getPushNotifyOutput("body");
             $insert_arr['dtExeDateTime'] = date("Y-m-d H:i:s");
 
-             // print_r($success['success']);exit;
+            
 
             if ($success['success']=="1") {
                 $insert_arr['eStatus'] = "Executed";
@@ -1950,7 +1952,13 @@ Class General
         } else {
             $insert_arr['eStatus'] = 'Pending';
         }
+
+        
+
         $pid = $this->CI->push->insertPushNotify($insert_arr);
+
+        // print_r($pid);exit;
+
         if ($send_type == "runtime") {
             if (!$success['success']) {
                 return FALSE;

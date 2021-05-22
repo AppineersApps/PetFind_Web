@@ -315,6 +315,7 @@ $lang["add_missing_pet"]["missing_pet_finish_success_1"] = "Failed to add missin
 //  Message for missing pet list and details 
 $lang["get_missing_pets"]["get_missing_pet_finish_success"] = "Fetched Missing pet list successfully" ;
 $lang["get_missing_pets"]["get_missing_pet_finish_success_1"] = "Missing pet List is empty" ;
+$lang["get_missing_pets"]["wrong_missing_pet_post"] = "You access wrong missing pet post details" ;
 $lang["get_missing_pets"]["get_missing_pet_finish_no_data"] = "Missing pet List is empty" ;
 $lang["get_missing_pets"]["get_missing_pet_details_finish_success"] = "Fetch Missing Pet Information Successfully" ;
 //  Message for missing pet updation
@@ -347,6 +348,9 @@ $lang["send_message"]["messages_blocked_finish_failure"] = "Pet Owner blocked yo
 $lang["get_notification"]["notification_finish_success_1"] = "Fetch notification list successfully" ;
 $lang["get_notification"]["notify_finish_success_1"] = "Fetch Notified user list successfully" ;
 $lang["get_notification"]["notification_finish_failure"] = "Failed to notify as pet found in near your area" ;
+$lang["get_notification"]["wrong_missing_pet_post"] = "You access wrong missing pet post details" ;
+$lang["get_notification"]["failed_fetch_notification"] = "Failed to fetch notify user list" ;
+
 
 //  block user 
 $lang["block_user"]["block_user_success"] = "Block user successfully" ;

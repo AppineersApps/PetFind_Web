@@ -195,9 +195,12 @@ class Notification extends Cit_Controller
 
             // $input_params = $this->get_notified_user_list_details($input_params);
             $input_params = $this->get_notification_details($input_params);
-
+           
             $condition_res = $this->is_notify_found($input_params);
-            if ($condition_res["success"])
+
+            $input_params=$this->is_valid_post($input_params);
+           
+            if ($condition_res["success"] || $input_params['checkValidPost']['status']!=0)
             {
 
                 $input_params = $this->get_image($input_params);
@@ -210,7 +213,7 @@ class Notification extends Cit_Controller
 
             else
             {
-
+                
                 $output_response = $this->notification_finish_failure($input_params);
                 return $output_response;
             }
@@ -566,12 +569,72 @@ class Notification extends Cit_Controller
         $this->block_result = array();
         try
         {
-
+            // print_r($input_params);exit; 
             $user_id = isset($input_params["user_id"]) ? $input_params["user_id"] : "";
 
-            $this->block_result = $this->notification_model->get_notification_details($user_id, $input_params);
+            if(isset($input_params['page_code']) && $input_params['page_code'] == "notified_user_list" && isset($input_params['missing_pet_id'])){
+                
+                $get_notification_id=$this->notification_model->get_notification_id($user_id, $input_params);
+                if($get_notification_id['success']==1){
+                    
+                    $data=$get_notification_id['data'];
+                   
+                    $data = array_map(function (array $arr) { 
+                        $notification_id=$arr['notification_id'];
 
-            // print_r($this->block_result);exit;
+                        $get_notification_details=$this->notification_model->get_notification($notification_id);
+                        
+                        if($get_notification_details['success']==1 && is_array($get_notification_details['data']) && count($get_notification_details['data']) > 0){
+                            $details=$get_notification_details['data'][0];
+                           
+                           $arr['notification_id'] = $details['notification_id'];
+                           $arr['notify_datetime'] = $details['notify_datetime'];
+                           $arr['missing_pet_id'] = $details['missing_pet_id'];
+                           $arr['pet_found_street'] = $details['pet_found_street'];
+                           $arr['pet_found_city'] = $details['pet_found_city'];
+                           $arr['pet_found_state'] = $details['pet_found_state'];
+                           $arr['pet_found_zipcode'] = $details['pet_found_zipcode'];
+                           $arr['pet_found_date'] = $details['pet_found_date'];
+                           $arr['pet_found_lattitude'] = $details['pet_found_lattitude'];
+                           $arr['pet_found_longitude'] = $details['pet_found_longitude']; 
+                           $arr['unix_timestamp'] = $details['unix_timestamp'];
+                           $arr['message'] = $details['message'];
+                           $arr['notify_type'] = $details['notify_type'];
+                           $arr['notification_type'] = $details['notification_type'];
+                           $arr['sender_name'] = $details['sender_name'];
+                           $arr['sender_id'] = $details['sender_id'];
+                           $arr['sender_profile'] = $details['sender_profile'];
+                           $arr['sender_street_address'] = $details['sender_street_address'];
+                           $arr['sender_state'] = $details['sender_state'];
+                           $arr['sender_city'] = $details['sender_city'];
+                           $arr['sender_zip_code'] = $details['sender_zip_code'];
+                           $arr['sender_lattitude'] = $details['sender_lattitude'];
+                           $arr['sender_longitude'] = $details['sender_longitude'];
+                           $arr['sender_email'] = $details['sender_email'];
+                           $arr['dog_name'] = $details['dog_name'];
+                           $arr['dog_image'] = $details['dog_image'];
+                         
+                        }
+                        else{
+                            throw new Exception("Failed to get notification data");
+
+                        }
+                        
+                        return $arr;
+                    }, $data);
+                    
+                     $this->block_result['data']=$data;
+                     $this->block_result['success']=1;
+                }else{
+                    throw new Exception("Failed to get data");
+                }
+               
+            }
+            else{
+                $this->block_result = $this->notification_model->get_notification_details($user_id, $input_params);
+            }
+
+           
             if (!$this->block_result["success"])
             {
                 throw new Exception("No records found.");
@@ -586,6 +649,34 @@ class Notification extends Cit_Controller
 
         return $input_params;
     }
+
+
+       /**
+     * check_post_status method is used to process custom function.
+     * @created priyanka chillakuru | 25.09.2019
+     * @modified Snehal Shinde | 01.04.2021
+     * @param array $input_params input_params array to process loop flow.
+     * @return array $input_params returns modfied input_params array.
+     */
+    public function is_valid_post($input_params = array())
+    {
+        if (!method_exists($this, "checkValidPost"))
+        {
+            $result_arr["data"] = array();
+        }
+        else
+        {
+            $result_arr["data"] = $this->checkValidPost($input_params);
+        }
+        $format_arr = $result_arr;
+
+        $format_arr = $this->wsresponse->assignFunctionResponse($format_arr);
+        $input_params["checkValidPost"] = $format_arr;
+
+        $input_params = $this->wsresponse->assignSingleRecord($input_params, $format_arr);
+        return $input_params;
+    } 
+
 
     /**
      * is_notify_found method is used to process conditions.
@@ -607,10 +698,10 @@ class Notification extends Cit_Controller
             $cc_fr_0 = ($cc_lo_0 == $cc_ro_0) ? TRUE : FALSE;
             if (!$cc_fr_0)
             {
-                throw new Exception("Some conditions does not match.");
+                throw new Exception("Failed to fetch notification details");
             }
             $success = 1;
-            $message = "Conditions matched.";
+            $message = "Fetched details";
         }
         catch(Exception $e)
         {
@@ -621,6 +712,7 @@ class Notification extends Cit_Controller
         $this->block_result["message"] = $message;
         return $this->block_result;
     }
+
 
     /**
      * start_loop method is used to process loop flow.
@@ -679,10 +771,10 @@ class Notification extends Cit_Controller
                     $dogImage_arr["path"] = $aws_folder_name . "/missing_pet_image";
                     $data_img = $this->general->get_image_aws($dogImage_arr);
 
-                    if($data_arr["notification_type"]=="Notify pet owner for found pet in my area" || $data_arr["notification_type"]=="tagged you in missing pet post" || $data_arr["notification_type"]=="Missing pet is found")
-                    {
-                        $result_arr[$data_key]["dog_name"]="";
-                    }
+                    // if($data_arr["notification_type"]=="Notify pet owner for found pet in my area" || $data_arr["notification_type"]=="tagged you in missing pet post" || $data_arr["notification_type"]=="Missing pet is found")
+                    // {
+                    //     $result_arr[$data_key]["dog_name"]="";
+                    // }
                     $result_arr[$data_key]["dog_image"] = $data_img;
                     $result_arr[$data_key]["sender_profile"] = $data;
 
@@ -810,11 +902,31 @@ class Notification extends Cit_Controller
      */
     public function notification_finish_failure($input_params = array())
     {
+        if(count($input_params['get_notification_details'])==0 ){
+            if($input_params['checkValidPost']['status']==0){
+                
+                $setting_fields = array(
+                    "success" => "0",
+                    "message" => "wrong_missing_pet_post",
+                );
 
-        $setting_fields = array(
-            "success" => "0",
-            "message" => "notification_finish_failure",
-        );
+            }
+            else{
+                $setting_fields = array(
+                    "success" => "0",
+                    "message" => "failed_fetch_notification",
+                );
+            }
+           
+        }
+        else{
+            $setting_fields = array(
+                "success" => "0",
+                "message" => "notification_finish_failure",
+            );
+        }
+
+        
         $output_fields = array();
 
         $output_array["settings"] = array_merge($this->settings_params, $setting_fields);
@@ -929,7 +1041,7 @@ class Notification extends Cit_Controller
      */
     public function push_notification($input_params = array())
     {
-// print_r($input_params);exit;
+
         $this->block_result = array();
         try
         {
@@ -956,7 +1068,7 @@ class Notification extends Cit_Controller
                 $params_arr["eNotifyType"] = "Pet";
             }
 
-
+            // print_r($input_params['dog_name']);exit;
             $device_id = $input_params["s_device_token"];
             $code = "USER";
             $sound = "";
@@ -1001,6 +1113,11 @@ class Notification extends Cit_Controller
                 array(
                     "key" => "notify_type",
                     "value" => $params_arr["eNotifyType"],
+                    "send" => "Yes",
+                ),
+                array(
+                    "key" => "dog_name",
+                    "value" => $input_params["dog_name"],
                     "send" => "Yes",
                 )
             );

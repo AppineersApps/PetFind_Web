@@ -143,7 +143,6 @@ class Missing_pet extends Cit_Controller
                 {
                     if(isset($input_params["missing_pet_found_user_id"]))
                     {
-
                         $input_params = $this->get_user_details_for_send_notifi($input_params);
                         
                         $input_params = $this->custom_function($input_params,'tag');
@@ -1370,10 +1369,12 @@ class Missing_pet extends Cit_Controller
             $input_params = $validation_res['input_params'];
             $output_array = $func_array = array();
             $input_params = $this->get_all_missing_pets($input_params);
-            
-            $condition_res = $this->is_posted($input_params);
            
-            if ($condition_res["success"])
+            $condition_res = $this->is_posted($input_params);
+
+            $input_params=$this->is_valid_post($input_params);
+          
+            if ($condition_res["success"] || $input_params['checkValidPost']['status']!=0)
             {
                 
                 $output_response = $this->get_missing_pet_finish_success($input_params);
@@ -1382,18 +1383,7 @@ class Missing_pet extends Cit_Controller
 
             else
             {
-
-
-               // if($input_params['get_all_missing_pets']==null)
-               // {
-                    
-               //       $output_response = $this->get_missing_pet_finish_no_data($input_params);
-               // }    
-               // else
-               // {
                 $output_response = $this->get_missing_pet_finish_success_1($input_params);
-
-               // }
  
                 return $output_response;
             }
@@ -1404,6 +1394,34 @@ class Missing_pet extends Cit_Controller
         }
         return $output_response;
     }
+
+    
+       /**
+     * check_post_status method is used to process custom function.
+     * @created priyanka chillakuru | 25.09.2019
+     * @modified Snehal Shinde | 01.04.2021
+     * @param array $input_params input_params array to process loop flow.
+     * @return array $input_params returns modfied input_params array.
+     */
+    public function is_valid_post($input_params = array())
+    {
+        if (!method_exists($this, "checkValidPost"))
+        {
+            $result_arr["data"] = array();
+        }
+        else
+        {
+            $result_arr["data"] = $this->checkValidPost($input_params);
+        }
+        $format_arr = $result_arr;
+
+        $format_arr = $this->wsresponse->assignFunctionResponse($format_arr);
+        $input_params["checkValidPost"] = $format_arr;
+
+        $input_params = $this->wsresponse->assignSingleRecord($input_params, $format_arr);
+        return $input_params;
+    } 
+
 
  /**
      * get_all_missing_pets method is used to process review block.
@@ -1429,7 +1447,7 @@ class Missing_pet extends Cit_Controller
 
             $this->block_result = $this->missing_pet_model->get_missing_pet_details($arrResult,$this->settings_params);
 
-            // echo'<pre>';print_r($this->block_result);echo'<pre>';exit;
+            //echo'<pre>';print_r($this->block_result);echo'<pre>';exit;
             if (!$this->block_result["success"])
             {
                 throw new Exception("No records found.");
@@ -1844,6 +1862,11 @@ class Missing_pet extends Cit_Controller
             "found_user_first_name",
             "found_user_last_name",
             "found_user_profile",
+            "found_user_apt_suit",
+            "found_user_address",
+            "found_user_city",
+            "found_user_state",
+            "found_user_zip_code",
             // "images",
             "missing_pet_image"
 
@@ -1897,6 +1920,11 @@ class Missing_pet extends Cit_Controller
             "found_user_first_name" => "found_user_first_name",
             "found_user_last_name" => "found_user_last_name",
             "found_user_profile" => "found_user_profile",
+            "found_user_apt_suit" => "found_user_apt_suit",
+            "found_user_address" => "found_user_address",
+            "found_user_city" => "found_user_city",
+            "found_user_state" => "found_user_state",
+            "found_user_zip_code" => "found_user_zip_code",
             "missing_pet_image" => "missing_pet_image"
         );
         
@@ -1926,11 +1954,23 @@ class Missing_pet extends Cit_Controller
      */
     public function get_missing_pet_finish_success_1($input_params = array())
     {
-
-        $setting_fields = array(
-            "success" => "1",
-            "message" => "get_missing_pet_finish_success_1",
-        );
+       
+        if(count($input_params['get_all_missing_pets'])==0 ){
+            if($input_params['checkValidPost']['status']==0){
+                
+                $setting_fields = array(
+                    "success" => "0",
+                    "message" => "wrong_missing_pet_post",
+                );
+            }
+            }
+            else{
+                $setting_fields = array(
+                    "success" => "1",
+                    "message" => "get_missing_pet_finish_success_1",
+                );
+            }
+       
         $output_fields = array();
 
         $output_array["settings"] = $setting_fields;

@@ -142,7 +142,7 @@ class Delete_account extends Cit_Controller
             {
                 $where_arr["user_id"] = $input_params["user_id"];
             }
-            $params_arr["_estatus"] = "Archived";
+            $params_arr["_estatus"] = "Pending_delete";
             $params_arr["_dtdeletedat"] = "NOW()";
             $this->block_result = $this->users_model->delete_user_account($params_arr, $where_arr);
         }

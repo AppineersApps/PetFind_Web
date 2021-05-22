@@ -82,7 +82,7 @@ class Send_message extends Cit_Controller
                     break;
 
           case 'POST':
-                     // print_r($request_arr);exit; 
+                    //  print_r($request_arr);exit; 
                      $output_response =  $this->send_message($request_arr);
                      return  $output_response;
                      break;
@@ -124,28 +124,27 @@ class Send_message extends Cit_Controller
             $output_array = $func_array = array();
 
             $input_params = $this->if_blocked($input_params);
-            // print_r($input_params);exit; 
+           
             $condition_res = $this->is_blocked($input_params);
-
-
+            //  if user is not blocked then call this if 
             if ($condition_res["success"])
             {
-                //  if user is not blocked then call this if 
-                
+
                 $input_params = $this->check_chat_intiated_or_not($input_params);
-               
+                
                 $condition_res = $this->is_intiated($input_params);
 
-                if ($condition_res["success"])
+                // if chat initiated previuosly then call if condition
+                if ($condition_res["success"] )
                 {
                     // print_r('if');exit; 
                     $input_params = $this->update_message($input_params);
                 }
-
                 else
-                {
-               
+                {   
+                 
                    $input_params = $this->add_message($input_params);
+                //    print_r($input_params);exit; 
                  
                 }
 
@@ -199,11 +198,11 @@ class Send_message extends Cit_Controller
                     "message" => "receiver_id_required",
                 )
             ),
-            "firebase_id" => array(
+            "missing_pet_id" => array(
                 array(
                     "rule" => "required",
                     "value" => TRUE,
-                    "message" => "firebase_id_required",
+                    "message" => "missing_pet_id_required",
                 )
             )
         );
@@ -434,15 +433,11 @@ class Send_message extends Cit_Controller
             {
                 $params_arr["firebase_id"] = $input_params["firebase_id"];
             }
-            if (isset($input_params["message"]))
-            {
-                $params_arr["message"] = $input_params["message"];
-            }
            
             $params_arr["_dtaddeddate"] = "NOW()";
-            $params_arr["eMessageStatus"] = "Accept";
+            $params_arr["eMessageStatus"] = "Pending";
             $params_arr["_dtmodifieddate"] = "NOW()";
-             // print_r($params_arr);exit;
+            //  print_r($params_arr);exit;
             $this->block_result = $this->send_message_model->add_message($params_arr);
         }
         catch(Exception $e)
@@ -698,11 +693,15 @@ class Send_message extends Cit_Controller
             
             if (!$uni_id)
             {
+                 $success = 0;
+                 $message = "Failure in Push notification.";
                 throw new Exception('Failure in insertion of push notification batch entry.');
             }
-
-            $success = 1;
-            $message = "Push notification send succesfully.";
+            else
+            {
+                 $success = 1;
+                 $message = "Push notification send succesfully."; 
+            }
         }
         catch(Exception $e)
         {

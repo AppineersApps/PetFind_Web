@@ -462,7 +462,9 @@ class Missing_pet_model extends CI_Model
                     $strSql="SELECT 
                     u.iUserId AS found_user_id,
                     u.vFirstName AS found_user_first_name,
-                     u.vLastName AS found_user_last_name,u.vProfileImage AS found_user_profile
+                     u.vLastName AS found_user_last_name,u.vProfileImage AS found_user_profile,
+                     u.vAptSuite AS found_user_apt_suit,u.tAddress AS found_user_address,u.vCity AS found_user_city,
+                     u.vStateName AS found_user_state,u.vZipCode AS found_user_zip_code
                      FROM users AS u      
                      LEFT JOIN missing_pets AS i ON (u.iUserId = i.vFoundUser)             
                      WHERE i.iMissingPetId='".$arr['missing_pet_id']."'";
@@ -475,6 +477,11 @@ class Missing_pet_model extends CI_Model
 
                     $found_user_first_name=$result_found[0]['found_user_first_name'];
                     $found_user_last_name=$result_found[0]['found_user_last_name'];
+                    $found_user_apt_suit=$result_found[0]['found_user_apt_suit'];
+                    $found_user_address=$result_found[0]['found_user_address'];
+                    $found_user_city=$result_found[0]['found_user_city'];
+                    $found_user_state=$result_found[0]['found_user_state'];
+                    $found_user_zip_code=$result_found[0]['found_user_zip_code'];
                     $found_user_profile=$result_found[0]['found_user_profile'];
 
                      
@@ -483,6 +490,11 @@ class Missing_pet_model extends CI_Model
                 {
                     $found_user_first_name='';
                     $found_user_last_name='';
+                    $found_user_apt_suit='';
+                    $found_user_address='';
+                    $found_user_city='';
+                    $found_user_state='';
+                    $found_user_zip_code='';
                 }
                  if($arr["height"]!=null)
                 {
@@ -564,6 +576,11 @@ class Missing_pet_model extends CI_Model
                 $arr['height_inches'] = $height_inches;
                 $arr['found_user_first_name'] = $found_user_first_name;
                 $arr['found_user_last_name'] = $found_user_last_name;
+                $arr['found_user_apt_suit'] = $found_user_apt_suit;
+                $arr['found_user_address'] = $found_user_address;
+                $arr['found_user_city'] = $found_user_city;
+                $arr['found_user_state'] = $found_user_state;
+                $arr['found_user_zip_code'] = $found_user_zip_code;
                 $arr['total_tags'] = $total_tags;
                 $arr['total_comments'] = $total_comments;
 

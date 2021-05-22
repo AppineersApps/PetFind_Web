@@ -111,11 +111,16 @@ class User_sign_up_email extends Cit_Controller
                     "rule" => "email",
                     "value" => TRUE,
                     "message" => "email_email",
+                ),
+                array(
+                    "rule" => "required",
+                    "value" => TRUE,
+                    "message" => "email_required",
                 )
             ),
             "mobile_number" => array(
                 array(
-                    "rule" => "number",
+                    "rule" => "number", 
                     "value" => TRUE,
                     "message" => "mobile_number_number",
                 ),
@@ -140,6 +145,11 @@ class User_sign_up_email extends Cit_Controller
                     "rule" => "maxlength",
                     "value" => 15,
                     "message" => "password_maxlength",
+                ),
+                array(
+                    "rule" => "required",
+                    "value" => TRUE,
+                    "message" => "password_required",
                 )
             ),
             "zipcode" => array(

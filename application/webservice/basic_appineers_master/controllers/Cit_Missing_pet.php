@@ -47,6 +47,41 @@ Class Cit_Missing_pet extends Missing_pet {
     
   }
 
+
+  public function checkValidPost($input_params=array()){
+
+    // print_r($input_params);exit;
+    $return_arr['message']='';
+      $return_arr['status']='1';
+       if(false == empty($input_params['missing_pet_id']))
+       {
+          $this->db->from("missing_pets AS m");
+          $this->db->select("m.iMissingPetId AS missing_pet_id");
+          $this->db->where_in("iMissingPetId", $input_params['missing_pet_id']);
+          $this->db->where_in("iUserId", $input_params['user_id']);
+          // $this->db->where("ePetStatus",'missing');
+          $review_data=$this->db->get()->result_array();
+          
+       
+        if(true == empty($review_data)){
+           $return_arr['message']="No missing pet posts available for this user.";
+           $return_arr['status'] = "0";
+           return  $return_arr;
+        }else{
+          $return_arr['missing_pet_id']=$review_data;
+          $return_arr['status']='1';
+
+        }
+    }
+    foreach ($return_arr as $value) {
+      $return_arr = $value;
+      $return_arr['status']='1';
+    }
+    return $return_arr;
+  
+}
+
+
 public function PrepareHelperMessage($input_params=array(),$notification_for){
 
   if($notification_for=='area')

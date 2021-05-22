@@ -149,7 +149,7 @@ class Send_message_model extends CI_Model
      */
     public function add_message($params_arr = array())
     {
-       // print_r($params_arr);exit;
+    //    print_r($params_arr);exit;
         try
         {
             $result_arr = array();

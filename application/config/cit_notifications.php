@@ -3,8 +3,14 @@
 defined('BASEPATH') || exit('No direct script access allowed');
 
 #####GENERATED_CONFIG_SETTINGS_START#####
-$config = array(
-    
+$config["delete_user_records"] = array(
+    "title" => "Delete user records",
+    "folder" => "master",
+    "type" => "Time",
+    "start_date" => "",
+    "end_date" => "",
+    "cron_format" => "0 0 * * *",
+    "status" => "Active"
 );
 #####GENERATED_CONFIG_SETTINGS_END#####
 
