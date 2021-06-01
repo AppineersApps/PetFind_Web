@@ -212,8 +212,8 @@ $result_arr = array_map(function (array $arr) {
             distinct(u.iUserId) AS receiver_id,
              u.vDeviceToken AS u_device_token,             
              u.vProfileImage AS u_profile_image,         
-             CONCAT(u.vFirstName,\" \",u.vLastName) AS u_name
-             FROM users AS u            
+             CONCAT(u.vFirstName,\" \",u.vLastName) AS u_name, misp.vDogsName AS dog_name  
+             FROM users AS u         
              LEFT JOIN missing_pets AS misp ON (misp.iUserId = u.iUserId)             
              WHERE $strWhere";
             $result_obj = $this->db->query($strSql);

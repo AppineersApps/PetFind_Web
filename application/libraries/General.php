@@ -5721,8 +5721,7 @@ EOD;
                         "body" => $message,
                         "sound" => $extra['sound']
                     ),
-                    'priority' => 10,
-                    'type' => $extra['type']
+                    'priority' => 10
                 );
                if (!empty($extra)) {
                     $fields['data'] = $extra;

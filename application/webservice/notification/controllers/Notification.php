@@ -305,7 +305,7 @@ class Notification extends Cit_Controller
                 else
                 {
                     $input_params = $this->get_user_details_for_send_notifi($input_params);
-                    print_r($input_params);exit;
+                   
                     $input_params = $this->custom_function($input_params);
 
                     $input_params = $this->start_loop($input_params); 
@@ -377,25 +377,26 @@ class Notification extends Cit_Controller
             $user_id = isset($input_params["user_id"]) ? $input_params["user_id"] : "";
             $missing_pet_id = isset($input_params["missing_pet_id"]) ? $input_params["missing_pet_id"] : "";
             $receiver_user_id = isset($input_params["receiver_user_id"]) ? $input_params["receiver_user_id"] : "";
-            // print_r($input_params);exit;
-           $tagged_user_result = $this->notification_model->get_tagged_user_details_for_send_notifi($user_id, $missing_pet_id);
 
-          
+            // print_r($input_params);exit;
 
             if(isset($input_params["page_code"]) && 'found_my_pet'==$input_params["page_code"])
             {
+                $tagged_user_result = $this->notification_model->get_tagged_user_details_for_send_notifi($user_id, $missing_pet_id);
 
                 $this->block_result["data"]=$tagged_user_result['data']; 
             }
             else
             {
                  $pet_owner_result = $this->notification_model->get_user_details_for_send_notifi($user_id, $missing_pet_id); 
-                 
-               $this->block_result["data"]=array_merge($tagged_user_result['data'],$pet_owner_result['data']); 
+                
+            //    $this->block_result["data"]=array_merge($tagged_user_result['data'],$pet_owner_result['data']); 
+            //    $this->block_result["data"]=array_merge($tagged_user_result['data'],$pet_owner_result['data']); 
+               $this->block_result["data"]=$pet_owner_result['data']; 
             }
 
             // print_r($this->block_result["data"]);exit;
-            // print_r($this->block_result['data']);exit;
+            
 
             if (!$this->block_result['data'])
             {
@@ -575,53 +576,57 @@ class Notification extends Cit_Controller
             if(isset($input_params['page_code']) && $input_params['page_code'] == "notified_user_list" && isset($input_params['missing_pet_id'])){
                 
                 $get_notification_id=$this->notification_model->get_notification_id($user_id, $input_params);
+
+              
                 if($get_notification_id['success']==1){
                     
                     $data=$get_notification_id['data'];
+
                    
-                    $data = array_map(function (array $arr) { 
-                        $notification_id=$arr['notification_id'];
+                   
+                    // $data = array_map(function (array $arr) { 
+                    //     $notification_id=$arr['notification_id'];
 
-                        $get_notification_details=$this->notification_model->get_notification($notification_id);
+                    //     $get_notification_details=$this->notification_model->get_notification($notification_id);
                         
-                        if($get_notification_details['success']==1 && is_array($get_notification_details['data']) && count($get_notification_details['data']) > 0){
-                            $details=$get_notification_details['data'][0];
+                    //     if($get_notification_details['success']==1 && is_array($get_notification_details['data']) && count($get_notification_details['data']) > 0){
+                    //         $details=$get_notification_details['data'][0];
                            
-                           $arr['notification_id'] = $details['notification_id'];
-                           $arr['notify_datetime'] = $details['notify_datetime'];
-                           $arr['missing_pet_id'] = $details['missing_pet_id'];
-                           $arr['pet_found_street'] = $details['pet_found_street'];
-                           $arr['pet_found_city'] = $details['pet_found_city'];
-                           $arr['pet_found_state'] = $details['pet_found_state'];
-                           $arr['pet_found_zipcode'] = $details['pet_found_zipcode'];
-                           $arr['pet_found_date'] = $details['pet_found_date'];
-                           $arr['pet_found_lattitude'] = $details['pet_found_lattitude'];
-                           $arr['pet_found_longitude'] = $details['pet_found_longitude']; 
-                           $arr['unix_timestamp'] = $details['unix_timestamp'];
-                           $arr['message'] = $details['message'];
-                           $arr['notify_type'] = $details['notify_type'];
-                           $arr['notification_type'] = $details['notification_type'];
-                           $arr['sender_name'] = $details['sender_name'];
-                           $arr['sender_id'] = $details['sender_id'];
-                           $arr['sender_profile'] = $details['sender_profile'];
-                           $arr['sender_street_address'] = $details['sender_street_address'];
-                           $arr['sender_state'] = $details['sender_state'];
-                           $arr['sender_city'] = $details['sender_city'];
-                           $arr['sender_zip_code'] = $details['sender_zip_code'];
-                           $arr['sender_lattitude'] = $details['sender_lattitude'];
-                           $arr['sender_longitude'] = $details['sender_longitude'];
-                           $arr['sender_email'] = $details['sender_email'];
-                           $arr['dog_name'] = $details['dog_name'];
-                           $arr['dog_image'] = $details['dog_image'];
+                    //        $arr['notification_id'] = $details['notification_id'];
+                    //        $arr['notify_datetime'] = $details['notify_datetime'];
+                    //        $arr['missing_pet_id'] = $details['missing_pet_id'];
+                    //        $arr['pet_found_street'] = $details['pet_found_street'];
+                    //        $arr['pet_found_city'] = $details['pet_found_city'];
+                    //        $arr['pet_found_state'] = $details['pet_found_state'];
+                    //        $arr['pet_found_zipcode'] = $details['pet_found_zipcode'];
+                    //        $arr['pet_found_date'] = $details['pet_found_date'];
+                    //        $arr['pet_found_lattitude'] = $details['pet_found_lattitude'];
+                    //        $arr['pet_found_longitude'] = $details['pet_found_longitude']; 
+                    //        $arr['unix_timestamp'] = $details['unix_timestamp'];
+                    //        $arr['message'] = $details['message'];
+                    //        $arr['notify_type'] = $details['notify_type'];
+                    //        $arr['notification_type'] = $details['notification_type'];
+                    //        $arr['sender_name'] = $details['sender_name'];
+                    //        $arr['sender_id'] = $details['sender_id'];
+                    //        $arr['sender_profile'] = $details['sender_profile'];
+                    //        $arr['sender_street_address'] = $details['sender_street_address'];
+                    //        $arr['sender_state'] = $details['sender_state'];
+                    //        $arr['sender_city'] = $details['sender_city'];
+                    //        $arr['sender_zip_code'] = $details['sender_zip_code'];
+                    //        $arr['sender_lattitude'] = $details['sender_lattitude'];
+                    //        $arr['sender_longitude'] = $details['sender_longitude'];
+                    //        $arr['sender_email'] = $details['sender_email'];
+                    //        $arr['dog_name'] = $details['dog_name'];
+                    //        $arr['dog_image'] = $details['dog_image'];
                          
-                        }
-                        else{
-                            throw new Exception("Failed to get notification data");
+                    //     }
+                    //     else{
+                    //         throw new Exception("Failed to get notification data");
 
-                        }
+                    //     }
                         
-                        return $arr;
-                    }, $data);
+                    //     return $arr;
+                    // }, $data);
                     
                      $this->block_result['data']=$data;
                      $this->block_result['success']=1;
@@ -631,6 +636,7 @@ class Notification extends Cit_Controller
                
             }
             else{
+                
                 $this->block_result = $this->notification_model->get_notification_details($user_id, $input_params);
             }
 
@@ -850,6 +856,8 @@ class Notification extends Cit_Controller
             'notification_type',
             'sender_name',
             'sender_id',
+            'message_id',
+            'message_status',
             'missing_pet_id',
             'notify_datetime',
             'sender_profile',

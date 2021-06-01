@@ -371,6 +371,10 @@ $lang["get_blocked_users"]["get_blocked_users_no_data"] = "No Blocked users" ;
     $lang["send_message"]["messages_finish_success_1"] = "Message sent successfully." ;
     $lang["send_message"]["blocked_user_finish_success"] = "You cannot communicate with each other." ;
     $lang["send_message"]["no_missing_pet_post_available"] = "Missing pet post not available" ;
+    $lang["get_message_list"]["messages_finish_success_1"] = "Fetched message list successfully." ;
+    $lang["get_message_list"]["messages_finish_success_2"] = "Failed to fetch message list." ;
+    $lang["get_message_list"]["empty_messages_finish_success_2"] = "Message list is empty" ;
+
 
 
 //  delete missing pet image

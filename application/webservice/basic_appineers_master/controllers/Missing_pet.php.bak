@@ -1224,8 +1224,6 @@ class Missing_pet extends Cit_Controller
      */
     public function push_notification($input_params = array())
     {
-
-       
         $this->block_result = array();
         try
         {
@@ -1252,11 +1250,8 @@ class Missing_pet extends Cit_Controller
                 }
                 else
                 {
-                    $notify_type = "Pet";
+                    $notify_type = "User";
                 }
-
-                
-
             $send_vars = array(
                 array(
                     "key" => "type",
@@ -1296,11 +1291,6 @@ class Missing_pet extends Cit_Controller
                 array(
                     "key" => "notify_type",
                     "value" => $notify_type,
-                    "send" => "Yes",
-                ),
-                array(
-                    "key" => "dog_name",
-                    "value" => $input_params["dog_name"],
                     "send" => "Yes",
                 )
             );

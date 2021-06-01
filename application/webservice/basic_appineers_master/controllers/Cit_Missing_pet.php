@@ -58,12 +58,12 @@ Class Cit_Missing_pet extends Missing_pet {
           $this->db->from("missing_pets AS m");
           $this->db->select("m.iMissingPetId AS missing_pet_id");
           $this->db->where_in("iMissingPetId", $input_params['missing_pet_id']);
-          $this->db->where_in("iUserId", $input_params['user_id']);
+          // $this->db->where_in("iUserId", $input_params['user_id']);
           // $this->db->where("ePetStatus",'missing');
           $review_data=$this->db->get()->result_array();
-          
-       
+         
         if(true == empty($review_data)){
+         
            $return_arr['message']="No missing pet posts available for this user.";
            $return_arr['status'] = "0";
            return  $return_arr;
@@ -77,6 +77,8 @@ Class Cit_Missing_pet extends Missing_pet {
       $return_arr = $value;
       $return_arr['status']='1';
     }
+
+   
     return $return_arr;
   
 }

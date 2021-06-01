@@ -24,14 +24,46 @@ Class Cit_Send_message extends Send_message {
         parent::__construct();
     }
     public function PrepareHelperMessage($input_params=array()){
-        $this->db->select('nt.tNotificationText');
+        
+        
+        $this->db->select('nt.tNotificationText, nt.vTemplateCode');
         $this->db->from('notification_template as nt');
-        $this->db->where('nt.vTemplateCode','send_message');
-        $notification_text=$this->db->get()->result_array();
-        $notification_text=$notification_text[0]['tNotificationText'];
 
-        $notification_text = str_replace("|sender_name|",ucfirst($input_params['get_user_details_for_send_notifi'][0]['s_name']), $notification_text);
+        if (isset($input_params["message_status"]))
+        {
+                if ($input_params["message_status"]=="decline")
+                {
+                    $this->db->where('nt.vTemplateCode','decline_message');
+                }
+                else{
+                    $this->db->where('nt.vTemplateCode','accept_message');
+                } 
+            
+        }
+        else{
+            $this->db->where('nt.vTemplateCode','request_message');
+        }
+
+        
+        $notification_text_arr=$this->db->get()->result_array();
+        $notification_text=$notification_text_arr[0]['tNotificationText'];
+
+        $notification_type=$notification_text_arr[0]['vTemplateCode'];
+        
+        // |sender_name| has declined your chat request.
+
+        if ($input_params["message_status"]=="accept"){
+
+            $notification_text = str_replace("|pet_name|",ucfirst($input_params['get_user_details_for_send_notifi'][0]['dog_name']), $notification_text);
+            $notification_text = str_replace("|sender_name|",ucfirst($input_params['get_user_details_for_send_notifi'][0]['s_name']), $notification_text);
+        }
+        else{
+            $notification_text = str_replace("|sender_name|",ucfirst($input_params['get_user_details_for_send_notifi'][0]['s_name']), $notification_text);
+        }
+
+       
         $return_array['notification_message']=$notification_text;
+        $return_array['notification_type']=$notification_type;
        // print_r($return_array);exit;
         return $return_array;
         
@@ -66,4 +98,33 @@ Class Cit_Send_message extends Send_message {
         return $return_arr;
         
     }
+
+    public function format_images(&$input_params)
+{
+    if(!empty($input_params['get_send_image']))
+    {
+        foreach ($input_params['get_send_image'] as $key => $image)
+        {
+            if(!empty($image['u_image']))
+            {
+                $input_params['sender_image'] = $image['u_image'];
+            }
+        }
+        
+    }
+    
+    if(!empty($input_params['get_receiver_images']))
+    {
+        foreach ($input_params['get_receiver_images'] as $key => $image)
+        {
+            if(!empty($image['ui_image']))
+            {
+                $input_params['receiver_image'] = $image['ui_image'];
+            }
+        }
+        
+    }
+ 
+}
+
 }

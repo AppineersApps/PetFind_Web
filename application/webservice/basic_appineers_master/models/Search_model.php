@@ -68,7 +68,7 @@ class Search_model extends CI_Model
                     OR `i`.`vLastSeenCity` LIKE '%".$arrResult['keyword']."%' ESCAPE '!')
                      ";
 
-                $strWhere.= "AND i.ePetStatus = 'missing'";
+                $strWhere.= "AND i.ePetStatus = 'missing' AND i.iUserId !=".$arrResult['user_id'];
                
             } 
             if (isset($arrResult['page_code']) && $arrResult['page_code'] == "my_missing_dogs")

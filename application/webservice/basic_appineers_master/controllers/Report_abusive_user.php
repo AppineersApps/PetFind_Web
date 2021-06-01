@@ -101,13 +101,15 @@ class Report_abusive_user extends Cit_Controller
             {
                 if ($inner_api === TRUE)
                 {
-                    return $validation_res;
+                    return $validation_res;  
                 }
                 else
                 {
                     $this->wsresponse->sendValidationResponse($validation_res);
                 }
             }
+
+            // print_r($request_arr);exit;
             $output_response = array();
             $input_params = $validation_res['input_params'];
             $output_array = $func_array = array();

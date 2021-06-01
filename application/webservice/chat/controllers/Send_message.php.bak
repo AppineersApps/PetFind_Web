@@ -120,7 +120,7 @@ class Send_message extends Cit_Controller
                 }
             }
             $output_response = array();
-            $input_params = $validation_res['input_params'];
+            $input_params = $request_arr;
             $output_array = $func_array = array();
            
             $input_params = $this->if_blocked($input_params);
@@ -150,7 +150,7 @@ class Send_message extends Cit_Controller
                  
                 }
                 $input_params = $this->get_user_details_for_send_notifi($input_params);
-                
+
                 $input_params = $this->custom_function($input_params);
                 
                 $input_params = $this->post_notification($input_params);
@@ -203,14 +203,14 @@ class Send_message extends Cit_Controller
                                     "value" => TRUE,
                                     "message" => "message_id_required",
                                 )
+                                ),
+                            "firebase_id" => array(
+                                array(
+                                    "rule" => "required",
+                                    "value" => TRUE,
+                                    "message" => "firebase_id_required",
                                 )
-                            // "firebase_id" => array(
-                            //     array(
-                            //         "rule" => "required",
-                            //         "value" => TRUE,
-                            //         "message" => "firebase_id_required",
-                            //     )
-                            //     )
+                                )
                         );
                     }
                     else{
@@ -292,7 +292,7 @@ class Send_message extends Cit_Controller
         
             $condition_res = $this->check_for_message($input_params);
            
-            if ($condition_res["success"] && $input_params["page_code"]=="chat_list")
+            if ($condition_res["success"])
             {
                 $input_params = $this->start_loop($input_params);
                 // print_r($input_params);exit;
@@ -330,14 +330,7 @@ class Send_message extends Cit_Controller
                     "value" => TRUE,
                     "message" => "user_id_required",
                 )
-                ),
-            "page_code" => array(
-                array(
-                    "rule" => "required",
-                    "value" => TRUE,
-                    "message" => "page_code_required",
-                )
-                )
+            )
         );
         $valid_res = $this->wsresponse->validateInputParams($valid_arr, $request_arr, "get_message_list");
 
@@ -391,9 +384,9 @@ class Send_message extends Cit_Controller
             $input_params = $get_message_lp_pms;
 
             $input_params = $this->get_send_image($input_params);
-           
+
             $input_params = $this->get_receiver_images($input_params);
-            print_r($input_params);exit;
+
             $input_params = $this->custom_function_1($input_params);
 
             $get_message_lp_arr[$i] = $this->wsresponse->filterLoopParams($input_params, $_loop_params_loc[$i], $get_message_lp_pms);
@@ -420,7 +413,6 @@ class Send_message extends Cit_Controller
                 throw new Exception("No records found.");
             }
             $result_arr = $this->block_result["data"];
-            // print_r($result_arr);exit;
             if (is_array($result_arr) && count($result_arr) > 0)
             {
                 $i = 0;
@@ -433,7 +425,7 @@ class Send_message extends Cit_Controller
                     $image_arr["ext"] = implode(",", $this->config->item("IMAGE_EXTENSION_ARR"));
                     $image_arr["color"] = "FFFFFF";
                     $image_arr["no_img"] = FALSE;
-                    $p_key = ($data_arr["u_users_id"] != "") ? $data_arr["u_users_id"] : $data_arr["u_users_id"];
+                    $p_key = ($data_arr["sender_id"] != "") ? $data_arr["sender_id"] : $data_arr["sender_id"];
                     $image_arr["pk"] = $p_key;
                     $image_arr["path"] = "pet_find/user_profile";
                    // $image_arr["path"] = $this->general->getImageNestedFolders($dest_path);
@@ -443,7 +435,6 @@ class Send_message extends Cit_Controller
 
                     $i++;
                 }
-               
                 $this->block_result["data"] = $result_arr;
             }
         }
@@ -467,7 +458,7 @@ class Send_message extends Cit_Controller
      */
     public function get_receiver_images($input_params = array())
     {
-       
+        
         $this->block_result = array();
         try
         {
@@ -479,7 +470,6 @@ class Send_message extends Cit_Controller
                 throw new Exception("No records found.");
             }
             $result_arr = $this->block_result["data"];
-           
             if (is_array($result_arr) && count($result_arr) > 0)
             {
                 $i = 0;
@@ -492,7 +482,7 @@ class Send_message extends Cit_Controller
                     $image_arr["ext"] = implode(",", $this->config->item("IMAGE_EXTENSION_ARR"));
                     $image_arr["color"] = "FFFFFF";
                     $image_arr["no_img"] = FALSE;
-                    $p_key = ($data_arr["ui_users_id"] != "") ? $data_arr["ui_users_id"] : $data_arr["ui_users_id"];
+                    $p_key = ($data_arr["receiver_id"] != "") ? $data_arr["receiver_id"] : $data_arr["receiver_id"];
                     $image_arr["pk"] = $p_key;
                     $image_arr["path"] = "pet_find/user_profile";
                    // $image_arr["path"] = $this->general->getImageNestedFolders($dest_path);
@@ -690,21 +680,10 @@ class Send_message extends Cit_Controller
             }
             else{
                 $message_id=$input_params["message_id"];
-                $receiver_details=$this->send_message_model->get_user_id($message_id);
-                if(count($receiver_details)>0)
-                {
-                    
-                    $receiver_id=$receiver_details[0]['s_users_id'];
-                    $input_params["receiver_id"]=$receiver_details[0]['s_users_id'];
-                    $input_params["missing_pet_id"]=$receiver_details[0]['missing_pet_id'];
-                }
-                else{
-                    throw new Exception("Failed to fetch receiver details.");
-                }
-               
+                $receiver_id=$this->send_message_model->get_user_id($message_id);
+                $input_params["receiver_id"]=$receiver_id;
                 
             }
-           
             $this->block_result = $this->block_user_model->if_blocked($user_id, $receiver_id);
             // print_r($this->block_result);exit; 
             if (!$this->block_result["success"])
@@ -1009,9 +988,8 @@ class Send_message extends Cit_Controller
      * @return array $input_params returns modfied input_params array.
      */
     public function post_notification($input_params = array())
-    {   
+    {
        
-      
         $this->block_result = array();
         try
         {
@@ -1131,8 +1109,6 @@ class Send_message extends Cit_Controller
     public function push_notification($input_params = array())
     {
        
-        // print_r($input_params);exit;
-
         $this->block_result = array();
         try
         {
