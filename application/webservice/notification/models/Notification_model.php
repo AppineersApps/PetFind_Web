@@ -156,8 +156,6 @@ class Notification_model extends CI_Model
             $this->db->join("users AS u", "n.iSenderId = u.iUserId", "left"); 
             $this->db->join("missing_pets AS m", "m.iMissingPetId = n.iMissingPetId", "inner");
             $this->db->join("messages AS msg", "msg.iMissingPetId = n.iMissingPetId", "left");
-            $this->db->select("msg.iMessageId AS message_id");
-            $this->db->select("msg.eMessageStatus AS message_status");
             $this->db->select("n.iNotificationId AS notification_id");
             $this->db->select("n.dtAddedAt AS notify_datetime");
             $this->db->select("n.iMissingPetId AS missing_pet_id");
@@ -191,6 +189,8 @@ class Notification_model extends CI_Model
                     $this->db->where("n.iReceiverId =", $user_id);
                 }
                 $this->db->where("u.eStatus =", 'Active');
+                $this->db->where("n.vNotificationType !=", 'accept_message');
+                $this->db->where("n.vNotificationType !=", 'decline_message');
                  $this->db->stop_cache();
             
             $this->db->order_by("n.iNotificationId", "desc");

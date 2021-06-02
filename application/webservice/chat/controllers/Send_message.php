@@ -105,6 +105,7 @@ class Send_message extends Cit_Controller
      */
  public function send_message($request_arr)
     {
+        
          try
         {
             $validation_res = $this->rules_send_message($request_arr);
@@ -124,10 +125,11 @@ class Send_message extends Cit_Controller
             $output_array = $func_array = array();
            
             $input_params = $this->if_blocked($input_params);
+           
             
             $condition_res = $this->is_blocked($input_params);
             //  if user is not blocked then call this if 
-            if ($condition_res["success"])
+            if ($condition_res["success"] && isset($input_params['receiver_id']) )
             {
                
                 $input_params = $this->check_chat_intiated_or_not($input_params);
@@ -150,9 +152,9 @@ class Send_message extends Cit_Controller
                  
                 }
                 $input_params = $this->get_user_details_for_send_notifi($input_params);
-                
+           
                 $input_params = $this->custom_function($input_params);
-                
+               
                 $input_params = $this->post_notification($input_params);
                  $input_params = $this->push_notification($input_params);
 
@@ -393,7 +395,7 @@ class Send_message extends Cit_Controller
             $input_params = $this->get_send_image($input_params);
            
             $input_params = $this->get_receiver_images($input_params);
-            print_r($input_params);exit;
+            
             $input_params = $this->custom_function_1($input_params);
 
             $get_message_lp_arr[$i] = $this->wsresponse->filterLoopParams($input_params, $_loop_params_loc[$i], $get_message_lp_pms);
@@ -690,22 +692,34 @@ class Send_message extends Cit_Controller
             }
             else{
                 $message_id=$input_params["message_id"];
-                $receiver_details=$this->send_message_model->get_user_id($message_id);
+
+                $receiver_details=$this->send_message_model->get_user_id($message_id,$user_id);
+               
                 if(count($receiver_details)>0)
                 {
                     
                     $receiver_id=$receiver_details[0]['s_users_id'];
                     $input_params["receiver_id"]=$receiver_details[0]['s_users_id'];
                     $input_params["missing_pet_id"]=$receiver_details[0]['missing_pet_id'];
+                   
                 }
                 else{
                     throw new Exception("Failed to fetch receiver details.");
                 }
-               
+                
                 
             }
+            
+          if($receiver_id!='')
+          {
            
             $this->block_result = $this->block_user_model->if_blocked($user_id, $receiver_id);
+          }
+          else{
+           
+            throw new Exception("Failed to fetch receiver details.");
+          }
+            
             // print_r($this->block_result);exit; 
             if (!$this->block_result["success"])
             {
@@ -859,7 +873,7 @@ class Send_message extends Cit_Controller
      */
     public function update_message($input_params = array())
     {
-        
+       
         $this->block_result = array();
         try
         {
@@ -878,8 +892,17 @@ class Send_message extends Cit_Controller
             {
                 $params_arr["message_status"] = $input_params["message_status"];
             }
+            if (isset($input_params["receiver_id"]))
+            {
+                $params_arr["receiver_id"] = $input_params["receiver_id"];
+            }
+            if (isset($input_params["user_id"]))
+            {
+                $params_arr["user_id"] = $input_params["user_id"];
+            }
             
             $params_arr["_dtmodifieddate"] = "NOW()";
+            
             $this->block_result = $this->send_message_model->update_message($params_arr, $where_arr);
         }
         catch(Exception $e)
@@ -1045,7 +1068,7 @@ class Send_message extends Cit_Controller
            
             //check if same notification exists:
             $params_arr["check_notification_exists"] = $this->check_notification_exists($params_arr);
-           
+          
             $this->block_result = $this->send_message_model->post_notification($params_arr);
 
         }

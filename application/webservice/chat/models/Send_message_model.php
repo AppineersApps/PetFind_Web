@@ -112,6 +112,16 @@ class Send_message_model extends CI_Model
                 $this->db->set("eMessageStatus", $params_arr["message_status"]);
             }
             
+            if (isset($params_arr["receiver_id"]))
+            {
+                $this->db->set("iMessageTo", $params_arr["receiver_id"]);
+            }
+            
+            if (isset($params_arr["user_id"]))
+            {
+                $this->db->set("iMessageFrom", $params_arr["user_id"]);
+            }
+            
             $this->db->set($this->db->protect("dtUpdatedAt"), $params_arr["_dtmodifieddate"], FALSE);
             $res = $this->db->update("messages");
             $affected_rows = $this->db->affected_rows();
@@ -222,17 +232,38 @@ class Send_message_model extends CI_Model
 
             $this->db->from("messages AS m");
             $this->db->join("users AS s", "m.iMessageFrom = s.iUserId", "left");
-            $this->db->join("users AS r", "m.iMessageTo = r.iUserId", "left");
+            // $this->db->join("users AS r", "m.iMessageTo = r.iUserId", "left");
             $this->db->join("missing_pets AS mp", "mp.iUserId = m.iMessageFrom", "left");
 
             $this->db->select("mp.vDogsName AS dog_name");
-            $this->db->select("s.iUserId AS s_users_id");
-            $this->db->select("r.iUserId AS r_users_id");
-            $this->db->select("r.vDeviceToken AS r_device_token");
-            $this->db->select("CONCAT(s.vFirstName,\" \",s.vLastName) AS s_name");
+            // $this->db->select("s.iUserId AS s_users_id");
+            // $this->db->select("r.iUserId AS r_users_id");
+            // $this->db->select("s.vDeviceToken AS r_device_token");
+            $this->db->select("CASE WHEN m.iMessageFrom= '".$receiver_id."' THEN (select vDeviceToken from users WHERE iUserId='".$receiver_id."')
+           WHEN  m.iMessageTo= '".$receiver_id."' THEN (select vDeviceToken from users WHERE iUserId='".$receiver_id."')
+           END AS  r_device_token
+           ");
+
+            $this->db->select("CASE WHEN m.iMessageFrom= '".$user_id."' THEN (select CONCAT(vFirstName,\" \",vLastName) from users WHERE iUserId='".$user_id."')
+            WHEN m.iMessageTo= '".$user_id."' THEN (select CONCAT(vFirstName,\" \",vLastName) from users WHERE iUserId='".$user_id."')
+            END AS s_name
+           ");
+           $this->db->select("CASE WHEN m.iMessageFrom= '".$user_id."' THEN (select iUserId from users WHERE iUserId='".$user_id."')
+           WHEN m.iMessageTo= '".$user_id."' THEN (select iUserId from users WHERE iUserId='".$user_id."')
+           END AS s_users_id
+           ");
+           $this->db->select("CASE WHEN m.iMessageFrom= '".$receiver_id."' THEN (select iUserId from users WHERE iUserId='".$receiver_id."')
+           WHEN  m.iMessageTo= '".$receiver_id."' THEN (select iUserId from users WHERE iUserId='".$receiver_id."')
+           END AS  r_users_id
+           ");
+
+
+            // $this->db->select("CONCAT(s.vFirstName,\" \",s.vLastName) AS s_name");
            // $this->db->select("r.eNotificationType AS r_notification");
-            $this->db->where("(m.iMessageFrom = ".$user_id." AND m.iMessageTo = ".$receiver_id.")", FALSE, FALSE);
-             $this->db->where("r.eStatus","Active");
+           $this->db->where("((m.iMessageFrom = ".$user_id." AND m.iMessageTo = ".$receiver_id.") OR (m.iMessageFrom = ".$receiver_id." AND m.iMessageTo = ".$user_id."))", FALSE, FALSE);
+
+            // $this->db->where("(m.iMessageFrom = ".$user_id." AND m.iMessageTo = ".$receiver_id.")", FALSE, FALSE);
+             $this->db->where("s.eStatus","Active");
 
             $this->db->limit(1);
 
@@ -260,14 +291,20 @@ class Send_message_model extends CI_Model
     }
 
 
-    public function get_user_id($message_id)
+    public function get_user_id($message_id,$user_id)
     {
         try
         {
             $result_arr = array();
 
             $this->db->from("messages AS m");
-            $this->db->select("m.iMessageTo AS s_users_id");
+            
+            $this->db->select("CASE WHEN iMessageFrom= '".$user_id."' THEN (select `iMessageTo` from messages WHERE iMessageId='".$message_id."')
+            WHEN iMessageTo= '".$user_id."' THEN (select `iMessageFrom` from messages WHERE iMessageId='".$message_id."')
+           END AS s_users_id
+           ");
+
+            // $this->db->select("m.iMessageTo AS s_users_id");
             $this->db->select("m.iMissingPetId AS missing_pet_id");
              $this->db->where("m.iMessageId",$message_id);
             $result_obj = $this->db->get();
