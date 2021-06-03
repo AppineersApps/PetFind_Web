@@ -63,6 +63,12 @@ class Report_abusive_for_missing_post_model extends CI_Model
             if(isset($params_arr["message"])){
                 $this->db->set("vMessage", $params_arr["message"]);
             }
+            if(isset($params_arr["reason_id"])){
+                $this->db->set("iReasonId", $params_arr["reason_id"]);
+            }
+            if(isset($params_arr["reason_description"])){
+                $this->db->set("tReasonDescription", $params_arr["reason_description"]);
+            }
             $this->db->set($this->db->protect("dtAddedAt"), $params_arr["_dtaddedat"], FALSE);
             $this->db->insert("abusive_reports_for_missing_post");
             $insert_id = $this->db->insert_id();

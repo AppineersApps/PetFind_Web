@@ -77,6 +77,13 @@ class Report_abusive_user extends Cit_Controller
                     "value" => TRUE,
                     "message" => "message_required",
                 )
+            ),
+            "reason_id" => array(
+                array(
+                    "rule" => "required",
+                    "value" => TRUE,
+                    "message" => "reason_required",
+                )
             )
         );
         $valid_res = $this->wsresponse->validateInputParams($valid_arr, $request_arr, "report_abusive_user");
@@ -165,6 +172,15 @@ class Report_abusive_user extends Cit_Controller
             {
                 $params_arr["report_on"] = $input_params["report_on"];
             }
+            if (isset($input_params["reason_id"]))
+            {
+                $params_arr["reason_id"] = $input_params["reason_id"];
+            }
+            if (isset($input_params["reason_description"]))
+            {
+                $params_arr["reason_description"] = $input_params["reason_description"];
+            }
+            
             $params_arr["_dtaddedat"] = "NOW()";
             $this->block_result = $this->report_abusive_user_model->insert_report($params_arr);
         }

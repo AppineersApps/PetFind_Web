@@ -78,6 +78,13 @@ class Report_abusive_for_missing_post extends Cit_Controller
                     "value" => TRUE,
                     "message" => "message_required",
                 )
+            ),
+            "reason_id" => array(
+                array(
+                    "rule" => "required",
+                    "value" => TRUE,
+                    "message" => "reason_required",
+                )
             )
         );
         $valid_res = $this->wsresponse->validateInputParams($valid_arr, $request_arr, "report_abusive_for_missing_post");
@@ -164,6 +171,14 @@ class Report_abusive_for_missing_post extends Cit_Controller
             if (isset($input_params["message"]))
             {
                 $params_arr["message"] = $input_params["message"];
+            }
+            if (isset($input_params["reason_id"]))
+            {
+                $params_arr["reason_id"] = $input_params["reason_id"];
+            }
+            if (isset($input_params["reason_description"]))
+            {
+                $params_arr["reason_description"] = $input_params["reason_description"];
             }
             
             $params_arr["_dtaddedat"] = "NOW()";

@@ -99,12 +99,7 @@ class Notification_model extends CI_Model
             {
                 $this->db->set("vPetFoundLongitude", $params_arr["pet_found_longitude"]);
             }
-            if (isset($params_arr["unix_timestamp"]))
-            {
-                $this->db->set("vUnixTimestamp", $params_arr["unix_timestamp"]);
-            }
             $this->db->set("vNotificationType", $params_arr["_enotificationtype"]);
-            $this->db->set("eNotifyType", $params_arr["eNotifyType"]);
             $this->db->set($this->db->protect("dtAddedAt"), $params_arr["_dtaddedat"], FALSE);
             $this->db->set($this->db->protect("dtUpdatedAt"), $params_arr["_dtupdatedat"], FALSE);
             $this->db->set("eNotificationStatus", "Active");
@@ -133,8 +128,6 @@ class Notification_model extends CI_Model
         return $return_arr;
     }
 
-    
-
     /**
      * get_notification_details method is used to execute database queries for Notification List API.
      * @created CIT Dev Team
@@ -151,315 +144,57 @@ class Notification_model extends CI_Model
             $result_arr = array();
 
             $this->db->start_cache();
-         
-             $this->db->from("notification AS n");
-            $this->db->join("users AS u", "n.iSenderId = u.iUserId", "left"); 
-            $this->db->join("missing_pets AS m", "m.iMissingPetId = n.iMissingPetId", "inner");
-             $this->db->join("messages AS msg", "msg.iMissingPetId = n.iMissingPetId", "left");
-              $this->db->select("msg.iMessageId AS message_id");
-            $this->db->select("msg.eMessageStatus AS message_status");
-            $this->db->select("msg.eIsRequested AS is_requested");
-            $this->db->select("n.iNotificationId AS notification_id");
-            $this->db->select("n.dtAddedAt AS notify_datetime");
-            $this->db->select("n.iMissingPetId AS missing_pet_id");
-            $this->db->select("n.vPetFoundStreet AS pet_found_street");
-            $this->db->select("n.vPetFoundCity AS pet_found_city");
-            $this->db->select("n.vPetFoundState AS pet_found_state");
-            $this->db->select("n.vPetFoundZipCode AS pet_found_zipcode");
-            $this->db->select("n.vPetFoundDate AS pet_found_date");
-            $this->db->select("n.vPetFoundLattitude AS pet_found_lattitude");
-            $this->db->select("n.vPetFoundLongitude AS pet_found_longitude");
-            $this->db->select("n.vUnixTimestamp AS unix_timestamp");
-            $this->db->select("n.vNotificationMessage AS message");
-            $this->db->select("n.eNotifyType AS notify_type");
-            $this->db->select("n.vNotificationType AS notification_type");
-            $this->db->select("concat(u.vFirstName,' ',u.vLastName) AS sender_name");
-            $this->db->select("u.iUserId AS sender_id");
-            $this->db->select("u.vProfileImage AS sender_profile");
-            $this->db->select("u.vMobileNo AS sender_phone");
-            $this->db->select("u.tAddress AS sender_street_address");
-            $this->db->select("u.vStateName AS sender_state");
-            $this->db->select("u.vCity AS sender_city");
-            $this->db->select("u.vZipCode AS sender_zip_code");
-            $this->db->select("u.dLatitude AS sender_lattitude");
-            $this->db->select("u.dLongitude AS sender_longitude");
-             $this->db->select("u.vEmail AS sender_email");
-            $this->db->select("m.vDogsName AS dog_name");
-             $this->db->select("(select mi.vImage from missing_pet_images as mi where mi.iMissingPetId = m.iMissingPetId limit 1) AS dog_image", FALSE);
-
-             if (isset($user_id) && $user_id != "")
-                {
-                    $this->db->where("n.iReceiverId =", $user_id);
-                    $this->db->where("((msg.iMessageFrom = ".$user_id.") OR ( msg.iMessageTo = ".$user_id."))", FALSE, FALSE);
-                }
-            $this->db->stop_cache();
-            $this->db->where("u.eStatus =", 'Active');
-            $this->db->where("n.vNotificationType !=", 'accept_message');
-            $this->db->where("n.vNotificationType !=", 'decline_message');
-            $this->db->order_by("n.iNotificationId", "desc");
-
-            $this->db->order_by("n.dtAddedAt", "desc");
-             $result_obj = $this->db->get();
-            // echo $this->db->last_query();exit;
-            $result_arr = is_object($result_obj) ? $result_obj->result_array() : array();
-
-            $this->db->flush_cache();
-            if (!is_array($result_arr) || count($result_arr) == 0)
-            {
-                throw new Exception('No records found.');
-            }
-            $success = 1;
-        }
-        catch(Exception $e)
-        {
-            $success = 0;
-            $message = $e->getMessage();
-        }
-
-        $this->db->_reset_all();
-        $return_arr["success"] = $success;
-        $return_arr["message"] = $message;
-        $return_arr["data"] = $result_arr;
-        return $return_arr;
-    }
-
-     /**
-     * get_notification_id method is used to execute database queries for Notification List API.
-     * @created CIT Dev Team
-     * @modified Snehal Shinde | 05.04.2021
-     * @param string $user_id user_id is used to process query block.
-     * @param array $settings_params settings_params are used for paging parameters.
-     * @return array $return_arr returns response of query block.
-     */
-    public function get_notification_id($user_id = '', $input_param)
-    {
-        // print_r($input_param);exit;
-        try
-        {
-
-            
-            $result_arr = array();
-            $notification_type="Notify pet owner for found pet in my area";
-            $this->db->start_cache();
-         
-             $this->db->from("notification AS n");
-            $this->db->join("users AS u", "n.iSenderId = u.iUserId", "left"); 
-            $this->db->join("missing_pets AS m", "m.iMissingPetId = n.iMissingPetId", "inner");
-            $this->db->select("max(n.iNotificationId) AS notification_id");
-            $this->db->select("n.iMissingPetId AS missing_pet_id");
-            $this->db->select("concat(u.vFirstName,' ',u.vLastName) AS sender_name");
-            $this->db->select("n.iSenderId AS sender_id");
-
-             if (isset($user_id) && $user_id != "")
-                {
-                    $this->db->where("n.iReceiverId =", $user_id);
-                }
-                $this->db->where("n.vNotificationType =", $notification_type);
-                $this->db->where("n.iMissingPetId =", $input_param['missing_pet_id']);
-                 $this->db->stop_cache();
-            
-            $this->db->group_by("n.iSenderId");
-            $this->db->order_by("n.iNotificationId", "desc");
-             $result_obj = $this->db->get();
-            // echo $this->db->last_query();exit;
-            $result_arr = is_object($result_obj) ? $result_obj->result_array() : array();
-
-            $this->db->flush_cache();
-            if (!is_array($result_arr) || count($result_arr) == 0)
-            {
-                throw new Exception('No records found.');
-            }
-            else{
-                $success = 1;
-            }
-           
-        }
-        catch(Exception $e)
-        {
-            $success = 0;
-            $message = $e->getMessage();
-        }
-
-        $this->db->_reset_all();
-        $return_arr["success"] = $success;
-        $return_arr["message"] = $message;
-        $return_arr["data"] = $result_arr;
-        return $return_arr;
-    }
-
-
-      /**
-     * get_notification method is used to execute database queries for Notification List API.
-     * @created CIT Dev Team
-     * @modified Snehal Shinde | 05.04.2021
-     * @param string $user_id user_id is used to process query block.
-     * @param array $settings_params settings_params are used for paging parameters.
-     * @return array $return_arr returns response of query block.
-     */
-    public function get_notification($notification_id)
-    {
-        // print_r($input_param);exit;
-        try
-        {
-           
-            $result_arr = array();
-            $this->db->start_cache();
-         
             $this->db->from("notification AS n");
             $this->db->join("users AS u", "n.iSenderId = u.iUserId", "left"); 
             $this->db->join("missing_pets AS m", "m.iMissingPetId = n.iMissingPetId", "inner");
-                $this->db->select("n.iNotificationId AS notification_id");
+            $this->db->select("n.iNotificationId AS notification_id");
+            $this->db->select("n.vNotificationMessage AS message");
+            $this->db->select("n.vNotificationType AS notification_type");
+            $this->db->select("concat(u.vFirstName,' ',u.vLastName) AS sender_name");
+            $this->db->select("u.iUserId AS sender_id");
             $this->db->select("n.dtAddedAt AS notify_datetime");
             $this->db->select("n.iMissingPetId AS missing_pet_id");
             $this->db->select("n.vPetFoundStreet AS pet_found_street");
             $this->db->select("n.vPetFoundCity AS pet_found_city");
             $this->db->select("n.vPetFoundState AS pet_found_state");
-            $this->db->select("n.vPetFoundZipCode AS pet_found_zipcode");
+            $this->db->select("n.vPetFoundZipCode AS pet_found_state");
             $this->db->select("n.vPetFoundDate AS pet_found_date");
             $this->db->select("n.vPetFoundLattitude AS pet_found_lattitude");
             $this->db->select("n.vPetFoundLongitude AS pet_found_longitude");
-            $this->db->select("n.vUnixTimestamp AS unix_timestamp");
-            $this->db->select("n.vNotificationMessage AS message");
-            $this->db->select("n.eNotifyType AS notify_type");
-            $this->db->select("n.vNotificationType AS notification_type");
-            $this->db->select("concat(u.vFirstName,' ',u.vLastName) AS sender_name");
-            $this->db->select("u.iUserId AS sender_id");
             $this->db->select("u.vProfileImage AS sender_profile");
-            $this->db->select("u.vMobileNo AS sender_phone");
-            $this->db->select("u.tAddress AS sender_street_address");
-            $this->db->select("u.vStateName AS sender_state");
-            $this->db->select("u.vCity AS sender_city");
-            $this->db->select("u.vZipCode AS sender_zip_code");
-            $this->db->select("u.dLatitude AS sender_lattitude");
-            $this->db->select("u.dLongitude AS sender_longitude");
+             $this->db->select("u.vMobileNo AS sender_phone");
              $this->db->select("u.vEmail AS sender_email");
             $this->db->select("m.vDogsName AS dog_name");
-             $this->db->select("(select mi.vImage from missing_pet_images as mi where mi.iMissingPetId = m.iMissingPetId limit 1) AS dog_image", FALSE);
+            $this->db->select("m.vDogLastSeenStreet AS lost_street_address");
+            $this->db->select("m.vLastSeenState AS lost_state");
+            $this->db->select("m.vLastSeenCity AS lost_city");
+            $this->db->select("m.vLastSeenZipCode AS lost_zip_code");
+            $this->db->select("m.vLastSeenLattitude AS lost_lattitude");
+            $this->db->select("m.vLastSeenZipCode AS lost_longitude");
 
-
-             if (isset($notification_id) && $notification_id != "")
-                {
-                    $this->db->where("n.iNotificationId =", $notification_id);
-                }
-                 $this->db->stop_cache();
-             $result_obj = $this->db->get();
-            // echo $this->db->last_query();exit;
-            $result_arr = is_object($result_obj) ? $result_obj->result_array() : array();
-
-            $this->db->flush_cache();
-            if (!is_array($result_arr) || count($result_arr) == 0)
-            {
-                throw new Exception('No records found.');
-            }
-            else{
-                $success = 1;
-            }
-           
-        }
-        catch(Exception $e)
-        {
-            $success = 0;
-            $message = $e->getMessage();
-        }
-
-        $this->db->_reset_all();
-        $return_arr["success"] = $success;
-        $return_arr["message"] = $message;
-        $return_arr["data"] = $result_arr;
-        return $return_arr;
-    }
-
-    /**
-     * get_notification_details method is used to execute database queries for Notification List API.
-     * @created CIT Dev Team
-     * @modified Snehal Shinde | 05.04.2021
-     * @param string $user_id user_id is used to process query block.
-     * @param array $settings_params settings_params are used for paging parameters.
-     * @return array $return_arr returns response of query block.
-     */
-    public function get_notification_details_backup_18_5($user_id = '', $input_param)
-    {
-        // print_r($input_param);exit;
-        try
-        {
-            $result_arr = array();
-
-            $this->db->start_cache();
-           
             if (isset($input_param['page_code']) && $input_param['page_code'] == "notified_user_list" && isset($input_param['missing_pet_id']))
             {
                 $notification_type="Notify pet owner for found pet in my area";
-
-                    $strSql="SELECT m1.iNotificationId AS notification_id, m1.dtAddedAt AS notify_datetime, m1.iMissingPetId AS missing_pet_id, m1.vPetFoundStreet AS pet_found_street,m1.vPetFoundCity AS pet_found_city,m1.vPetFoundState AS pet_found_state, m1.vPetFoundZipCode AS pet_found_zipcode, m1.vPetFoundDate AS pet_found_date, m1.vPetFoundLattitude AS pet_found_lattitude, m1.vPetFoundLongitude AS pet_found_longitude, m1.vUnixTimestamp AS unix_timestamp,m1.vNotificationMessage AS message, m1.eNotifyType AS notify_type,
-                    CONCAT(u.vFirstName,\" \",u.vLastName) AS sender_name,
-                    u.iUserId AS sender_id, u.vProfileImage AS sender_profile,u.vMobileNo AS sender_phone,u.tAddress AS sender_street_address, u.vStateName AS sender_state, u.vCity AS sender_city, u.vZipCode AS sender_zip_code, u.dLatitude AS sender_lattitude,u.dLongitude AS sender_longitude,u.vEmail AS sender_email,m.vDogsName AS dog_name
-, (select mi.vImage from missing_pet_images as mi where mi.iMissingPetId = m.iMissingPetId limit 1) AS dog_image
-
- FROM notification m1 LEFT JOIN notification m2 ON (m1.`iSenderId` = m2.`iSenderId` AND m1.`iNotificationId` < m2.`iNotificationId`) LEFT JOIN users AS u ON m1.iSenderId = u.iUserId
-LEFT JOIN missing_pets AS m ON m.iMissingPetId = m1.iMissingPetId WHERE m2.iNotificationId IS NULL AND  m1.iMissingPetId='".$input_param['missing_pet_id']."' AND m1.vNotificationType='".$notification_type."' AND m1.iReceiverId='".$input_param['user_id']."' group by m1.iSenderId order by m1.iNotificationId desc ";
-
-
-                    $result_obj = $this->db->query($strSql);
-
-                   // echo $this->db->last_query();exit;
-                    $result_arr = is_object($result_obj) ? $result_obj->result_array() : array();
-                    $this->db->reset_query();
-
-//                 SELECT m1.*
-// FROM notification m1 LEFT JOIN notification m2
-//  ON (m1.`iSenderId` = m2.`iSenderId` AND m1.`iNotificationId` < m2.`iNotificationId`) WHERE m2.`iNotificationId` IS NULL AND  m1.`iMissingPetId`=2;
-
-
+                $this->db->where("n.vNotificationType =", $notification_type);
+                $this->db->where("n.iMissingPetId =", $input_param['missing_pet_id']);
+                $this->db->where("n.iReceiverId =", $input_param['user_id']);
             }
             else
             {
-                 $this->db->from("notification AS n");
-            $this->db->join("users AS u", "n.iSenderId = u.iUserId", "left"); 
-            $this->db->join("missing_pets AS m", "m.iMissingPetId = n.iMissingPetId", "inner");
-                $this->db->select("n.iNotificationId AS notification_id");
-            $this->db->select("n.dtAddedAt AS notify_datetime");
-            $this->db->select("n.iMissingPetId AS missing_pet_id");
-            $this->db->select("n.vPetFoundStreet AS pet_found_street");
-            $this->db->select("n.vPetFoundCity AS pet_found_city");
-            $this->db->select("n.vPetFoundState AS pet_found_state");
-            $this->db->select("n.vPetFoundZipCode AS pet_found_zipcode");
-            $this->db->select("n.vPetFoundDate AS pet_found_date");
-            $this->db->select("n.vPetFoundLattitude AS pet_found_lattitude");
-            $this->db->select("n.vPetFoundLongitude AS pet_found_longitude");
-            $this->db->select("n.vUnixTimestamp AS unix_timestamp");
-            $this->db->select("n.vNotificationMessage AS message");
-            $this->db->select("n.eNotifyType AS notify_type");
-            $this->db->select("n.vNotificationType AS notification_type");
-            $this->db->select("concat(u.vFirstName,' ',u.vLastName) AS sender_name");
-            $this->db->select("u.iUserId AS sender_id");
-            $this->db->select("u.vProfileImage AS sender_profile");
-            $this->db->select("u.vMobileNo AS sender_phone");
-            $this->db->select("u.tAddress AS sender_street_address");
-            $this->db->select("u.vStateName AS sender_state");
-            $this->db->select("u.vCity AS sender_city");
-            $this->db->select("u.vZipCode AS sender_zip_code");
-            $this->db->select("u.dLatitude AS sender_lattitude");
-            $this->db->select("u.dLongitude AS sender_longitude");
-             $this->db->select("u.vEmail AS sender_email");
-            $this->db->select("m.vDogsName AS dog_name");
-             $this->db->select("(select mi.vImage from missing_pet_images as mi where mi.iMissingPetId = m.iMissingPetId limit 1) AS dog_image", FALSE);
-
-             if (isset($user_id) && $user_id != "")
+                if (isset($user_id) && $user_id != "")
                 {
                     $this->db->where("n.iReceiverId =", $user_id);
                 }
-                 $this->db->stop_cache();
-            
-            $this->db->order_by("n.iNotificationId", "desc");
-            $this->db->order_by("n.dtAddedAt", "desc");
-             $result_obj = $this->db->get();
-            // echo $this->db->last_query();exit;
-            $result_arr = is_object($result_obj) ? $result_obj->result_array() : array();
             }
            
-// echo $this->db->last_query();exit;
+            
 
-           
+            $this->db->stop_cache();
+
+            $this->db->order_by("n.dtAddedAt", "desc");
+            $result_obj = $this->db->get();
+            // echo $this->db->last_query();exit;
+            $result_arr = is_object($result_obj) ? $result_obj->result_array() : array();
             $this->db->flush_cache();
             if (!is_array($result_arr) || count($result_arr) == 0)
             {
@@ -559,7 +294,7 @@ LEFT JOIN missing_pets AS m ON m.iMissingPetId = m1.iMissingPetId WHERE m2.iNoti
              FROM users AS s 
              LEFT JOIN tag_people as t ON s.iUserId=t.iTagTo 
              LEFT JOIN missing_pets as m ON t.iMissingPetId=m.iMissingPetId 
-              WHERE t.iMissingPetId = '".$missing_pet_id."' AND t.iTagTo != '".$user_id."'";
+              WHERE t.iMissingPetId = '".$missing_pet_id."'";
             $result_obj = $this->db->query($strSql);
             // echo $this->db->last_query();exit;
 
@@ -610,7 +345,7 @@ LEFT JOIN missing_pets AS m ON m.iMissingPetId = m1.iMissingPetId WHERE m2.iNoti
             $this->db->select("n.vPetFoundZipCode AS pet_found_zipcode");
             $this->db->select("n.vPetFoundLattitude AS pet_found_lattitude");
             $this->db->select("n.vPetFoundLongitude AS pet_found_longitude");
-            $this->db->select("n.vUnixTimestamp AS unix_timestamp");
+
             $this->db->where("n.iNotificationId =", $notification_id);
 
             $this->db->stop_cache();

@@ -858,6 +858,7 @@ class Notification extends Cit_Controller
             'sender_id',
             'message_id',
             'message_status',
+            'is_requested',
             'missing_pet_id',
             'notify_datetime',
             'sender_profile',

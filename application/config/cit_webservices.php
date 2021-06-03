@@ -509,7 +509,7 @@ $config["delete_api_log"] = array(
     )
 );
 
-//  Busive report user API 
+//  Abusive report user API 
 $config["report_abusive_user"] = array(
     "title" => "report_abusive_user",
     "folder" => "basic_appineers_master",
@@ -677,6 +677,22 @@ $config["delete_image"] = array(
     "method" => "delete",
     "params" => array(
         "image_id"
+    ),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
+// Api for get reason listing
+$config["reasons_list"] = array(
+    "title" => "reasons_list",
+    "folder" => "basic_appineers_master",
+    "method" => "GET_POST",
+    "params" => array(
+        "user_id",
+        "user_access_token",
+        "reason_type"
     ),
     "token" => "",
     "payload" => array(

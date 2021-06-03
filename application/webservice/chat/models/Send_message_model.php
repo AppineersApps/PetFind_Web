@@ -84,6 +84,56 @@ class Send_message_model extends CI_Model
         $return_arr["data"] = $result_arr;
         return $return_arr;
     }
+    
+     /**
+     * This method is used to execute database queries for Send Message API.
+     * @created Suresh Nakate
+     * @modified Snehal Shinde | 14-04-2021
+     * @param string $user_id user_id is used to process query block.
+     * @param string $receiver_id receiver_id is used to process query block.
+     * @return array $return_arr returns response of query block.
+     */
+    public function check_valid_message($input_params)
+    {
+       
+        try
+        {
+            $result_arr = array();
+
+            $this->db->from("messages AS m"); 
+            $this->db->select("m.iMessageId AS message_id");
+
+            if (isset($input_params["message_id"]))
+            {
+                $this->db->where("m.iMessageId = ",$input_params["message_id"]);
+            }  
+             
+            $this->db->where("(m.iMessageFrom = ".$input_params["user_id"]." OR m.iMessageTo = ".$input_params["user_id"]." ) ", FALSE, FALSE);
+             
+            $result_obj = $this->db->get();
+
+           
+            $result_arr = is_object($result_obj) ? $result_obj->result_array() : array();
+            if (!is_array($result_arr) || count($result_arr) == 0)
+            {
+                throw new Exception('No records found.');
+            }
+            $success = 1;
+        }
+        catch(Exception $e)
+        {
+            $success = 0;
+            $message = $e->getMessage();
+        }
+
+        $this->db->_reset_all();
+        // echo $this->db->last_query();exit;
+        $return_arr["success"] = $success;
+        $return_arr["message"] = $message;
+        $return_arr["data"] = $result_arr;
+        return $return_arr;
+    }
+
 
     /**
      * update_message method is used to execute database queries for Send Message API.
@@ -120,6 +170,10 @@ class Send_message_model extends CI_Model
             if (isset($params_arr["user_id"]))
             {
                 $this->db->set("iMessageFrom", $params_arr["user_id"]);
+            }
+            if (isset($params_arr["is_requested"]))
+            {
+                $this->db->set("eIsRequested", $params_arr["is_requested"]);
             }
             
             $this->db->set($this->db->protect("dtUpdatedAt"), $params_arr["_dtmodifieddate"], FALSE);
@@ -425,9 +479,9 @@ class Send_message_model extends CI_Model
      * @param string $where_clause where_clause is used to process query block.
      * @return array $return_arr returns response of query block.
      */
-    public function get_message($user_id)
+    public function get_message($user_id,$page_code)
     {
-        // print_r($user_id);exit;
+        // print_r($page_code);exit;
        
         try
         {
@@ -454,13 +508,21 @@ class Send_message_model extends CI_Model
             $this->db->select("m.dtAddedAt AS updated_at");
             $this->db->select("(".$this->db->escape("").") AS sender_image", FALSE);
             $this->db->select("(".$this->db->escape("").") AS receiver_image", FALSE);
-            $this->db->where("m.iMessageTo",$user_id);
-            $this->db->where("m.eMessageStatus",'pending');
+            $this->db->where("((m.iMessageFrom = ".$user_id.") OR ( m.iMessageTo = ".$user_id."))", FALSE, FALSE);
 
+
+            // $this->db->where("m.iMessageTo",$user_id);
+            
+            if($page_code!="all_chat_list")
+            {
+                $this->db->where("m.eMessageStatus",'pending');
+            }
+        
             $this->db->order_by("m.dtAddedAt", "desc");
 
             $result_obj = $this->db->get();
             $result_arr = is_object($result_obj) ? $result_obj->result_array() : array();
+
             if (!is_array($result_arr) || count($result_arr) == 0)
             {
                 throw new Exception('No records found.');
@@ -633,4 +695,50 @@ class Send_message_model extends CI_Model
         return $return_arr;
     }
 
+    
+/**
+     * This method is used to execute database queries for delete missing pet  post.
+     * @created Snehal Shinde | 01-03-2021
+     * @param array $params_arr params_arr array to process query block.
+     * @param array $where_arr where_arr are used to process where condition(s).
+     * @return array $return_arr returns response of query block.
+     */
+    public function delete_message($params_arr = array())
+    {
+        try
+        {
+            $result_arr = array();
+            $this->db->start_cache();
+            if (isset($params_arr["message_id"]))
+            {
+                $this->db->where("iMessageId =", $params_arr["message_id"]);
+            }
+            $this->db->stop_cache();
+           
+            $res = $this->db->delete("messages");
+
+            $affected_rows = $this->db->affected_rows();
+            if (!$res || $affected_rows == -1)
+            {
+                throw new Exception("Failure in deletion.");
+            }
+            $result_param = "affected_rows";
+            $result_arr[0][$result_param] = $affected_rows;
+            $success = 1;
+
+        }
+        catch(Exception $e)
+        {
+            $success = 0;
+            $message = $e->getMessage();
+        }
+        $this->db->flush_cache();
+        $this->db->_reset_all();
+        //echo $this->db->last_query();
+        $return_arr["success"] = $success;
+        $return_arr["message"] = $message;
+        $return_arr["data"] = $result_arr;
+        return $return_arr;
+    }
+    
 }

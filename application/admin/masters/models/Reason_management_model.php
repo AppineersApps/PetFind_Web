@@ -2,28 +2,28 @@
 defined('BASEPATH') || exit('No direct script access allowed');
 
 /**
- * Description of Abusive Reports For User Model
+ * Description of Reason Management Model
  *
  * @category admin
  *
- * @package misc
+ * @package masters
  *
  * @subpackage models
  *
- * @module Abusive Reports For User
+ * @module Reason Management
  *
- * @class Abusive_reports_model.php
+ * @class Reason_management_model.php
  *
- * @path application\admin\misc\models\Abusive_reports_model.php
+ * @path application\admin\masters\models\Reason_management_model.php
  *
  * @version 4.4
  *
  * @author CIT Dev Team
  *
- * @date 17.06.2019
+ * @date 01.10.2019
  */
 
-class Abusive_reports_model extends CI_Model
+class Reason_management_model extends CI_Model
 {
     public $table_name;
     public $table_alias;
@@ -52,62 +52,39 @@ class Abusive_reports_model extends CI_Model
     public $listing_data;
     public $rec_per_page;
     public $message;
+    protected $CI;
 
     /**
      * __construct method is used to set model preferences while model object initialization.
-     * @created priyanka chillakuru | 02.05.2019
-     * @modified priyanka chillakuru | 17.06.2019
+     * @created priyanka chillakuru | 10.09.2019
+     * @modified priyanka chillakuru | 01.10.2019
      */
     public function __construct()
     {
         parent::__construct();
+         $this->CI = & get_instance();
         $this->load->library('listing');
         $this->load->library('filter');
         $this->load->library('dropdown');
-        $this->module_name = "abusive_reports";
-        $this->table_name = "abusive_reports";
-        $this->table_alias = "ar";
-        $this->primary_key = "iAbusiveReportsId";
-        $this->primary_alias = "ar_abusive_reports_id";
+        $this->module_name = "reason_management";
+        $this->table_name = "reasons";
+        $this->table_alias = "i";
+        $this->primary_key = "iReasonId";
+        $this->primary_alias = "i_reason_id";
         $this->physical_data_remove = "Yes";
         $this->grid_fields = array(
-            "rb_first_name",
-            "ron_first_name",
-            "ar_message",
-            "ar_added_at",
-            "ron_users_id",
-            "rb_users_id",
+            //"i_reason_image",
+            "i_reason_name",
+            "i_reason_entity_type",
+            "i_reason_status",
+            "i_added_at",
+            "sys_custom_field_1"
         );
-        $this->join_tables = array(
-            array(
-                "table_name" => "users",
-                "table_alias" => "rb",
-                "field_name" => "iUserId",
-                "rel_table_name" => "abusive_reports",
-                "rel_table_alias" => "ar",
-                "rel_field_name" => "iReportedBy",
-                "join_type" => "left",
-                "extra_condition" => "",
-            ),
-            array(
-                "table_name" => "users",
-                "table_alias" => "ron",
-                "field_name" => "iUserId",
-                "rel_table_name" => "abusive_reports",
-                "rel_table_alias" => "ar",
-                "rel_field_name" => "iReportedOn",
-                "join_type" => "left",
-                "extra_condition" => "",
-            )
-        );
+        $this->join_tables = array();
         $this->extra_cond = "";
         $this->groupby_cond = array();
         $this->having_cond = "";
-        $this->orderby_cond = array(
-                    array(
-                        "field" => "ar.iAbusiveReportsId ",
-                        "order" => "DESC"
-                    ));
+        $this->orderby_cond = array();
         $this->unique_type = "OR";
         $this->unique_fields = array();
         $this->switchto_fields = array();
@@ -131,9 +108,14 @@ class Abusive_reports_model extends CI_Model
      */
     public function insert($data = array())
     {
-        $this->db->insert($this->table_name, $data);
+
+        $this->db->insert_batch($this->table_name, $data);
         $insert_id = $this->db->insert_id();
         $this->insert_id = $insert_id;
+
+        if ($insert_id > 0) {
+            $this->general->dbChanageLog($this->table_name, $this->primary_key, $this->db->affected_rows(), $data, $where, $this->module_name, "Added");
+        }
         return $insert_id;
     }
 
@@ -147,6 +129,7 @@ class Abusive_reports_model extends CI_Model
      */
     public function update($data = array(), $where = '', $alias = "No", $join = "No")
     {
+  
         if ($alias == "Yes")
         {
             if ($join == "Yes")
@@ -164,7 +147,13 @@ class Abusive_reports_model extends CI_Model
                 {
                     $extra_cond = " WHERE ".$this->db->protect($this->table_alias.".".$this->primary_key)." = ".$this->db->escape($where);
                 }
-                elseif ($where)
+                else if (is_array($where))
+                {
+                    $whr = implode(",", $where);
+
+                    $extra_cond = " WHERE ".$this->db->protect($this->table_alias.".".$this->primary_key)." IN (".$this->db->escape($whr).")";
+                }
+                else if ($where)
                 {
                     $extra_cond = " WHERE ".$where;
                 }
@@ -181,6 +170,10 @@ class Abusive_reports_model extends CI_Model
                 {
                     $this->db->where($this->table_alias.".".$this->primary_key, $where);
                 }
+                 else if (is_array($where) ==1)
+                {
+                    $this->db->where_in($where);
+                }
                 elseif ($where)
                 {
                     $this->db->where($where, FALSE, FALSE);
@@ -194,7 +187,12 @@ class Abusive_reports_model extends CI_Model
         }
         else
         {
-            if (is_numeric($where))
+
+            if(is_array($where) == 1)
+            {
+               $this->db->where_in($this->primary_key, $where);
+            }
+            else if(is_numeric($where))
             {
                 $this->db->where($this->primary_key, $where);
             }
@@ -207,7 +205,12 @@ class Abusive_reports_model extends CI_Model
                 return FALSE;
             }
             $res = $this->db->update($this->table_name, $data);
+           
         }
+
+        $this->general->dbChanageLog($this->table_name, $this->primary_key, $this->db->affected_rows(), $data, $where, $this->module_name, "Modified");
+
+        //echo $this->db->last_query();        exit;
         return $res;
     }
 
@@ -259,6 +262,8 @@ class Abusive_reports_model extends CI_Model
                     }
                     $update_query = "UPDATE ".$this->db->protect($this->table_name)." AS ".$this->db->protect($this->table_alias)." ".$join_tbls." SET ".implode(", ", $set_cond)." ".$extra_cond;
                     $res = $this->db->query($update_query);
+
+                    $this->general->dbChanageLog($this->table_name, $this->primary_key, $this->db->affected_rows(), $data, $where, $this->module_name, "Deleted");
                 }
                 else
                 {
@@ -275,6 +280,8 @@ class Abusive_reports_model extends CI_Model
                         return FALSE;
                     }
                     $res = $this->db->update($this->table_name." AS ".$this->table_alias, $data);
+
+                    $this->general->dbChanageLog($this->table_name, $this->primary_key, $this->db->affected_rows(), $data, $where, $this->module_name, "Deleted");
                 }
             }
             else
@@ -293,6 +300,8 @@ class Abusive_reports_model extends CI_Model
                 }
                 $data = $this->general->getPhysicalRecordUpdate();
                 $res = $this->db->update($this->table_name, $data);
+
+                $this->general->dbChanageLog($this->table_name, $this->primary_key, $this->db->affected_rows(), $data, $where, $this->module_name, "Deleted");
             }
         }
         else
@@ -325,6 +334,7 @@ class Abusive_reports_model extends CI_Model
                     return FALSE;
                 }
                 $res = $this->db->query($del_query);
+                $this->general->dbChanageLog($this->table_name, $this->primary_key, $this->db->affected_rows(), $data, $where, $this->module_name, "Deleted");
             }
             else
             {
@@ -341,6 +351,7 @@ class Abusive_reports_model extends CI_Model
                     return FALSE;
                 }
                 $res = $this->db->delete($this->table_name);
+                $this->general->dbChanageLog($this->table_name, $this->primary_key, $this->db->affected_rows(), $data, $where, $this->module_name, "Deleted");
             }
         }
         return $res;
@@ -375,40 +386,35 @@ class Abusive_reports_model extends CI_Model
             {
                 $this->db->select($this->table_alias.".".$this->primary_key." AS ".$this->primary_alias);
             }
-            $this->db->where("ron.iUserId IS NOT NULL");
-            $this->db->select("concat(rb.vFirstName,\" \",rb.vLastName) AS rb_first_name");
-            $this->db->select("concat(ron.vFirstName,\" \",ron.vLastName) AS ron_first_name");
-            $this->db->select("ar.vMessage AS ar_message");
-            $this->db->select("ar.dtAddedAt AS ar_added_at");
-            $this->db->select("ron.iUserId AS ron_users_id");
-            $this->db->select("rb.iUserId AS rb_users_id");
+            $this->db->select("i.iReasonId AS i_reason_id");
+            $this->db->select("i.vReason AS i_reason_name");
+            $this->db->select("i.vEntityType AS i_reason_entity_type");
+         //   $this->db->select("i.vReasonsImage AS i_reason_image");
+            $this->db->select("i.eStatus AS i_reason_status");
+            $this->db->select("i.dtAddedAt AS i_added_at");
+            $this->db->select("('view') AS sys_custom_field_1", FALSE);
         }
         else
         {
-             $this->db->where("ron.iUserId IS NOT NULL");
-            $this->db->select("ar.iAbusiveReportsId AS iAbusiveReportsId");
-            $this->db->select("ar.iAbusiveReportsId AS ar_abusive_reports_id");
-            $this->db->select("ar.iReportedBy AS ar_reported_by");
-            $this->db->select("ar.iReportedOn AS ar_reported_on");
-            $this->db->select("ar.vMessage AS ar_message");
-            $this->db->select("ar.dtAddedAt AS ar_added_at");
+            $this->db->select("i.iReasonId AS iReasonId");
+            $this->db->select("i.iReasonId AS i_reason_id");
+           
+            $this->db->select("i.vReason AS i_reason_name");
+            $this->db->select("i.vEntityType AS i_reason_entity_type");
+       //      $this->db->select("i.vReasonsImage AS i_reason_image");
+            $this->db->select("i.eStatus AS i_reason_status");
+            $this->db->select("i.dtAddedAt AS i_added_at");
         }
 
         $this->db->from($this->table_name." AS ".$this->table_alias);
         if (is_array($join) && is_array($join['joins']) && count($join['joins']) > 0)
         {
             $this->listing->addJoinTables($join['joins']);
-            if ($join["list"] == "Yes")
-            {
-                $this->addJoinTables("AR");
-            }
         }
         else
         {
-            if ($join == "Yes")
-            {
-                $this->addJoinTables("AR");
-            }
+
+
         }
         if (is_array($extra_cond) && count($extra_cond) > 0)
         {
@@ -520,23 +526,9 @@ class Abusive_reports_model extends CI_Model
             $this->db->where("(".$filter_range.")", FALSE, FALSE);
         }
 
-        $this->db->select($this->table_alias.".".$this->primary_key." AS ".$this->primary_key);
-        if ($this->primary_alias != "")
-        {
-            $this->db->select($this->table_alias.".".$this->primary_key." AS ".$this->primary_alias);
-        }
-         $this->db->where("ron.iUserId IS NOT NULL");
-        $this->db->select("concat(rb.vFirstName,\" \",rb.vLastName) AS rb_first_name");
-        $this->db->select("concat(ron.vFirstName,\" \",ron.vLastName) AS ron_first_name");
-        $this->db->select("ar.vMessage AS ar_message");
-        $this->db->select("ar.dtAddedAt AS ar_added_at");
-        $this->db->select("ron.iUserId AS ron_users_id");
-        $this->db->select("rb.iUserId AS rb_users_id");
-
         $this->db->stop_cache();
         if ((is_array($group_by) && count($group_by) > 0) || trim($having_cond) != "")
         {
-            $this->db->select($this->table_alias.".".$this->primary_key);
             $total_records_arr = $this->db->get();
             $total_records = is_object($total_records_arr) ? $total_records_arr->num_rows() : 0;
         }
@@ -544,8 +536,20 @@ class Abusive_reports_model extends CI_Model
         {
             $total_records = $this->db->count_all_results();
         }
-
         $total_pages = $this->listing->getTotalPages($total_records, $rec_per_page);
+
+        $this->db->select($this->table_alias.".".$this->primary_key." AS ".$this->primary_key);
+        if ($this->primary_alias != "")
+        {
+            $this->db->select($this->table_alias.".".$this->primary_key." AS ".$this->primary_alias);
+        }
+        $this->db->select("i.iReasonId AS i_reason_id");
+        $this->db->select("i.vReason AS i_reason_name");
+        $this->db->select("i.vEntityType AS i_reason_entity_type");
+     //   $this->db->select("i.vReasonsImage AS i_reason_image");
+        $this->db->select("i.eStatus AS i_reason_status");
+        $this->db->select("i.dtAddedAt AS i_added_at");
+        $this->db->select("('view') AS sys_custom_field_1", FALSE);
         if ($sdef == "Yes" && is_array($order_by) && count($order_by) > 0)
         {
             foreach ($order_by as $orK => $orV)
@@ -645,13 +649,13 @@ class Abusive_reports_model extends CI_Model
         {
             $this->db->select($this->table_alias.".".$this->primary_key." AS ".$this->primary_alias);
         }
-         $this->db->where("ron.iUserId IS NOT NULL");
-        $this->db->select("concat(rb.vFirstName,\" \",rb.vLastName) AS rb_first_name");
-        $this->db->select("concat(ron.vFirstName,\" \",ron.vLastName) AS ron_first_name");
-        $this->db->select("ar.vMessage AS ar_message");
-        $this->db->select("ar.dtAddedAt AS ar_added_at");
-        $this->db->select("ron.iUserId AS ron_users_id");
-        $this->db->select("rb.iUserId AS rb_users_id");
+       // $this->db->select("i.iReasonId AS i_reason_id");
+        $this->db->select("i.vReason AS i_reason_name");
+        $this->db->select("i.vEntityType AS i_reason_entity_type");
+      //  $this->db->select("i.vReasonsImage AS i_reason_image");
+        $this->db->select("i.eStatus AS i_reason_status");
+        $this->db->select("i.dtAddedAt AS i_added_at");
+        $this->db->select("('view') AS sys_custom_field_1", FALSE);
         if ($sdef == "Yes" && is_array($order_by) && count($order_by) > 0)
         {
             foreach ($order_by as $orK => $orV)
@@ -702,123 +706,124 @@ class Abusive_reports_model extends CI_Model
     public function getListConfiguration($name = "")
     {
         $list_config = array(
-            "rb_first_name" => array(
-                "name" => "rb_first_name",
-                "table_name" => "users",
-                "table_alias" => "rb",
-                "field_name" => "vFirstName",
-                "source_field" => "ar_reported_by",
-                "display_query" => "concat(rb.vFirstName,\" \",rb.vLastName)",
-                "entry_type" => "Table",
-                "data_type" => "",
-                "show_in" => "Both",
-                "type" => "dropdown",
-                "align" => "left",
-                "label" => "Reported By",
-                "lang_code" => "ABUSIVE_REPORTS_REPORTED_BY",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_REPORTED_BY'),
-                "width" => 50,
-                "search" => "Yes",
-                "export" => "Yes",
-                "sortable" => "Yes",
-                "addable" => "No",
-                "editable" => "No",
-                "viewedit" => "No",
-                "related" => "Yes",
-                "edit_link" => "Yes",
-                "custom_link" => "Yes",
-            ),
-            "ron_first_name" => array(
-                "name" => "ron_first_name",
-                "table_name" => "users",
-                "table_alias" => "ron",
-                "field_name" => "vFirstName",
-                "source_field" => "ar_reported_on",
-                "display_query" => "concat(ron.vFirstName,\" \",ron.vLastName)",
-                "entry_type" => "Table",
-                "data_type" => "",
-                "show_in" => "Both",
-                "type" => "dropdown",
-                "align" => "left",
-                "label" => "Reported For",
-                "lang_code" => "ABUSIVE_REPORTS_REPORTED_FOR",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_REPORTED_FOR'),
-                "width" => 50,
-                "search" => "Yes",
-                "export" => "Yes",
-                "sortable" => "Yes",
-                "addable" => "No",
-                "editable" => "No",
-                "viewedit" => "No",
-                "related" => "Yes",
-                "edit_link" => "Yes",
-                "custom_link" => "Yes",
-            ),
-            "ar_message" => array(
-                "name" => "ar_message",
-                "table_name" => "abusive_reports",
-                "table_alias" => "ar",
-                "field_name" => "vMessage",
-                "source_field" => "ar_message",
-                "display_query" => "ar.vMessage",
-                "entry_type" => "Table",
-                "data_type" => "varchar",
-                "show_in" => "Both",
-                "type" => "textbox",
-                "align" => "left",
-                "label" => "Message",
-                "lang_code" => "ABUSIVE_REPORTS_MESSAGE",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_MESSAGE'),
-                "width" => 50,
-                "search" => "Yes",
-                "export" => "Yes",
-                "sortable" => "Yes",
-                "addable" => "No",
-                "editable" => "No",
-                "viewedit" => "No",
-                "edit_link" => "No",
-                "php_func" => "controller::setLimitForDescription",
-            ),
-            "ar_reason" => array(
-                "name" => "ar_reason",
-                "table_name" => "abusive_reports",
-                "table_alias" => "ar",
+            "i_reason_id" => array(
+                "name" => "i_reason_id",
+                "table_name" => "reasons",
+                "table_alias" => "i",
                 "field_name" => "iReasonId",
-                "source_field" => "ar_reason",
-                "display_query" => "ar.iReasonId",
+                "source_field" => "i_reason_id",
+                "display_query" => "i.iReasonId",
+                "entry_type" => "Table",
+                "data_type" => "int",
+                "show_in" => "Both",
+                "type" => "dropdown",
+                "align" => "center",
+                "label" => "Reason Id",
+                "lang_code" => "Reason Id",
+                "label_lang" =>"Reason Id",
+                "width" => 50,
+                "search" => "Yes",
+                "export" => "Yes",
+                "sortable" => "Yes",
+                "addable" => "No",
+                "editable" => "Yes",
+                "viewedit" => "Yes",
+            ),
+            
+            "i_reason_name" => array(
+                "name" => "i_reason_name",
+                "table_name" => "reasons",
+                "table_alias" => "i",
+                "field_name" => "vReason",
+                "source_field" => "i_reason_name",
+                "display_query" => "i.vReason",
                 "entry_type" => "Table",
                 "data_type" => "varchar",
-                "show_in" => "Both",
+                "show_input" => "Both",
                 "type" => "textbox",
-                "align" => "left",
-                "label" => "Reason",
-                "lang_code" => "ABUSIVE_REPORTS_REASON",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_REASON'),
+                "label" => "Reason Name",
+                "lang_code" => "REASON_MANAGEMENT_NAME",
+                "label_lang" => $this->lang->line('REASON_MANAGEMENT_NAME'),
+                "width" => 50,
+            ),
+            "i_reason_entity_type" => array(
+                "name" => "i_reason_entity_type",
+                "table_name" => "reasons",
+                "table_alias" => "i",
+                "field_name" => "vEntityType",
+                "source_field" => "i_reason_entity_type",
+                "display_query" => "i.vEntityType",
+                "entry_type" => "Table",
+                "data_type" => "enum",
+                "show_input" => "Both",
+                "type" => "dropdown",
+                "label" => "Entity Type",
+                "lang_code" => "REASON_MANAGEMENT_ENTITY_TYPE",
+                "label_lang" => $this->lang->line('REASON_MANAGEMENT_ENTITY_TYPE'),
+                "width" => 90,
+            ),
+            /*"i_reason_image" => array(
+                "name" => "i_reason_image",
+                "table_name" => "reasons",
+                "table_alias" => "i",
+                "field_name" => "vReasonsImage",
+                "source_field" => "i_reason_image",
+                "entry_type" => "Table",
+                "data_type" => "varchar",
+                "show_input" => "Both",
+                "type" => "file",
+                "label" => "Reasons Image",
+                "lang_code" => "REASON_MANAGEMENT_IMAGE",
+                "label_lang" => $this->lang->line('REASON_MANAGEMENT_IMAGE'),
                 "width" => 50,
                 "search" => "Yes",
                 "export" => "Yes",
                 "sortable" => "Yes",
                 "addable" => "No",
                 "editable" => "No",
-                "viewedit" => "No",
-                "edit_link" => "No",
-                "php_func" => "controller::setLimitForDescription",
+                "viewedit" => "Yes",
+                "file_upload" => "Yes",
+                "file_server" => "amazon",
+                "file_keep" => "iReasonId",
+                "file_folder" => "widsconnect/reason_image",
+                "file_width" => "80",
+                "file_height" => "80",
+                "file_format" => "gif,png,jpg,jpeg,jpe,bmp,ico",
+                "file_size" => "102400",
+                "file_label" => "Yes",
+                "width" => 50,
+                
+            ),*/
+            "i_reason_status" => array(
+                "name" => "i_reason_status",
+                "table_name" => "reasons",
+                "table_alias" => "i",
+                "field_name" => "eStatus",
+                "source_field" => "eStatus",
+                "entry_type" => "Table",
+                "data_type" => "enum",
+                "show_input" => "Both",
+                "type" => "dropdown",
+                "label" => "Status",
+                "lang_code" => "REASON_MANAGEMENT_STATUS",
+                "label_lang" => $this->lang->line('REASON_MANAGEMENT_STATUS'),
+                "width" => 90,
             ),
-            "ar_added_at" => array(
-                "name" => "ar_added_at",
-                "table_name" => "abusive_reports",
-                "table_alias" => "ar",
+            "i_added_at" => array(
+                "name" => "i_added_at",
+                "table_name" => "reasons",
+                "table_alias" => "i",
                 "field_name" => "dtAddedAt",
-                "source_field" => "ar_added_at",
-                "display_query" => "ar.dtAddedAt",
+                "source_field" => "i_added_at",
+                "display_query" => "i.dtAddedAt",
                 "entry_type" => "Table",
                 "data_type" => "datetime",
                 "show_in" => "Both",
                 "type" => "date",
                 "align" => "left",
-                "label" => "Reported On",
-                "lang_code" => "ABUSIVE_REPORTS_REPORTED_ON",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_REPORTED_ON'),
+                "label" => "Created On",
+                "lang_code" => "REASON_MANAGEMENT_ADDED_AT",
+                "label_lang" => $this->lang->line('REASON_MANAGEMENT_ADDED_AT'),
                 "width" => 50,
                 "search" => "Yes",
                 "export" => "Yes",
@@ -826,58 +831,32 @@ class Abusive_reports_model extends CI_Model
                 "addable" => "No",
                 "editable" => "No",
                 "viewedit" => "No",
-                "format" => $this->general->getAdminPHPFormats('date'),
-                "php_date" => "m-d-Y",
+                "format" => 'Y-m-d',
+                "php_date" => "m-d-Y"
             ),
-            "ron_users_id" => array(
-                "name" => "ron_users_id",
-                "table_name" => "users",
-                "table_alias" => "ron",
-                "field_name" => "iUserId",
-                "source_field" => "ar_reported_on",
-                "display_query" => "ron.iUserId",
-                "entry_type" => "Table",
+            "sys_custom_field_1" => array(
+                "name" => "sys_custom_field_1",
+                "table_name" => "",
+                "table_alias" => "",
+                "field_name" => "",
+                "source_field" => "",
+                "display_query" => "view",
+                "entry_type" => "Custom",
                 "data_type" => "",
                 "show_in" => "Both",
-                "type" => "dropdown",
+                "type" => "textbox",
                 "align" => "center",
-                "label" => "on Id",
-                "lang_code" => "ABUSIVE_REPORTS_ON_ID",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_ON_ID'),
+                "label" => "Edit",
+                "lang_code" => "REASON_MANAGEMENT_EDIT",
+                "label_lang" => "Edit",
                 "width" => 50,
-                "search" => "Yes",
-                "export" => "Yes",
+                "search" => "No",
+                "export" => "No",
                 "sortable" => "Yes",
                 "addable" => "No",
                 "editable" => "No",
                 "viewedit" => "No",
-                "related" => "Yes",
-                "hidden" => "Yes",
-            ),
-            "rb_users_id" => array(
-                "name" => "rb_users_id",
-                "table_name" => "users",
-                "table_alias" => "rb",
-                "field_name" => "iUserId",
-                "source_field" => "ar_reported_by",
-                "display_query" => "rb.iUserId",
-                "entry_type" => "Table",
-                "data_type" => "",
-                "show_in" => "Both",
-                "type" => "dropdown",
-                "align" => "center",
-                "label" => "by Id",
-                "lang_code" => "ABUSIVE_REPORTS_BY_ID",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_BY_ID'),
-                "width" => 50,
-                "search" => "Yes",
-                "export" => "Yes",
-                "sortable" => "Yes",
-                "addable" => "No",
-                "editable" => "No",
-                "viewedit" => "No",
-                "related" => "Yes",
-                "hidden" => "Yes",
+                "php_func" => "controller::showStatusButton",
             )
         );
 
@@ -909,72 +888,103 @@ class Abusive_reports_model extends CI_Model
     public function getFormConfiguration($name = "")
     {
         $form_config = array(
-            "ar_reported_by" => array(
-                "name" => "ar_reported_by",
-                "table_name" => "abusive_reports",
-                "table_alias" => "ar",
-                "field_name" => "iReportedBy",
-                "entry_type" => "Table",
-                "data_type" => "int",
-                "show_input" => "Both",
-                "type" => "dropdown",
-                "label" => "Reported By",
-                "lang_code" => "ABUSIVE_REPORTS_REPORTED_BY",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_REPORTED_BY')
-            ),
-            "ar_reported_on" => array(
-                "name" => "ar_reported_on",
-                "table_name" => "abusive_reports",
-                "table_alias" => "ar",
-                "field_name" => "iReportedOn",
-                "entry_type" => "Table",
-                "data_type" => "int",
-                "show_input" => "Both",
-                "type" => "dropdown",
-                "label" => "Reported For",
-                "lang_code" => "ABUSIVE_REPORTS_REPORTED_FOR",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_REPORTED_FOR')
-            ),
-            "ar_message" => array(
-                "name" => "ar_message",
-                "table_name" => "abusive_reports",
-                "table_alias" => "ar",
-                "field_name" => "vMessage",
-                "entry_type" => "Table",
-                "data_type" => "varchar",
-                "show_input" => "Both",
-                "type" => "textbox",
-                "label" => "Message",
-                "lang_code" => "ABUSIVE_REPORTS_MESSAGE",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_MESSAGE')
-            ),
-            "ar_reason" => array(
-                "name" => "ar_reason",
-                "table_name" => "abusive_reports",
-                "table_alias" => "ar",
+             "i_reason_id" => array(
+                "name" => "i_reason_id",
+                "table_name" => "reasons",
+                "table_alias" => "i",
                 "field_name" => "iReasonId",
+                "source_field" => "i_reason_id",
+                "display_query" => "i.iReasonId",
+                "entry_type" => "Table",
+                "data_type" => "int",
+                "show_in" => "Both",
+                "type" => "dropdown",
+                "align" => "center",
+                "label" => "Reason Id",
+                "lang_code" => "Reason Id",
+                "label_lang" =>"Reason Id"
+            ),
+            
+            "i_reason_name" => array(
+                "name" => "i_reason_name",
+                "table_name" => "reasons",
+                "table_alias" => "i",
+                "field_name" => "vReason",
                 "entry_type" => "Table",
                 "data_type" => "varchar",
                 "show_input" => "Both",
                 "type" => "textbox",
-                "label" => "Message",
-                "lang_code" => "ABUSIVE_REPORTS_REASON",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_REASON')
+                "label" => "Reason Name",
+                "lang_code" => "REASON_MANAGEMENT_NAME",
+                "label_lang" => $this->lang->line('REASON_MANAGEMENT_NAME')
             ),
-            "ar_added_at" => array(
-                "name" => "ar_added_at",
-                "table_name" => "abusive_reports",
-                "table_alias" => "ar",
+            "i_reason_entity_type" => array(
+                "name" => "i_reason_entity_type",
+                "table_name" => "reasons",
+                "table_alias" => "i",
+                "field_name" => "vEntityType",
+                "entry_type" => "Table",
+                "data_type" => "enum",
+                "show_input" => "Both",
+                "type" => "dropdown",
+                "label" => "Entity Type",
+                "lang_code" => "REASON_MANAGEMENT_ENTITY_TYPE",
+                "label_lang" => $this->lang->line('REASON_MANAGEMENT_ENTITY_TYPE')
+            ),
+            /*"i_reason_image" => array(
+                "name" => "i_reason_image",
+                "table_name" => "reasons",
+                "table_alias" => "i",
+                "field_name" => "vReasonsImage",
+                "entry_type" => "Table",
+                "data_type" => "varchar",
+                "show_input" => "Both",
+                "type" => "file",
+                "label" => "Reasons Image",
+                "lang_code" => "REASON_MANAGEMENT_IMAGE",
+                "label_lang" => $this->lang->line('REASON_MANAGEMENT_IMAGE'),
+                "file_upload" => "Yes",
+                "file_server" => "amazon",
+                "file_folder" => "widsconnect/reason_image",
+                "file_keep" => "iReasonId",
+                "file_width" => "80",
+                "file_height" => "80",
+                "file_format" => "gif,png,jpg,jpeg,jpe,bmp,ico",
+                "file_size" => "102400",
+                "file_label" => "Yes",
+                "width" => 50,
+            ),*/
+            "i_reason_status" => array(
+                "name" => "i_reason_status",
+                "table_name" => "reasons",
+                "table_alias" => "i",
+                "field_name" => "eStatus",
+                "entry_type" => "Table",
+                "data_type" => "enum",
+                "show_input" => "Both",
+                "type" => "dropdown",
+                "label" => "Status",
+                "lang_code" => "REASON_MANAGEMENT_STATUS",
+                "label_lang" => $this->lang->line('REASON_MANAGEMENT_STATUS')
+            ),
+            "i_added_at" => array(
+                "name" => "i_added_at",
+                "table_name" => "reasons",
+                "table_alias" => "i",
                 "field_name" => "dtAddedAt",
                 "entry_type" => "Table",
                 "data_type" => "datetime",
-                "show_input" => "Both",
+                "show_input" => "Hidden",
                 "type" => "date",
-                "label" => "Reported On",
-                "lang_code" => "ABUSIVE_REPORTS_REPORTED_ON",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_REPORTED_ON'),
-                "format" => $this->general->getAdminPHPFormats('date')
-            )
+                "label" => "Added At",
+                "lang_code" => "REASON_MANAGEMENT_ADDED_AT",
+                "label_lang" => $this->lang->line('REASON_MANAGEMENT_ADDED_AT'),
+                "default" => $this->filter->getDefaultValue("i_added_at",
+                "MySQL",
+                "NOW()"),
+                "dfapply" => "forceApply",
+                "format" => 'Y-m-d',
+            ),
         );
 
         $config_arr = array();
@@ -1090,106 +1100,5 @@ class Abusive_reports_model extends CI_Model
         {
             return $switch_data;
         }
-    }
-
-    /**
-     * processCustomLinks method is used to process grid custom link settings configuration.
-     * @param array $data_arr data_arr is to process data records.
-     * @param array $config_arr config_arr for process custom link settings.
-     * @return array $data_arr returns data records array.
-     */
-    public function processCustomLinks($data_arr = array(), $config_arr = array())
-    {
-        $custom_link_config = array(
-            "rb_first_name" => array(
-                array(
-                    "open" => "Popup",
-                    "width" => "100%",
-                    "height" => "100%",
-                    "apply" => "No",
-                    "block" => array(
-                        "oper" => "",
-                        "conditions" => array()
-                    ),
-                    "module_type" => "Module",
-                    "module_name" => "users_management",
-                    "folder_name" => "basic_appineers_master",
-                    "module_page" => "Update",
-                    "custom_link" => "",
-                    "extra_params" => array(
-                        array(
-                            "req_var" => "mode",
-                            "req_val" => "Update",
-                            "req_mod" => "Static",
-                        ),
-                        array(
-                            "req_var" => "id",
-                            "req_val" => "rb_users_id",
-                            "req_mod" => "Variable",
-                        )
-                    )
-                )
-            ),
-            "ron_first_name" => array(
-                array(
-                    "open" => "Popup",
-                    "width" => "100%",
-                    "height" => "100%",
-                    "apply" => "No",
-                    "block" => array(
-                        "oper" => "",
-                        "conditions" => array()
-                    ),
-                    "module_type" => "Module",
-                    "module_name" => "users_management",
-                    "folder_name" => "basic_appineers_master",
-                    "module_page" => "Update",
-                    "custom_link" => "",
-                    "extra_params" => array(
-                        array(
-                            "req_var" => "mode",
-                            "req_val" => "Update",
-                            "req_mod" => "Static",
-                        ),
-                        array(
-                            "req_var" => "id",
-                            "req_val" => "ron_users_id",
-                            "req_mod" => "Variable",
-                        )
-                    )
-                )
-            )
-        );
-        $grid_fields = $this->grid_fields;
-        $listing_data = $this->listing_data;
-        if (!is_array($listing_data) || count($listing_data) == 0)
-        {
-            return $data_arr;
-        }
-        $rows_arr = $data_arr['rows'];
-        foreach ($listing_data as $dKey => $dVal)
-        {
-            $custom_links_arr = array();
-            $id = $dVal["iAbusiveReportsId"];
-            foreach ($grid_fields as $gKey => $gVal)
-            {
-                if ($config_arr[$gVal]['custom_link'] == "Yes" && $config_arr[$gVal]['edit_link'] == "Yes")
-                {
-                    $custom_link_temp = $this->listing->getGridCustomEditLink($custom_link_config[$gVal], $dVal[$gVal], $dVal, $id);
-                    //print_r($custom_link_temp); exit;
-                    if ($custom_link_temp['success'])
-                    {
-                        $data_arr['rows'][$dKey][$gVal] = $custom_link_temp['formated_link'];
-                        $custom_links_arr[$gVal]['link'] = $custom_link_temp['actual_link'];
-                        $custom_links_arr[$gVal]['extra_attr_str'] = $custom_link_temp['extra_attr_str'];
-                    }
-                }
-            }
-            if (is_array($custom_links_arr) && count($custom_links_arr) > 0)
-            {
-                $data_arr['links'][$this->general->getAdminEncodeURL($id, 0)] = $custom_links_arr;
-            }
-        }
-        return $data_arr;
     }
 }

@@ -63,6 +63,13 @@ class Report_abusive_user_model extends CI_Model
             if(isset($params_arr["report_on"])){
                 $this->db->set("iReportedOn", $params_arr["report_on"]);
             }
+            if(isset($params_arr["reason_id"])){
+                $this->db->set("iReasonId", $params_arr["reason_id"]);
+            }
+            if(isset($params_arr["reason_description"])){
+                $this->db->set("tReasonDescription", $params_arr["reason_description"]);
+            }
+            
             $this->db->set($this->db->protect("dtAddedAt"), $params_arr["_dtaddedat"], FALSE);
             $this->db->insert("abusive_reports");
             $insert_id = $this->db->insert_id();

@@ -779,31 +779,6 @@ class Abusive_reports_model extends CI_Model
                 "edit_link" => "No",
                 "php_func" => "controller::setLimitForDescription",
             ),
-            "ar_reason" => array(
-                "name" => "ar_reason",
-                "table_name" => "abusive_reports",
-                "table_alias" => "ar",
-                "field_name" => "iReasonId",
-                "source_field" => "ar_reason",
-                "display_query" => "ar.iReasonId",
-                "entry_type" => "Table",
-                "data_type" => "varchar",
-                "show_in" => "Both",
-                "type" => "textbox",
-                "align" => "left",
-                "label" => "Reason",
-                "lang_code" => "ABUSIVE_REPORTS_REASON",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_REASON'),
-                "width" => 50,
-                "search" => "Yes",
-                "export" => "Yes",
-                "sortable" => "Yes",
-                "addable" => "No",
-                "editable" => "No",
-                "viewedit" => "No",
-                "edit_link" => "No",
-                "php_func" => "controller::setLimitForDescription",
-            ),
             "ar_added_at" => array(
                 "name" => "ar_added_at",
                 "table_name" => "abusive_reports",
@@ -947,19 +922,6 @@ class Abusive_reports_model extends CI_Model
                 "label" => "Message",
                 "lang_code" => "ABUSIVE_REPORTS_MESSAGE",
                 "label_lang" => $this->lang->line('ABUSIVE_REPORTS_MESSAGE')
-            ),
-            "ar_reason" => array(
-                "name" => "ar_reason",
-                "table_name" => "abusive_reports",
-                "table_alias" => "ar",
-                "field_name" => "iReasonId",
-                "entry_type" => "Table",
-                "data_type" => "varchar",
-                "show_input" => "Both",
-                "type" => "textbox",
-                "label" => "Message",
-                "lang_code" => "ABUSIVE_REPORTS_REASON",
-                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_REASON')
             ),
             "ar_added_at" => array(
                 "name" => "ar_added_at",
@@ -1193,3 +1155,4 @@ class Abusive_reports_model extends CI_Model
         return $data_arr;
     }
 }
+?>

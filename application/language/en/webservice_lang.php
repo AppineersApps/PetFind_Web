@@ -374,10 +374,18 @@ $lang["get_blocked_users"]["get_blocked_users_no_data"] = "No Blocked users" ;
     $lang["get_message_list"]["messages_finish_success_1"] = "Fetched message list successfully." ;
     $lang["get_message_list"]["messages_finish_success_2"] = "Failed to fetch message list." ;
     $lang["get_message_list"]["empty_messages_finish_success_2"] = "Message list is empty" ;
+    $lang["delete_message"]["messages_delete_finish_success_1"] = "Failed to delete Message." ;
+    $lang["delete_message"]["messages_delete_finish_success"] = "Delete Message successfully." ;
+    $lang["delete_message"]["invalid_message_id_success"] = "Message Id is not available." ;
+    
 
 
 
 //  delete missing pet image
-$lang["delete_image"]["delete_image_finish_success"] = "Image deleted successfully" ;
-$lang["delete_image"]["delete_image_finish_failure"] = "Failed to delete image" ;
-$lang["delete_image"]["delete_image_not_available"] = "Image is not available to delete" ;
+$lang["delete_image"]["delete_image_finish_success"] = "Image deleted successfully." ;
+$lang["delete_image"]["delete_image_finish_failure"] = "Failed to delete image." ;
+$lang["delete_image"]["delete_image_not_available"] = "Image is not available to delete." ;
+
+//  Reason Listing
+$lang["reasons_list"]["mod_state_finish_success"] = "Fetched reason list successfully." ;
+$lang["reasons_list"]["mod_state_finish_success_1"] = "Failed to Fetch reason list." ;

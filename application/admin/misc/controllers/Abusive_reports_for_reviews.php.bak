@@ -2,7 +2,7 @@
 defined('BASEPATH') || exit('No direct script access allowed');
 
 /**
- * Description of Abusive Reports For User Controller
+ * Description of Abusive Reports For Reviews Controller
  *
  * @category admin
  *
@@ -10,11 +10,11 @@ defined('BASEPATH') || exit('No direct script access allowed');
  *
  * @subpackage controllers
  *
- * @module Abusive Reports For User
+ * @module Abusive Reports For Reviews
  *
- * @class Abusive_reports.php
+ * @class Abusive_reports_for_reviews.php
  *
- * @path application\admin\misc\controllers\Abusive_reports.php
+ * @path application\admin\misc\controllers\Abusive_reports_for_reviews.php
  *
  * @version 4.4
  *
@@ -23,7 +23,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
  * @since 17.06.2019
  */
 
-class Abusive_reports extends Cit_Controller
+class Abusive_reports_for_reviews extends Cit_Controller
 {
     /**
      * __construct method is used to set controller preferences while controller object initialization.
@@ -36,10 +36,10 @@ class Abusive_reports extends Cit_Controller
         $this->load->library('listing');
         $this->load->library('filter');
         $this->load->library('dropdown');
-        $this->load->model('abusive_reports_model');
+        $this->load->model('abusive_reports_for_reviews_model');
         $this->_request_params();
         $this->folder_name = "misc";
-        $this->module_name = "abusive_reports";
+        $this->module_name = "abusive_reports_for_reviews";
         $this->mod_enc_url = $this->general->getGeneralEncryptList($this->folder_name, $this->module_name);
         $this->mod_enc_mode = $this->general->getCustomEncryptMode(TRUE);
         $this->module_config = array(
@@ -57,7 +57,7 @@ class Abusive_reports extends Cit_Controller
             "list_record_callback" => "",
         );
         $this->dropdown_arr = array(
-            "ar_reported_by" => array(
+            "arfp_reported_by" => array(
                 "type" => "table",
                 "table_name" => "users",
                 "field_key" => "iUserId",
@@ -69,17 +69,23 @@ class Abusive_reports extends Cit_Controller
                 "order_by" => "val asc",
                 "default" => "Yes",
             ),
-            "ar_reported_on" => array(
-                "type" => "table",
-                "table_name" => "users",
-                "field_key" => "iUserId",
-                "field_val" => array(
-                    $this->db->protect("vFirstName"),
-                    "' '",
-                    $this->db->protect("vLastName")
-                ),
-                "order_by" => "val asc",
+            "status" => array(
+                "type" => "enum",
                 "default" => "Yes",
+                "values" => array(
+                    array(
+                        'id' => 'Pending',
+                        'val' => $this->lang->line('FEEDBACK_MANAGEMENT_PENDING')
+                    ),
+                    array(
+                        'id' => 'Resolved',
+                        'val' => $this->lang->line('FEEDBACK_MANAGEMENT_RESOLVED')
+                    ),
+                    array(
+                        'id' => 'Rejected',
+                        'val' => $this->lang->line('FEEDBACK_MANAGEMENT_REJECTED')
+                    )
+                )
             )
         );
         $this->parMod = $this->params_arr["parMod"];
@@ -118,13 +124,13 @@ class Abusive_reports extends Cit_Controller
             if ($this->config->item("ENABLE_ROLES_CAPABILITIES"))
             {
                 $access_list = array(
-                    "abusive_reports_list",
-                    "abusive_reports_view",
-                    "abusive_reports_add",
-                    "abusive_reports_update",
-                    "abusive_reports_delete",
-                    "abusive_reports_export",
-                    "abusive_reports_print",
+                    "abusive_reports_for_reviews_list",
+                    "abusive_reports_for_reviews_view",
+                    "abusive_reports_for_reviews_add",
+                    "abusive_reports_for_reviews_update",
+                    "abusive_reports_for_reviews_delete",
+                    "abusive_reports_for_reviews_export",
+                    "abusive_reports_for_reviews_print",
                 );
                 list($list_access, $view_access, $add_access, $edit_access, $del_access, $expo_access, $print_access) = $this->filter->checkAccessCapability($access_list, TRUE);
             }
@@ -139,17 +145,17 @@ class Abusive_reports extends Cit_Controller
                     "Export",
                     "Print",
                 );
-                list($list_access, $view_access, $add_access, $edit_access, $del_access, $expo_access, $print_access) = $this->filter->getModuleWiseAccess("abusive_reports", $access_list, TRUE, TRUE);
+                list($list_access, $view_access, $add_access, $edit_access, $del_access, $expo_access, $print_access) = $this->filter->getModuleWiseAccess("abusive_reports_for_reviews", $access_list, TRUE, TRUE);
             }
             if (!$list_access)
             {
                 throw new Exception($this->general->processMessageLabel('ACTION_YOU_ARE_NOT_AUTHORIZED_TO_VIEW_THIS_PAGE_C46_C46_C33'));
             }
-            $enc_loc_module = $this->general->getMD5EncryptString("ListPrefer", "abusive_reports");
+            $enc_loc_module = $this->general->getMD5EncryptString("ListPrefer", "abusive_reports_for_reviews");
             $status_array = $status_label = array();
-            $list_config = $this->abusive_reports_model->getListConfiguration();
+            $list_config = $this->abusive_reports_for_reviews_model->getListConfiguration();
             $this->processConfiguration($list_config, $add_access, $edit_access, TRUE);
-            $this->general->trackModuleNavigation("Module", "List", "Viewed", $this->mod_enc_url["index"], "abusive_reports");
+            $this->general->trackModuleNavigation("Module", "List", "Viewed", $this->mod_enc_url["index"], "abusive_reports_for_reviews");
             if (method_exists($this->filter, "setListFieldCapability"))
             {
                 $this->filter->setListFieldCapability($list_config);
@@ -175,7 +181,7 @@ class Abusive_reports extends Cit_Controller
                 'mod_enc_mode' => $this->mod_enc_mode,
                 'extra_qstr' => $extra_qstr,
                 'extra_hstr' => $extra_hstr,
-                'default_filters' => $this->abusive_reports_model->default_filters,
+                'default_filters' => $this->abusive_reports_for_reviews_model->default_filters,
             );
             $this->smarty->assign($render_arr);
             if (!empty($render_arr['overwrite_view']))
@@ -184,7 +190,7 @@ class Abusive_reports extends Cit_Controller
             }
             else
             {
-                $this->loadView("abusive_reports_index");
+                $this->loadView("abusive_reports_for_reviews_index");
             }
         }
         catch(Exception $e)
@@ -212,12 +218,12 @@ class Abusive_reports extends Cit_Controller
             $sdef = 'Yes';
         }
         $filters = json_decode($filters, TRUE);
-        $list_config = $this->abusive_reports_model->getListConfiguration();
-        $form_config = $this->abusive_reports_model->getFormConfiguration();
-        $extra_cond = $this->abusive_reports_model->extra_cond;
-        $groupby_cond = $this->abusive_reports_model->groupby_cond;
-        $having_cond = $this->abusive_reports_model->having_cond;
-        $orderby_cond = $this->abusive_reports_model->orderby_cond;
+        $list_config = $this->abusive_reports_for_reviews_model->getListConfiguration();
+        $form_config = $this->abusive_reports_for_reviews_model->getFormConfiguration();
+        $extra_cond = $this->abusive_reports_for_reviews_model->extra_cond;
+        $groupby_cond = $this->abusive_reports_for_reviews_model->groupby_cond;
+        $having_cond = $this->abusive_reports_for_reviews_model->having_cond;
+        $orderby_cond = $this->abusive_reports_for_reviews_model->orderby_cond;
 
         $data_config = array();
         $data_config['page'] = $page;
@@ -235,10 +241,10 @@ class Abusive_reports extends Cit_Controller
         $data_config['having_cond'] = $having_cond;
         $data_config['order_by'] = $orderby_cond;
 
-        $data_recs = $this->abusive_reports_model->getListingData($data_config);
-        $data_recs['no_records_msg'] = $this->general->processMessageLabel('ACTION_NO_ABUSIVE_REPORTS_FOR_USER_DATA_FOUND_C46_C46_C33');
+        $data_recs = $this->abusive_reports_for_reviews_model->getListingData($data_config);
+        $data_recs['no_records_msg'] = $this->general->processMessageLabel('ACTION_NO_ABUSIVE_REPORTS_FOR_REVIEWS_DATA_FOUND_C46_C46_C33');
 
-        $data_recs = $this->abusive_reports_model->processCustomLinks($data_recs, $list_config);
+        $data_recs = $this->abusive_reports_for_reviews_model->processCustomLinks($data_recs, $list_config);
         echo json_encode($data_recs);
         $this->skip_template_view();
     }
@@ -250,11 +256,11 @@ class Abusive_reports extends Cit_Controller
     {
         if ($this->config->item("ENABLE_ROLES_CAPABILITIES"))
         {
-            $this->filter->checkAccessCapability("abusive_reports_export");
+            $this->filter->checkAccessCapability("abusive_reports_for_reviews_export");
         }
         else
         {
-            $this->filter->getModuleWiseAccess("abusive_reports", "Export", TRUE);
+            $this->filter->getModuleWiseAccess("abusive_reports_for_reviews", "Export", TRUE);
         }
         $params_arr = $this->params_arr;
         $page = $params_arr['page'];
@@ -273,15 +279,15 @@ class Abusive_reports extends Cit_Controller
         $filters = $params_arr['filters'];
         $filters = json_decode(base64_decode($filters), TRUE);
         $fields = json_decode(base64_decode($params_arr['fields']), TRUE);
-        $list_config = $this->abusive_reports_model->getListConfiguration();
-        $form_config = $this->abusive_reports_model->getFormConfiguration();
-        $table_name = $this->abusive_reports_model->table_name;
-        $table_alias = $this->abusive_reports_modeltable_alias;
-        $primary_key = $this->abusive_reports_model->primary_key;
-        $extra_cond = $this->abusive_reports_model->extra_cond;
-        $groupby_cond = $this->abusive_reports_model->groupby_cond;
-        $having_cond = $this->abusive_reports_model->having_cond;
-        $orderby_cond = $this->abusive_reports_model->orderby_cond;
+        $list_config = $this->abusive_reports_for_reviews_model->getListConfiguration();
+        $form_config = $this->abusive_reports_for_reviews_model->getFormConfiguration();
+        $table_name = $this->abusive_reports_for_reviews_model->table_name;
+        $table_alias = $this->abusive_reports_for_reviews_modeltable_alias;
+        $primary_key = $this->abusive_reports_for_reviews_model->primary_key;
+        $extra_cond = $this->abusive_reports_for_reviews_model->extra_cond;
+        $groupby_cond = $this->abusive_reports_for_reviews_model->groupby_cond;
+        $having_cond = $this->abusive_reports_for_reviews_model->having_cond;
+        $orderby_cond = $this->abusive_reports_for_reviews_model->orderby_cond;
         if (method_exists($this->filter, "setListFieldCapability"))
         {
             $this->filter->setListFieldCapability($list_config);
@@ -310,7 +316,7 @@ class Abusive_reports extends Cit_Controller
         $export_config['having_cond'] = $having_cond;
         $export_config['order_by'] = $orderby_cond;
 
-        $db_recs = $this->abusive_reports_model->getExportData($export_config);
+        $db_recs = $this->abusive_reports_for_reviews_model->getExportData($export_config);
         $db_recs = $this->listing->getDataForList($db_recs, $export_config, "GExport", array());
         if (!is_array($db_recs) || count($db_recs) == 0)
         {
@@ -358,8 +364,8 @@ class Abusive_reports extends Cit_Controller
 
         $misc_info = array();
         $misc_info['fields'] = $fields;
-        $misc_info['heading'] = $this->lang->line('ABUSIVE_REPORTS_ABUSIVE_REPORTS_FOR_USER');
-        $misc_info['filename'] = "abusive_reports_for_user_records_".count($db_recs);
+        $misc_info['heading'] = $this->lang->line('ABUSIVE_REPORTS_FOR_REVIEWS_ABUSIVE_REPORTS_FOR_REVIEWS');
+        $misc_info['filename'] = "abusive_reports_for_reviews_records_".count($db_recs);
         $misc_info['pdf_unit'] = PDF_UNIT;
         $misc_info['pdf_page_format'] = PDF_PAGE_FORMAT;
         $misc_info['pdf_page_orientation'] = (!empty($params_arr['orientation'])) ? $params_arr['orientation'] : PDF_PAGE_ORIENTATION;
@@ -416,7 +422,7 @@ class Abusive_reports extends Cit_Controller
             $pdf = new PDF_Export($misc_info['pdf_page_orientation'], $misc_info['pdf_unit'], $misc_info['pdf_page_format'], TRUE, 'UTF-8', FALSE);
             if (method_exists($pdf, "setModule"))
             {
-                $pdf->setModule("abusive_reports_model");
+                $pdf->setModule("abusive_reports_for_reviews_model");
             }
             if (method_exists($pdf, "setContent"))
             {
@@ -484,17 +490,17 @@ class Abusive_reports extends Cit_Controller
         $enc_id = $this->general->getAdminEncodeURL($id);
         try
         {
-            $extra_cond = $this->abusive_reports_model->extra_cond;
+            $extra_cond = $this->abusive_reports_for_reviews_model->extra_cond;
             if ($mode == "Update")
             {
                 if ($this->config->item("ENABLE_ROLES_CAPABILITIES"))
                 {
                     $access_list = array(
-                        "abusive_reports_list",
-                        "abusive_reports_view",
-                        "abusive_reports_update",
-                        "abusive_reports_delete",
-                        "abusive_reports_print",
+                        "abusive_reports_for_reviews_list",
+                        "abusive_reports_for_reviews_view",
+                        "abusive_reports_for_reviews_update",
+                        "abusive_reports_for_reviews_delete",
+                        "abusive_reports_for_reviews_print",
                     );
                     list($list_access, $view_access, $edit_access, $del_access, $print_access) = $this->filter->checkAccessCapability($access_list, TRUE);
                 }
@@ -507,7 +513,7 @@ class Abusive_reports extends Cit_Controller
                         "Delete",
                         "Print",
                     );
-                    list($list_access, $view_access, $edit_access, $del_access, $print_access) = $this->filter->getModuleWiseAccess("abusive_reports", $access_list, TRUE, TRUE);
+                    list($list_access, $view_access, $edit_access, $del_access, $print_access) = $this->filter->getModuleWiseAccess("abusive_reports_for_reviews", $access_list, TRUE, TRUE);
                 }
                 if (!$edit_access && !$view_access)
                 {
@@ -519,8 +525,8 @@ class Abusive_reports extends Cit_Controller
                 if ($this->config->item("ENABLE_ROLES_CAPABILITIES"))
                 {
                     $access_list = array(
-                        "abusive_reports_list",
-                        "abusive_reports_add",
+                        "abusive_reports_for_reviews_list",
+                        "abusive_reports_for_reviews_add",
                     );
                     list($list_access, $add_access) = $this->filter->checkAccessCapability($access_list, TRUE);
                 }
@@ -530,7 +536,7 @@ class Abusive_reports extends Cit_Controller
                         "List",
                         "Add",
                     );
-                    list($list_access, $add_access) = $this->filter->getModuleWiseAccess("abusive_reports", $access_list, TRUE, TRUE);
+                    list($list_access, $add_access) = $this->filter->getModuleWiseAccess("abusive_reports_for_reviews", $access_list, TRUE, TRUE);
                 }
                 if (!$add_access)
                 {
@@ -541,8 +547,87 @@ class Abusive_reports extends Cit_Controller
             $data = $orgi = $func = $elem = array();
             if ($mode == 'Update')
             {
-                $ctrl_flow = $this->ci_local->read($this->general->getMD5EncryptString("FlowEdit", "abusive_reports"), $this->session->userdata('iAdminId'));
-                $data_arr = $this->abusive_reports_model->getData(intval($id));
+                $ctrl_flow = $this->ci_local->read($this->general->getMD5EncryptString("FlowEdit", "abusive_reports_for_reviews"), $this->session->userdata('iAdminId'));
+
+                $parent_join_arr = array(
+                    "joins" => array(
+                        array(
+                            "table_name" => "add_review",
+                            "table_alias" => "usr",
+                            "field_name" => "iReviewId",
+                            "rel_table_name" => "abusive_reports_for_reviews",
+                            "rel_table_alias" => "arfp",
+                            "rel_field_name" => "iReviewId",
+                            "join_type" => "left",
+                            "extra_condition" => ""
+                        )
+                    )
+                );
+                $data_arr = $this->abusive_reports_for_reviews_model->getData(intval($id),"","","","",$parent_join_arr);
+           // $this->load->module("basic_appineers_master/user_review_images");
+            //$this->load->model("basic_appineers_master/user_review_images_model");
+
+            //$child_config = array();
+           // $child_config["parent_module"] = "user_store_review";
+           // $child_config["child_module"] = "user_review_images";
+           // $child_config["callback"] = "controller::getReviewImages";
+            if ($mode == "Update")
+            {
+                //$extra_cond = $this->db->protect("usr.iUserReviewId")." = ".$this->db->escape($data_arr[0]["arfp_review_id"]);
+                if ($relation_module["extra_cond"] != "")
+                {
+                    $extra_cond .= " AND ".$relation_module["extra_cond"];
+                }
+                /*$parent_join_arr = array(
+                    "joins" => array(
+                        array(
+                            "table_name" => "add_review",
+                            "table_alias" => "usr",
+                            "field_name" => "iUserReviewId",
+                            "rel_table_name" => "user_review_images",
+                            "rel_table_alias" => "uri",
+                            "rel_field_name" => "iUserReviewId",
+                            "join_type" => "left",
+                        )
+                    )
+                );*/
+               // $child_data = $this->user_review_images_model->getData($extra_cond, "", "", "uri.iUserReviewImageId", "", $parent_join_arr);
+               // $child_config["mode"] = (is_array($child_data) && count($child_data) > 0) ? "Update" : "Add";
+                //$child_config["data"] = $child_data;
+                //$child_config["parent_data"] = $data;
+            }
+            else
+            {
+                //$child_config["mode"] = "Add";
+                //$child_config["data"] = array();
+            }
+            /*$child_config["mode"] = (is_array($child_config["data"]) && count($child_config["data"]) > 0) ? "Update" : "Add";
+            $child_config["multi_file"] = "Yes";
+            $child_config["file_upload"] = "Yes";
+            $child_config["perform"] = array(
+                "data",
+                "options",
+                "config",
+            );
+            $module_arr = $this->user_review_images->getRelationModule($child_config);
+            $module_arr["config_arr"]["popup"] = $relation_module["popup"];
+            $module_arr["config_arr"]["recMode"] = $child_config["mode"];
+            $module_arr["config_arr"]["form_config"] = $module_arr["form_config"];
+            $child_assoc_data["user_review_images"] = $module_arr["data"];
+            $child_assoc_func["user_review_images"] = $module_arr["func"];
+            $child_assoc_elem["user_review_images"] = $module_arr["elem"];
+            $child_assoc_conf["user_review_images"] = $module_arr["config_arr"];
+            $child_assoc_opt["user_review_images"] = $module_arr["opt_arr"];
+            $child_assoc_img["user_review_images"] = $module_arr["img_html"];
+            $child_assoc_auto["user_review_images"] = $module_arr["auto_arr"];
+            $child_assoc_status["user_review_images"] = $module_arr["status"];
+            $child_assoc_access["user_review_images"] = array(
+                "add" => 1,
+                "save" => 1,
+                "delete" => 1,
+                "actions" => 1,
+                "labels" => array()
+            );*/
                 $data = $orgi = $data_arr[0];
                 if ((!is_array($data) || count($data) == 0) && $params_arr['rmPopup'] != "true")
                 {
@@ -556,18 +641,18 @@ class Abusive_reports extends Cit_Controller
                 $this->dropdown->combo("array", "vSwitchPage", $switch_enc_combo, $enc_id, FALSE, "key_value", $switch_arr);
                 $next_prev_records = $this->filter->getNextPrevRecords($id, $switch_arr);
 
-                $this->general->trackModuleNavigation("Module", "Form", "Viewed", $this->mod_enc_url["add"], "abusive_reports", $recName);
+                $this->general->trackModuleNavigation("Module", "Form", "Viewed", $this->mod_enc_url["add"], "abusive_reports_for_reviews", $recName);
             }
             else
             {
                 $recName = '';
-                $ctrl_flow = $this->ci_local->read($this->general->getMD5EncryptString("FlowAdd", "abusive_reports"), $this->session->userdata('iAdminId'));
-                $this->general->trackModuleNavigation("Module", "Form", "Viewed", $this->mod_enc_url["add"], "abusive_reports");
+                $ctrl_flow = $this->ci_local->read($this->general->getMD5EncryptString("FlowAdd", "abusive_reports_for_reviews"), $this->session->userdata('iAdminId'));
+                $this->general->trackModuleNavigation("Module", "Form", "Viewed", $this->mod_enc_url["add"], "abusive_reports_for_reviews");
             }
 
             $opt_arr = $img_html = $auto_arr = $config_arr = array();
 
-            $form_config = $this->abusive_reports_model->getFormConfiguration($config_arr);
+            $form_config = $this->abusive_reports_for_reviews_model->getFormConfiguration($config_arr);
             if (is_array($form_config) && count($form_config) > 0)
             {
                 foreach ($form_config as $key => $val)
@@ -622,9 +707,9 @@ class Abusive_reports extends Cit_Controller
                         elseif (substr($phpfunc, 0, 7) == 'model::' && substr($phpfunc, 7) !== FALSE)
                         {
                             $phpfunc = substr($phpfunc, 7);
-                            if (method_exists($this->abusive_reports_model, $phpfunc))
+                            if (method_exists($this->abusive_reports_for_reviews_model, $phpfunc))
                             {
-                                $tmpdata = $this->abusive_reports_model->$phpfunc($mode, $data[$key], $data, $id, $key, $key, $this->module_name);
+                                $tmpdata = $this->abusive_reports_for_reviews_model->$phpfunc($mode, $data[$key], $data, $id, $key, $key, $this->module_name);
                             }
                         }
                         elseif (method_exists($this->general, $phpfunc))
@@ -666,9 +751,9 @@ class Abusive_reports extends Cit_Controller
                             elseif (substr($fd_callback, 0, 7) == 'model::' && substr($fd_callback, 7) !== FALSE)
                             {
                                 $fd_callback = substr($fd_callback, 7);
-                                if (method_exists($this->abusive_reports_model, $fd_callback))
+                                if (method_exists($this->abusive_reports_for_reviews_model, $fd_callback))
                                 {
-                                    $fd_status = $this->abusive_reports_model->$fd_callback($mode, $data[$key], $data, $id, $key, $key, $this->module_name);
+                                    $fd_status = $this->abusive_reports_for_reviews_model->$fd_callback($mode, $data[$key], $data, $id, $key, $key, $this->module_name);
                                 }
                             }
                             elseif (method_exists($this->general, $fd_callback))
@@ -740,7 +825,15 @@ class Abusive_reports extends Cit_Controller
             }
             /** access controls >>> **/
             $render_arr = array(
-
+                "child_assoc_data" => $child_assoc_data,
+                "child_assoc_func" => $child_assoc_func,
+                "child_assoc_elem" => $child_assoc_elem,
+                "child_assoc_conf" => $child_assoc_conf,
+                "child_assoc_opt" => $child_assoc_opt,
+                "child_assoc_img" => $child_assoc_img,
+                "child_assoc_auto" => $child_assoc_auto,
+                "child_assoc_status" => $child_assoc_status,
+                "child_assoc_access" => $child_assoc_access,
                 "edit_access" => $edit_access,
                 "print_access" => $print_access,
                 'controls_allow' => $controls_allow,
@@ -786,16 +879,16 @@ class Abusive_reports extends Cit_Controller
                 {
                     if ($edit_access && $viewMode != TRUE)
                     {
-                        $this->loadView("abusive_reports_add");
+                        $this->loadView("abusive_reports_for_reviews_add");
                     }
                     else
                     {
-                        $this->loadView("abusive_reports_add_view");
+                        $this->loadView("abusive_reports_for_reviews_add_view");
                     }
                 }
                 else
                 {
-                    $this->loadView("abusive_reports_add");
+                    $this->loadView("abusive_reports_for_reviews_add");
                 }
             }
         }
@@ -822,16 +915,16 @@ class Abusive_reports extends Cit_Controller
             {
                 if ($mode == "Update")
                 {
-                    $add_edit_access = $this->filter->checkAccessCapability("abusive_reports_update", TRUE);
+                    $add_edit_access = $this->filter->checkAccessCapability("abusive_reports_for_reviews_update", TRUE);
                 }
                 else
                 {
-                    $add_edit_access = $this->filter->checkAccessCapability("abusive_reports_add", TRUE);
+                    $add_edit_access = $this->filter->checkAccessCapability("abusive_reports_for_reviews_add", TRUE);
                 }
             }
             else
             {
-                $add_edit_access = $this->filter->getModuleWiseAccess("abusive_reports", $mode, TRUE, TRUE);
+                $add_edit_access = $this->filter->getModuleWiseAccess("abusive_reports_for_reviews", $mode, TRUE, TRUE);
             }
             if (!$add_edit_access)
             {
@@ -845,56 +938,72 @@ class Abusive_reports extends Cit_Controller
                 }
             }
 
-            $form_config = $this->abusive_reports_model->getFormConfiguration();
+            $form_config = $this->abusive_reports_for_reviews_model->getFormConfiguration();
             $params_arr = $this->_request_params();
-            $ar_reported_by = $params_arr["ar_reported_by"];
-            $ar_reported_on = $params_arr["ar_reported_on"];
-            $ar_message = $params_arr["ar_message"];
-            $ar_added_at = $params_arr["ar_added_at"];
+            $arfp_reported_by = $params_arr["arfp_reported_by"];
+            $arfp_review_id = $params_arr["arfp_review_id"];
+            $arfp_message = $params_arr["arfp_message"];
+            $arfp_added_at = $params_arr["arfp_added_at"];
+            $arfp_review_text = $params_arr["p_post_title"];
+            $arfp_status = $params_arr["status"];
 
             $data = $save_data_arr = $file_data = array();
-            $data["iReportedBy"] = $ar_reported_by;
-            $data["iReportedOn"] = $ar_reported_on;
-            $data["vMessage"] = $ar_message;
-            $data["dtAddedAt"] = $this->filter->formatActionData($ar_added_at, $form_config["ar_added_at"]);
+            $data["iReportedBy"] = $arfp_reported_by;
+            $data["iReviewId"] = $arfp_review_id;
+            $data["vMessage"] = $arfp_message;
+            $data["dtAddedAt"] = $this->filter->formatActionData($arfp_added_at, $form_config["arfp_added_at"]);
+            $data["eStatus"] =  $arfp_status;
+            $textdata['tComment']= $arfp_review_text;
 
-            $save_data_arr["ar_reported_by"] = $data["iReportedBy"];
-            $save_data_arr["ar_reported_on"] = $data["iReportedOn"];
-            $save_data_arr["ar_message"] = $data["vMessage"];
-            $save_data_arr["ar_added_at"] = $data["dtAddedAt"];
+            $save_data_arr["arfp_reported_by"] = $data["iReportedBy"];
+            $save_data_arr["arfp_post_id"] = $data["iReviewId"];
+            $save_data_arr["arfp_message"] = $data["vMessage"];
+            $save_data_arr["arfp_added_at"] = $data["dtAddedAt"];
+            $save_data_arr["arfp_status"] = $data["eStatus"];
             if ($mode == 'Add')
             {
-                $id = $this->abusive_reports_model->insert($data);
+                $id = $this->abusive_reports_for_reviews_model->insert($data);
                 if (intval($id) > 0)
                 {
-                    $save_data_arr["iAbusiveReportsId"] = $data["iAbusiveReportsId"] = $id;
+                    $save_data_arr["iAbusiveReportsForReviewId"] = $data["iAbusiveReportsForReviewId"] = $id;
                     $msg = $this->general->processMessageLabel('ACTION_RECORD_ADDED_SUCCESSFULLY_C46_C46_C33');
                 }
                 else
                 {
                     throw new Exception($this->general->processMessageLabel('ACTION_FAILURE_IN_ADDING_RECORD_C46_C46_C33'));
                 }
-                $track_cond = $this->db->protect("ar.iAbusiveReportsId")." = ".$this->db->escape($id);
-                $switch_combo = $this->abusive_reports_model->getSwitchTo($track_cond);
+                $track_cond = $this->db->protect("arfp.iAbusiveReportsForReviewId")." = ".$this->db->escape($id);
+                $switch_combo = $this->abusive_reports_for_reviews_model->getSwitchTo($track_cond);
                 $recName = $switch_combo[0]["val"];
-                $this->general->trackModuleNavigation("Module", "Form", "Added", $this->mod_enc_url["add"], "abusive_reports", $recName, "mode|".$this->general->getAdminEncodeURL("Update")."|id|".$this->general->getAdminEncodeURL($id));
+                $this->general->trackModuleNavigation("Module", "Form", "Added", $this->mod_enc_url["add"], "abusive_reports_for_reviews", $recName, "mode|".$this->general->getAdminEncodeURL("Update")."|id|".$this->general->getAdminEncodeURL($id));
             }
             elseif ($mode == 'Update')
             {
-                $res = $this->abusive_reports_model->update($data, intval($id));
+                 $this->load->model("basic_appineers_master/user_store_review_model");
+                 if($data["eStatus"] == "Rejected")
+                 {
+                    $textdata['eStatus'] = 'Inactive';
+                    $res = $this->user_store_review_model->update($textdata, intval($arfp_review_id));
+                 }
+                 else
+                 {
+                   $res = $this->user_store_review_model->update($textdata, intval($arfp_review_id)); 
+                 }
+                
                 if (intval($res) > 0)
                 {
-                    $save_data_arr["iAbusiveReportsId"] = $data["iAbusiveReportsId"] = $id;
+                     $res = $this->abusive_reports_for_reviews_model->update($data, intval($id));
+                    $save_data_arr["iAbusiveReportsForReviewId"] = $data["iAbusiveReportsForReviewId"] = $id;
                     $msg = $this->general->processMessageLabel('ACTION_RECORD_SUCCESSFULLY_UPDATED_C46_C46_C33');
                 }
                 else
                 {
                     throw new Exception($this->general->processMessageLabel('ACTION_FAILURE_IN_UPDATING_OF_THIS_RECORD_C46_C46_C33'));
                 }
-                $track_cond = $this->db->protect("ar.iAbusiveReportsId")." = ".$this->db->escape($id);
-                $switch_combo = $this->abusive_reports_model->getSwitchTo($track_cond);
+                $track_cond = $this->db->protect("arfp.iAbusiveReportsForReviewId")." = ".$this->db->escape($id);
+                $switch_combo = $this->abusive_reports_for_reviews_model->getSwitchTo($track_cond);
                 $recName = $switch_combo[0]["val"];
-                $this->general->trackModuleNavigation("Module", "Form", "Modified", $this->mod_enc_url["add"], "abusive_reports", $recName, "mode|".$this->general->getAdminEncodeURL("Update")."|id|".$this->general->getAdminEncodeURL($id));
+                $this->general->trackModuleNavigation("Module", "Form", "Modified", $this->mod_enc_url["add"], "abusive_reports_for_reviews", $recName, "mode|".$this->general->getAdminEncodeURL("Update")."|id|".$this->general->getAdminEncodeURL($id));
             }
             $ret_arr['id'] = $id;
             $ret_arr['mode'] = $mode;
@@ -938,10 +1047,10 @@ class Abusive_reports extends Cit_Controller
             $search_mode = ($operartor == "del") ? "Delete" : "Update";
             $search_join = $search_alias = "Yes";
             $config_arr['module_name'] = $this->module_name;
-            $config_arr['list_config'] = $this->abusive_reports_model->getListConfiguration();
-            $config_arr['form_config'] = $this->abusive_reports_model->getFormConfiguration();
-            $config_arr['table_name'] = $this->abusive_reports_model->table_name;
-            $config_arr['table_alias'] = $this->abusive_reports_model->table_alias;
+            $config_arr['list_config'] = $this->abusive_reports_for_reviews_model->getListConfiguration();
+            $config_arr['form_config'] = $this->abusive_reports_for_reviews_model->getFormConfiguration();
+            $config_arr['table_name'] = $this->abusive_reports_for_reviews_model->table_name;
+            $config_arr['table_alias'] = $this->abusive_reports_for_reviews_model->table_alias;
             $filter_main = $this->filter->applyFilter($filters, $config_arr, $search_mode);
             $filter_left = $this->filter->applyLeftFilter($filters, $config_arr, $search_mode);
             $filter_range = $this->filter->applyRangeFilter($filters, $config_arr, $search_mode);
@@ -960,11 +1069,11 @@ class Abusive_reports extends Cit_Controller
         }
         if ($search_alias == "Yes")
         {
-            $primary_field = $this->abusive_reports_model->table_alias.".".$this->abusive_reports_model->primary_key;
+            $primary_field = $this->abusive_reports_for_reviews_model->table_alias.".".$this->abusive_reports_for_reviews_model->primary_key;
         }
         else
         {
-            $primary_field = $this->abusive_reports_model->primary_key;
+            $primary_field = $this->abusive_reports_for_reviews_model->primary_key;
         }
         if (is_array($primary_ids))
         {
@@ -991,11 +1100,11 @@ class Abusive_reports extends Cit_Controller
                     $mode = "Delete";
                     if ($this->config->item("ENABLE_ROLES_CAPABILITIES"))
                     {
-                        $del_access = $this->filter->checkAccessCapability("abusive_reports_delete", TRUE);
+                        $del_access = $this->filter->checkAccessCapability("abusive_reports_for_reviews_delete", TRUE);
                     }
                     else
                     {
-                        $del_access = $this->filter->getModuleWiseAccess("abusive_reports", "Delete", TRUE, TRUE);
+                        $del_access = $this->filter->getModuleWiseAccess("abusive_reports_for_reviews", "Delete", TRUE, TRUE);
                     }
                     if (!$del_access)
                     {
@@ -1007,22 +1116,23 @@ class Abusive_reports extends Cit_Controller
                     }
                     $params_arr = $this->_request_params();
 
-                    $success = $this->abusive_reports_model->delete($extra_cond, $search_alias, $search_join);
+                    $success = $this->abusive_reports_for_reviews_model->delete($extra_cond, $search_alias, $search_join);
                     if (!$success)
                     {
                         throw new Exception($this->general->processMessageLabel('ACTION_FAILURE_IN_DELETION_THIS_RECORD_C46_C46_C33'));
                     }
+
                     $message = $this->general->processMessageLabel('ACTION_RECORD_C40S_C41_DELETED_SUCCESSFULLY_C46_C46_C33');
                     break;
                 case 'edit':
                     $mode = "Update";
                     if ($this->config->item("ENABLE_ROLES_CAPABILITIES"))
                     {
-                        $edit_access = $this->filter->checkAccessCapability("abusive_reports_update", TRUE);
+                        $edit_access = $this->filter->checkAccessCapability("abusive_reports_for_reviews_update", TRUE);
                     }
                     else
                     {
-                        $edit_access = $this->filter->getModuleWiseAccess("abusive_reports", "Update", TRUE, TRUE);
+                        $edit_access = $this->filter->getModuleWiseAccess("abusive_reports_for_reviews", "Update", TRUE, TRUE);
                     }
                     if (!$edit_access)
                     {
@@ -1031,8 +1141,8 @@ class Abusive_reports extends Cit_Controller
                     $post_name = $params_arr['name'];
                     $post_val = is_array($params_arr['value']) ? implode(",", $params_arr['value']) : $params_arr['value'];
 
-                    $list_config = $this->abusive_reports_model->getListConfiguration($post_name);
-                    $form_config = $this->abusive_reports_model->getFormConfiguration($list_config['source_field']);
+                    $list_config = $this->abusive_reports_for_reviews_model->getListConfiguration($post_name);
+                    $form_config = $this->abusive_reports_for_reviews_model->getFormConfiguration($list_config['source_field']);
                     if (!is_array($form_config) || count($form_config) == 0)
                     {
                         throw new Exception($this->general->processMessageLabel('ACTION_FORM_CONFIGURING_NOT_DONE_C46_C46_C33'));
@@ -1049,7 +1159,7 @@ class Abusive_reports extends Cit_Controller
                     $unique_name = $form_config['name'];
 
                     $data_arr[$field_name] = $post_val;
-                    $success = $this->abusive_reports_model->update($data_arr, intval($primary_ids));
+                    $success = $this->abusive_reports_for_reviews_model->update($data_arr, intval($primary_ids));
                     $message = $this->general->processMessageLabel('ACTION_RECORD_SUCCESSFULLY_UPDATED_C46_C46_C33');
                     if (!$success)
                     {
@@ -1060,11 +1170,11 @@ class Abusive_reports extends Cit_Controller
                     $mode = "Status";
                     if ($this->config->item("ENABLE_ROLES_CAPABILITIES"))
                     {
-                        $edit_access = $this->filter->checkAccessCapability("abusive_reports_update", TRUE);
+                        $edit_access = $this->filter->checkAccessCapability("abusive_reports_for_reviews_update", TRUE);
                     }
                     else
                     {
-                        $edit_access = $this->filter->getModuleWiseAccess("abusive_reports", "Update", TRUE, TRUE);
+                        $edit_access = $this->filter->getModuleWiseAccess("abusive_reports_for_reviews", "Update", TRUE, TRUE);
                     }
                     if (!$edit_access)
                     {
@@ -1081,14 +1191,14 @@ class Abusive_reports extends Cit_Controller
                     }
                     if ($search_mode == "Yes" || $search_alias == "Yes")
                     {
-                        $field_name = $this->abusive_reports_model->table_alias.".";
+                        $field_name = $this->abusive_reports_for_reviews_model->table_alias.".";
                     }
                     else
                     {
                         $field_name = $status_field;
                     }
                     $data_arr[$field_name] = $params_arr['status'];
-                    $success = $this->abusive_reports_model->update($data_arr, $extra_cond, $search_alias, $search_join);
+                    $success = $this->abusive_reports_for_reviews_model->update($data_arr, $extra_cond, $search_alias, $search_join);
                     if (!$success)
                     {
                         throw new Exception($this->general->processMessageLabel('ACTION_FAILURE_IN_MODIFYING_THESE_RECORDS_C46_C46_C33'));
@@ -1249,7 +1359,7 @@ class Abusive_reports extends Cit_Controller
                 }
                 if ($combo_config['parent_child'] == "Yes" && $combo_config['nlevel_child'] == "Yes")
                 {
-                    $combo_config['main_table'] = $this->abusive_reports_model->table_name;
+                    $combo_config['main_table'] = $this->abusive_reports_for_reviews_model->table_name;
                     $data_arr = $this->filter->getTreeLevelDropdown($combo_config, $id, $extra, $rtype);
                 }
                 else
@@ -1289,9 +1399,9 @@ class Abusive_reports extends Cit_Controller
                 elseif (substr($phpfunc, 0, 7) == 'model::' && substr($phpfunc, 7) !== FALSE)
                 {
                     $phpfunc = substr($phpfunc, 7);
-                    if (method_exists($this->abusive_reports_model, $phpfunc))
+                    if (method_exists($this->abusive_reports_for_reviews_model, $phpfunc))
                     {
-                        $data_arr = $this->abusive_reports_model->$phpfunc($data[$name], $mode, $id, $data, $parent_src, $this->term);
+                        $data_arr = $this->abusive_reports_for_reviews_model->$phpfunc($data[$name], $mode, $id, $data, $parent_src, $this->term);
                     }
                 }
                 elseif (method_exists($this->general, $phpfunc))
@@ -1312,14 +1422,14 @@ class Abusive_reports extends Cit_Controller
 
         $term = strtolower($params_arr['data']['q']);
 
-        $switchto_fields = $this->abusive_reports_model->switchto_fields;
-        $extra_cond = $this->abusive_reports_model->extra_cond;
+        $switchto_fields = $this->abusive_reports_for_reviews_model->switchto_fields;
+        $extra_cond = $this->abusive_reports_for_reviews_model->extra_cond;
 
         $concat_fields = $this->db->concat_cast($switchto_fields);
         $search_cond = "(LOWER(".$concat_fields.") LIKE '".$this->db->escape_like_str($term)."%' OR LOWER(".$concat_fields.") LIKE '% ".$this->db->escape_like_str($term)."%')";
         $extra_cond = ($extra_cond == "") ? $search_cond : $extra_cond." AND ".$search_cond;
 
-        $switch_arr = $this->abusive_reports_model->getSwitchTo($extra_cond);
+        $switch_arr = $this->abusive_reports_for_reviews_model->getSwitchTo($extra_cond);
         $html_arr = $this->filter->getChosenAutoJSON($switch_arr, array(), FALSE, "auto");
 
         $json_array['q'] = $term;
@@ -1340,13 +1450,13 @@ class Abusive_reports extends Cit_Controller
         $rformat = $params_arr['rformat'];
         $id = $params_arr['id'];
         $mode = ($params_arr['mode'] == "Search") ? "Search" : (($params_arr['mode'] == "Update") ? "Update" : "Add");
-        $config_arr = $this->abusive_reports_model->getListConfiguration($alias_name);
+        $config_arr = $this->abusive_reports_for_reviews_model->getListConfiguration($alias_name);
         $source_field = $config_arr['source_field'];
         $combo_config = $this->dropdown_arr[$source_field];
         $data_arr = array();
         if ($mode == "Update")
         {
-            $data_arr = $this->abusive_reports_model->getData(intval($id));
+            $data_arr = $this->abusive_reports_for_reviews_model->getData(intval($id));
         }
         $combo_arr = $this->getSourceOptions($source_field, $mode, $id, $data_arr[0]);
         if ($rformat == "json")
