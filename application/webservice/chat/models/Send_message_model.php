@@ -145,14 +145,23 @@ class Send_message_model extends CI_Model
      */
     public function update_message($params_arr = array(), $where_arr = array())
     {
-       // print_r($params_arr);exit;
+    //    print_r($params_arr);exit;
         try
         {
             $result_arr = array();
             if (isset($where_arr["message_id"]) && $where_arr["message_id"] != "")
             {
                 $this->db->where("iMessageId =", $where_arr["message_id"]);
-            }     
+            }  
+            if (isset($params_arr["missing_pet_id"]) && $params_arr["missing_pet_id"] != "")
+            {
+                $this->db->where("iMissingPetId =", $params_arr["missing_pet_id"]);
+            }  
+            if (isset($params_arr["user_id"]) && $params_arr["user_id"] != "" && isset($params_arr["receiver_id"]) && $params_arr["receiver_id"] != "")
+            {
+                $this->db->where("((iMessageFrom = ".$params_arr["user_id"]." AND iMessageTo = ".$params_arr["receiver_id"].") OR (iMessageFrom = ".$params_arr["receiver_id"]." AND iMessageTo = ".$params_arr["user_id"]."))", FALSE, FALSE);
+            }  
+            
             if (isset($params_arr["firebase_id"]))
             {
                 $this->db->set("vFirebaseId", $params_arr["firebase_id"]);
@@ -166,6 +175,11 @@ class Send_message_model extends CI_Model
             {
                 $this->db->set("iMessageTo", $params_arr["receiver_id"]);
             }
+            if (isset($params_arr["message"]))
+            {
+                $this->db->set("vMessage", $params_arr["message"]);
+                $this->db->set("eMessageStatus", 'accept');
+            }
             
             if (isset($params_arr["user_id"]))
             {
@@ -174,6 +188,10 @@ class Send_message_model extends CI_Model
             if (isset($params_arr["is_requested"]))
             {
                 $this->db->set("eIsRequested", $params_arr["is_requested"]);
+            }
+            if (isset($params_arr["vLastTimestamp"]))
+            {
+                $this->db->set("vLastTimestamp", $params_arr["vLastTimestamp"]);
             }
             
             $this->db->set($this->db->protect("dtUpdatedAt"), $params_arr["_dtmodifieddate"], FALSE);
@@ -220,7 +238,7 @@ class Send_message_model extends CI_Model
             }
             if (isset($params_arr["firebase_id"]) && $params_arr["firebase_id"] != "")
             {
-                $this->db->set("iMessageId", $params_arr["firebase_id"]);
+                $this->db->set("vFirebaseId", $params_arr["firebase_id"]);
             }
             if (isset($params_arr["user_id"]))
             {
@@ -242,9 +260,13 @@ class Send_message_model extends CI_Model
             {
                 $this->db->set("eMessageStatus", $params_arr["eMessageStatus"]);
             }
+            if (isset($params_arr["vLastTimestamp"]))
+            {
+                $this->db->set("vLastTimestamp", $params_arr["vLastTimestamp"]);
+            }
             
             $this->db->set($this->db->protect("dtAddedAt"), $params_arr["_dtaddeddate"], FALSE);
-            $this->db->set($this->db->protect("dtUpdatedAt"), $params_arr["_dtmodifieddate"], FALSE);
+            // $this->db->set($this->db->protect("dtUpdatedAt"), $params_arr["_dtmodifieddate"], FALSE);
             
             $this->db->insert("messages");
             $insert_id = $this->db->insert_id();
@@ -494,7 +516,7 @@ class Send_message_model extends CI_Model
 
             $this->db->select("m.iMessageFrom AS sender_id");
             $this->db->select("m.iMessageTo AS receiver_id");
-
+            $this->db->select("m.vMessage AS message");
             $this->db->select("m.vFirebaseId AS firebase_id");
             $this->db->select("m.iMessageId AS message_id");
             $this->db->select("m.iMissingPetId AS missing_pet_id");
@@ -505,7 +527,7 @@ class Send_message_model extends CI_Model
             $this->db->select("concat(u.vFirstName,\" \",u.vLastName) AS sender_name");
             $this->db->select("concat(u1.vFirstName,\" \",u1.vLastName) AS receiver_name");
             $this->db->select("m.dtAddedAt AS added_at");
-            $this->db->select("m.dtAddedAt AS updated_at");
+            $this->db->select("m.dtUpdatedAt AS updated_at");
             $this->db->select("(".$this->db->escape("").") AS sender_image", FALSE);
             $this->db->select("(".$this->db->escape("").") AS receiver_image", FALSE);
             $this->db->where("((m.iMessageFrom = ".$user_id.") OR ( m.iMessageTo = ".$user_id."))", FALSE, FALSE);

@@ -51,11 +51,11 @@ public function decodePostTitle($value = '',$id = '',$data = array()){
 }
 public function decodePostTitleInForm($mode = '', $value = '', $data = array(), $id = '',$field_name = '', $field_id = ''){
   
-    $this->db->select('vDescription');
-    $this->db->from('add_review');
+    $this->db->select('vDogsName');
+    $this->db->from('missing_pets');
     $this->db->where('iUserId',$value);
     $post_data=$this->db->get()->result_array();
-    return base64_decode($post_data[0]['vDescription']);
+    return base64_decode($post_data[0]['vDogsName']);
   
 }
 }

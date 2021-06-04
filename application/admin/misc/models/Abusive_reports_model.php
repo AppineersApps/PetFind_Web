@@ -566,7 +566,7 @@ class Abusive_reports_model extends CI_Model
         $this->db->flush_cache();
         $listing_data = $this->listing->getDataForJqGrid($return_data, $filter_config, $page, $total_pages, $total_records);
         $this->listing_data = $return_data;
-        #echo $this->db->last_query();
+        // echo $this->db->last_query();exit;
         return $listing_data;
     }
 

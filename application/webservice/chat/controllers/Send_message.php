@@ -130,14 +130,14 @@ class Send_message extends Cit_Controller
 
                 $condition_res = $this->is_intiated($input_params);
 
-
+               
 
                 // if chat initiated previuosly then call if condition
                 if ($condition_res["success"]) {
-
+                   
                     $input_params = $this->update_message($input_params);
                 } else {
-
+                   
                     $input_params = $this->add_message($input_params);
 
                     //    print_r($input_params);exit; 
@@ -959,10 +959,22 @@ class Send_message extends Cit_Controller
             if (isset($input_params["user_id"])) {
                 $params_arr["user_id"] = $input_params["user_id"];
             }
+            if (isset($input_params["message"])) {
+                $params_arr["message"] = $input_params["message"];
+            }
+            if (isset($input_params["missing_pet_id"])) {
+                $params_arr["missing_pet_id"] = $input_params["missing_pet_id"];
+            }
+            if (isset($input_params["timestamp"])) {
+                $params_arr["vLastTimestamp"] = $input_params["timestamp"];
+            }
+            
+                $params_arr["_dtmodifieddate"] = "NOW()";
+            
 
-            $params_arr["_dtmodifieddate"] = "NOW()";
             $params_arr["is_requested"] = "1";
 
+            // print_r($params_arr);exit;
             $this->block_result = $this->send_message_model->update_message($params_arr, $where_arr);
         } catch (Exception $e) {
             $success = 0;
@@ -1033,10 +1045,19 @@ class Send_message extends Cit_Controller
             if (isset($input_params["firebase_id"])) {
                 $params_arr["firebase_id"] = $input_params["firebase_id"];
             }
+            if (isset($input_params["message"])) {
+                $params_arr["message"] = $input_params["message"];
+            }
+           
+            if (isset($input_params["timestamp"])) {
+                $params_arr["vLastTimestamp"] = $input_params["timestamp"];
+            }
 
+            
             $params_arr["_dtaddeddate"] = "NOW()";
+           
             $params_arr["eMessageStatus"] = "Pending";
-            $params_arr["_dtmodifieddate"] = "NOW()";
+            
             //  print_r($params_arr);exit;
             $this->block_result = $this->send_message_model->add_message($params_arr);
         } catch (Exception $e) {
@@ -1422,6 +1443,7 @@ class Send_message extends Cit_Controller
             'firebase_id',
             'missing_pet_id',
             'message_status',
+            'message',
             'pet_status',
             'block_status',
             'dog_name',

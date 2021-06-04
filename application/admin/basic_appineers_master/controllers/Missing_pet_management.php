@@ -2,33 +2,33 @@
 defined('BASEPATH') || exit('No direct script access allowed');
 
 /**
- * Description of Abusive Reports For User Controller
+ * Description of missing pet Management Controller
  *
  * @category admin
  *
- * @package misc
+ * @package basic_appineers_master
  *
  * @subpackage controllers
  *
- * @module Abusive Reports For User
+ * @module Missing pet Management
  *
- * @class Abusive_reports.php
+ * @class Missing_pet_management.php
  *
- * @path application\admin\misc\controllers\Abusive_reports.php
+ * @path application\admin\basic_appineers_master\controllers\Missing_pet_management.php
  *
  * @version 4.4
  *
  * @author CIT Dev Team
  *
- * @since 17.06.2019
+ * @since 07.02.2020
  */
 
-class Abusive_reports extends Cit_Controller
+class Missing_pet_management extends Cit_Controller
 {
     /**
      * __construct method is used to set controller preferences while controller object initialization.
-     * @created priyanka chillakuru | 02.05.2019
-     * @modified priyanka chillakuru | 17.06.2019
+     * @created priyanka chillakuru | 10.09.2019
+     * @modified priyanka chillakuru | 07.02.2020
      */
     public function __construct()
     {
@@ -36,18 +36,18 @@ class Abusive_reports extends Cit_Controller
         $this->load->library('listing');
         $this->load->library('filter');
         $this->load->library('dropdown');
-        $this->load->model('abusive_reports_model');
-        $this->_request_params();
-        $this->folder_name = "misc";
-        $this->module_name = "abusive_reports";
+        $this->load->model('missing_pet_management_model');
+        $this->folder_name = "basic_appineers_master";
+        $this->module_name = "missing_pet_management";
         $this->mod_enc_url = $this->general->getGeneralEncryptList($this->folder_name, $this->module_name);
         $this->mod_enc_mode = $this->general->getCustomEncryptMode(TRUE);
+        $this->_request_params();
         $this->module_config = array(
             'module_name' => $this->module_name,
             'folder_name' => $this->folder_name,
             'mod_enc_url' => $this->mod_enc_url,
             'mod_enc_mode' => $this->mod_enc_mode,
-            'delete' => "No",
+            'delete' => "Yes",
             'xeditable' => "No",
             'top_detail' => "No",
             "multi_lingual" => "No",
@@ -57,29 +57,19 @@ class Abusive_reports extends Cit_Controller
             "list_record_callback" => "",
         );
         $this->dropdown_arr = array(
-            "ar_reported_by" => array(
-                "type" => "table",
-                "table_name" => "users",
-                "field_key" => "iUserId",
-                "field_val" => array(
-                    $this->db->protect("vFirstName"),
-                    "' '",
-                    $this->db->protect("vLastName")
-                ),
-                "order_by" => "val asc",
+            "r_status" => array(
+                "type" => "enum",
                 "default" => "Yes",
-            ),
-            "ar_reported_on" => array(
-                "type" => "table",
-                "table_name" => "users",
-                "field_key" => "iUserId",
-                "field_val" => array(
-                    $this->db->protect("vFirstName"),
-                    "' '",
-                    $this->db->protect("vLastName")
-                ),
-                "order_by" => "val asc",
-                "default" => "Yes",
+                "values" => array(
+                    array(
+                        'id' => 'Active',
+                        'val' => $this->lang->line('REVIEW_MANAGEMENT_ACTIVE')
+                    ),
+                    array(
+                        'id' => 'Inactive',
+                        'val' => $this->lang->line('REVIEW_MANAGEMENT_INACTIVE')
+                    )
+                )
             )
         );
         $this->parMod = $this->params_arr["parMod"];
@@ -118,13 +108,13 @@ class Abusive_reports extends Cit_Controller
             if ($this->config->item("ENABLE_ROLES_CAPABILITIES"))
             {
                 $access_list = array(
-                    "abusive_reports_list",
-                    "abusive_reports_view",
-                    "abusive_reports_add",
-                    "abusive_reports_update",
-                    "abusive_reports_delete",
-                    "abusive_reports_export",
-                    "abusive_reports_print",
+                    "missing_pet_management_list",
+                    "missing_pet_management_view",
+                    "missing_pet_management_add",
+                    "missing_pet_management_update",
+                    "missing_pet_management_delete",
+                    "missing_pet_management_export",
+                    "missing_pet_management_print",
                 );
                 list($list_access, $view_access, $add_access, $edit_access, $del_access, $expo_access, $print_access) = $this->filter->checkAccessCapability($access_list, TRUE);
             }
@@ -139,21 +129,31 @@ class Abusive_reports extends Cit_Controller
                     "Export",
                     "Print",
                 );
-                list($list_access, $view_access, $add_access, $edit_access, $del_access, $expo_access, $print_access) = $this->filter->getModuleWiseAccess("abusive_reports", $access_list, TRUE, TRUE);
+                list($list_access, $view_access, $add_access, $edit_access, $del_access, $expo_access, $print_access) = $this->filter->getModuleWiseAccess("missing_pet_management", $access_list, TRUE, TRUE);
             }
             if (!$list_access)
             {
                 throw new Exception($this->general->processMessageLabel('ACTION_YOU_ARE_NOT_AUTHORIZED_TO_VIEW_THIS_PAGE_C46_C46_C33'));
             }
-            $enc_loc_module = $this->general->getMD5EncryptString("ListPrefer", "abusive_reports");
-            $status_array = $status_label = array();
-            $list_config = $this->abusive_reports_model->getListConfiguration();
+            $enc_loc_module = $this->general->getMD5EncryptString("ListPrefer", "missing_pet_management");
+
+            $status_array = array(
+                'Active',
+                'Inactive'
+            );
+            $status_label = array(
+                'js_lang_label.REVIEW_MANAGEMENT_ACTIVE',
+                'js_lang_label.REVIEW_MANAGEMENT_INACTIVE'
+            );
+
+            $list_config = $this->missing_pet_management_model->getListConfiguration();
             $this->processConfiguration($list_config, $add_access, $edit_access, TRUE);
-            $this->general->trackModuleNavigation("Module", "List", "Viewed", $this->mod_enc_url["index"], "abusive_reports");
+            $this->general->trackModuleNavigation("Module", "List", "Viewed", $this->mod_enc_url["index"], "missing_pet_management");
             if (method_exists($this->filter, "setListFieldCapability"))
             {
                 $this->filter->setListFieldCapability($list_config);
             }
+
             $extra_qstr .= $this->general->getRequestURLParams();
             $extra_hstr .= $this->general->getRequestHASHParams();
             $render_arr = array(
@@ -175,7 +175,11 @@ class Abusive_reports extends Cit_Controller
                 'mod_enc_mode' => $this->mod_enc_mode,
                 'extra_qstr' => $extra_qstr,
                 'extra_hstr' => $extra_hstr,
-                'default_filters' => $this->abusive_reports_model->default_filters,
+                "capabilities" => array(
+                    "hide_multi_select" => "No",
+                    "subgrid" => "No",
+                ),
+                'default_filters' => $this->missing_pet_management_model->default_filters,
             );
             $this->smarty->assign($render_arr);
             if (!empty($render_arr['overwrite_view']))
@@ -184,7 +188,7 @@ class Abusive_reports extends Cit_Controller
             }
             else
             {
-                $this->loadView("abusive_reports_index");
+                $this->loadView("missing_pet_management_index");
             }
         }
         catch(Exception $e)
@@ -212,12 +216,12 @@ class Abusive_reports extends Cit_Controller
             $sdef = 'Yes';
         }
         $filters = json_decode($filters, TRUE);
-        $list_config = $this->abusive_reports_model->getListConfiguration();
-        $form_config = $this->abusive_reports_model->getFormConfiguration();
-        $extra_cond = $this->abusive_reports_model->extra_cond;
-        $groupby_cond = $this->abusive_reports_model->groupby_cond;
-        $having_cond = $this->abusive_reports_model->having_cond;
-        $orderby_cond = $this->abusive_reports_model->orderby_cond;
+        $list_config = $this->missing_pet_management_model->getListConfiguration();
+        $form_config = $this->missing_pet_management_model->getFormConfiguration();
+        $extra_cond = $this->missing_pet_management_model->extra_cond;
+        $groupby_cond = $this->missing_pet_management_model->groupby_cond;
+        $having_cond = $this->missing_pet_management_model->having_cond;
+        $orderby_cond = $this->missing_pet_management_model->orderby_cond;
 
         $data_config = array();
         $data_config['page'] = $page;
@@ -235,12 +239,9 @@ class Abusive_reports extends Cit_Controller
         $data_config['having_cond'] = $having_cond;
         $data_config['order_by'] = $orderby_cond;
 
-        $data_recs = $this->abusive_reports_model->getListingData($data_config);
+        $data_recs = $this->missing_pet_management_model->getListingData($data_config);
+        $data_recs['no_records_msg'] = $this->general->processMessageLabel('ACTION_NO_REVIEW_MANAGEMENT_DATA_FOUND_C46_C46_C33');
 
-        // print_r($data_recs);exit;
-        $data_recs['no_records_msg'] = $this->general->processMessageLabel('ACTION_NO_ABUSIVE_REPORTS_FOR_USER_DATA_FOUND_C46_C46_C33');
-
-        $data_recs = $this->abusive_reports_model->processCustomLinks($data_recs, $list_config);
         echo json_encode($data_recs);
         $this->skip_template_view();
     }
@@ -252,11 +253,11 @@ class Abusive_reports extends Cit_Controller
     {
         if ($this->config->item("ENABLE_ROLES_CAPABILITIES"))
         {
-            $this->filter->checkAccessCapability("abusive_reports_export");
+            $this->filter->checkAccessCapability("missing_pet_management_export");
         }
         else
         {
-            $this->filter->getModuleWiseAccess("abusive_reports", "Export", TRUE);
+            $this->filter->getModuleWiseAccess("missing_pet_management", "Export", TRUE);
         }
         $params_arr = $this->params_arr;
         $page = $params_arr['page'];
@@ -275,15 +276,15 @@ class Abusive_reports extends Cit_Controller
         $filters = $params_arr['filters'];
         $filters = json_decode(base64_decode($filters), TRUE);
         $fields = json_decode(base64_decode($params_arr['fields']), TRUE);
-        $list_config = $this->abusive_reports_model->getListConfiguration();
-        $form_config = $this->abusive_reports_model->getFormConfiguration();
-        $table_name = $this->abusive_reports_model->table_name;
-        $table_alias = $this->abusive_reports_modeltable_alias;
-        $primary_key = $this->abusive_reports_model->primary_key;
-        $extra_cond = $this->abusive_reports_model->extra_cond;
-        $groupby_cond = $this->abusive_reports_model->groupby_cond;
-        $having_cond = $this->abusive_reports_model->having_cond;
-        $orderby_cond = $this->abusive_reports_model->orderby_cond;
+        $list_config = $this->missing_pet_management_model->getListConfiguration();
+        $form_config = $this->missing_pet_management_model->getFormConfiguration();
+        $table_name = $this->missing_pet_management_model->table_name;
+        $table_alias = $this->missing_pet_management_model->table_alias;
+        $primary_key = $this->missing_pet_management_model->primary_key;
+        $extra_cond = $this->missing_pet_management_model->extra_cond;
+        $groupby_cond = $this->missing_pet_management_model->groupby_cond;
+        $having_cond = $this->missing_pet_management_model->having_cond;
+        $orderby_cond = $this->missing_pet_management_model->orderby_cond;
         if (method_exists($this->filter, "setListFieldCapability"))
         {
             $this->filter->setListFieldCapability($list_config);
@@ -312,7 +313,7 @@ class Abusive_reports extends Cit_Controller
         $export_config['having_cond'] = $having_cond;
         $export_config['order_by'] = $orderby_cond;
 
-        $db_recs = $this->abusive_reports_model->getExportData($export_config);
+        $db_recs = $this->missing_pet_management_model->getExportData($export_config);
         $db_recs = $this->listing->getDataForList($db_recs, $export_config, "GExport", array());
         if (!is_array($db_recs) || count($db_recs) == 0)
         {
@@ -360,8 +361,8 @@ class Abusive_reports extends Cit_Controller
 
         $misc_info = array();
         $misc_info['fields'] = $fields;
-        $misc_info['heading'] = $this->lang->line('ABUSIVE_REPORTS_ABUSIVE_REPORTS_FOR_USER');
-        $misc_info['filename'] = "abusive_reports_for_user_records_".count($db_recs);
+        $misc_info['heading'] = $this->lang->line('REVIEW_MANAGEMENT_REVIEW_MANAGEMENT');
+        $misc_info['filename'] = "missing_pet_management_records_".count($db_recs);
         $misc_info['pdf_unit'] = PDF_UNIT;
         $misc_info['pdf_page_format'] = PDF_PAGE_FORMAT;
         $misc_info['pdf_page_orientation'] = (!empty($params_arr['orientation'])) ? $params_arr['orientation'] : PDF_PAGE_ORIENTATION;
@@ -418,7 +419,7 @@ class Abusive_reports extends Cit_Controller
             $pdf = new PDF_Export($misc_info['pdf_page_orientation'], $misc_info['pdf_unit'], $misc_info['pdf_page_format'], TRUE, 'UTF-8', FALSE);
             if (method_exists($pdf, "setModule"))
             {
-                $pdf->setModule("abusive_reports_model");
+                $pdf->setModule("missing_pet_management_model");
             }
             if (method_exists($pdf, "setContent"))
             {
@@ -486,17 +487,17 @@ class Abusive_reports extends Cit_Controller
         $enc_id = $this->general->getAdminEncodeURL($id);
         try
         {
-            $extra_cond = $this->abusive_reports_model->extra_cond;
+            $extra_cond = $this->missing_pet_management_model->extra_cond;
             if ($mode == "Update")
             {
                 if ($this->config->item("ENABLE_ROLES_CAPABILITIES"))
                 {
                     $access_list = array(
-                        "abusive_reports_list",
-                        "abusive_reports_view",
-                        "abusive_reports_update",
-                        "abusive_reports_delete",
-                        "abusive_reports_print",
+                        "missing_pet_management_list",
+                        "missing_pet_management_view",
+                        "missing_pet_management_update",
+                        "missing_pet_management_delete",
+                        "missing_pet_management_print",
                     );
                     list($list_access, $view_access, $edit_access, $del_access, $print_access) = $this->filter->checkAccessCapability($access_list, TRUE);
                 }
@@ -509,7 +510,7 @@ class Abusive_reports extends Cit_Controller
                         "Delete",
                         "Print",
                     );
-                    list($list_access, $view_access, $edit_access, $del_access, $print_access) = $this->filter->getModuleWiseAccess("abusive_reports", $access_list, TRUE, TRUE);
+                    list($list_access, $view_access, $edit_access, $del_access, $print_access) = $this->filter->getModuleWiseAccess("missing_pet_management", $access_list, TRUE, TRUE);
                 }
                 if (!$edit_access && !$view_access)
                 {
@@ -521,8 +522,8 @@ class Abusive_reports extends Cit_Controller
                 if ($this->config->item("ENABLE_ROLES_CAPABILITIES"))
                 {
                     $access_list = array(
-                        "abusive_reports_list",
-                        "abusive_reports_add",
+                        "missing_pet_management_list",
+                        "missing_pet_management_add",
                     );
                     list($list_access, $add_access) = $this->filter->checkAccessCapability($access_list, TRUE);
                 }
@@ -532,7 +533,7 @@ class Abusive_reports extends Cit_Controller
                         "List",
                         "Add",
                     );
-                    list($list_access, $add_access) = $this->filter->getModuleWiseAccess("abusive_reports", $access_list, TRUE, TRUE);
+                    list($list_access, $add_access) = $this->filter->getModuleWiseAccess("missing_pet_management", $access_list, TRUE, TRUE);
                 }
                 if (!$add_access)
                 {
@@ -543,8 +544,8 @@ class Abusive_reports extends Cit_Controller
             $data = $orgi = $func = $elem = array();
             if ($mode == 'Update')
             {
-                $ctrl_flow = $this->ci_local->read($this->general->getMD5EncryptString("FlowEdit", "abusive_reports"), $this->session->userdata('iAdminId'));
-                $data_arr = $this->abusive_reports_model->getData(intval($id));
+                $ctrl_flow = $this->ci_local->read($this->general->getMD5EncryptString("FlowEdit", "missing_pet_management"), $this->session->userdata('iAdminId'));
+                $data_arr = $this->missing_pet_management_model->getData(intval($id));
                 $data = $orgi = $data_arr[0];
                 if ((!is_array($data) || count($data) == 0) && $params_arr['rmPopup'] != "true")
                 {
@@ -558,18 +559,18 @@ class Abusive_reports extends Cit_Controller
                 $this->dropdown->combo("array", "vSwitchPage", $switch_enc_combo, $enc_id, FALSE, "key_value", $switch_arr);
                 $next_prev_records = $this->filter->getNextPrevRecords($id, $switch_arr);
 
-                $this->general->trackModuleNavigation("Module", "Form", "Viewed", $this->mod_enc_url["add"], "abusive_reports", $recName);
+                $this->general->trackModuleNavigation("Module", "Form", "Viewed", $this->mod_enc_url["add"], "missing_pet_management", $recName);
             }
             else
             {
                 $recName = '';
-                $ctrl_flow = $this->ci_local->read($this->general->getMD5EncryptString("FlowAdd", "abusive_reports"), $this->session->userdata('iAdminId'));
-                $this->general->trackModuleNavigation("Module", "Form", "Viewed", $this->mod_enc_url["add"], "abusive_reports");
+                $ctrl_flow = $this->ci_local->read($this->general->getMD5EncryptString("FlowAdd", "missing_pet_management"), $this->session->userdata('iAdminId'));
+                $this->general->trackModuleNavigation("Module", "Form", "Viewed", $this->mod_enc_url["add"], "missing_pet_management");
             }
 
             $opt_arr = $img_html = $auto_arr = $config_arr = array();
 
-            $form_config = $this->abusive_reports_model->getFormConfiguration($config_arr);
+            $form_config = $this->missing_pet_management_model->getFormConfiguration($config_arr);
             if (is_array($form_config) && count($form_config) > 0)
             {
                 foreach ($form_config as $key => $val)
@@ -624,9 +625,9 @@ class Abusive_reports extends Cit_Controller
                         elseif (substr($phpfunc, 0, 7) == 'model::' && substr($phpfunc, 7) !== FALSE)
                         {
                             $phpfunc = substr($phpfunc, 7);
-                            if (method_exists($this->abusive_reports_model, $phpfunc))
+                            if (method_exists($this->missing_pet_management_model, $phpfunc))
                             {
-                                $tmpdata = $this->abusive_reports_model->$phpfunc($mode, $data[$key], $data, $id, $key, $key, $this->module_name);
+                                $tmpdata = $this->missing_pet_management_model->$phpfunc($mode, $data[$key], $data, $id, $key, $key, $this->module_name);
                             }
                         }
                         elseif (method_exists($this->general, $phpfunc))
@@ -668,9 +669,9 @@ class Abusive_reports extends Cit_Controller
                             elseif (substr($fd_callback, 0, 7) == 'model::' && substr($fd_callback, 7) !== FALSE)
                             {
                                 $fd_callback = substr($fd_callback, 7);
-                                if (method_exists($this->abusive_reports_model, $fd_callback))
+                                if (method_exists($this->missing_pet_management_model, $fd_callback))
                                 {
-                                    $fd_status = $this->abusive_reports_model->$fd_callback($mode, $data[$key], $data, $id, $key, $key, $this->module_name);
+                                    $fd_status = $this->missing_pet_management_model->$fd_callback($mode, $data[$key], $data, $id, $key, $key, $this->module_name);
                                 }
                             }
                             elseif (method_exists($this->general, $fd_callback))
@@ -704,6 +705,12 @@ class Abusive_reports extends Cit_Controller
                         }
                         $this->dropdown->combo("array", $source_field, $display_arr, $data[$key]);
                         $opt_arr[$source_field] = $final_arr;
+                    }
+                    if ($val['file_upload'] == 'Yes')
+                    {
+                        $del_file = ($edit_access && $viewMode != TRUE && $func[$key] != 2) ? TRUE : FALSE;
+                        $val['htmlID'] = $val['name'];
+                        $img_html[$key] = $this->listing->parseFormFile($data[$key], $id, $data, $val, $this->module_config, "Form", $del_file);
                     }
                 }
             }
@@ -739,6 +746,11 @@ class Abusive_reports extends Cit_Controller
             if ($hideCtrl == "true")
             {
                 $controls_allow = $prev_link_allow = $next_link_allow = $delete_allow = $backlink_allow = $switchto_allow = $tabing_allow = FALSE;
+            }
+            $wf_mode_arr = $this->module_config["workflow_modes"];
+            if (is_array($wf_mode_arr) && in_array($mode, $wf_mode_arr))
+            {
+                $controls_allow = FALSE;
             }
             /** access controls >>> **/
             $render_arr = array(
@@ -776,6 +788,7 @@ class Abusive_reports extends Cit_Controller
                 'mod_enc_mode' => $this->mod_enc_mode,
                 'extra_qstr' => $extra_qstr,
                 'extra_hstr' => $extra_hstr,
+                'capabilities' => array()
             );
             $this->smarty->assign($render_arr);
             if (!empty($render_arr['overwrite_view']))
@@ -788,16 +801,16 @@ class Abusive_reports extends Cit_Controller
                 {
                     if ($edit_access && $viewMode != TRUE)
                     {
-                        $this->loadView("abusive_reports_add");
+                        $this->loadView("missing_pet_management_add");
                     }
                     else
                     {
-                        $this->loadView("abusive_reports_add_view");
+                        $this->loadView("missing_pet_management_add_view");
                     }
                 }
                 else
                 {
-                    $this->loadView("abusive_reports_add");
+                    $this->loadView("missing_pet_management_add");
                 }
             }
         }
@@ -824,16 +837,16 @@ class Abusive_reports extends Cit_Controller
             {
                 if ($mode == "Update")
                 {
-                    $add_edit_access = $this->filter->checkAccessCapability("abusive_reports_update", TRUE);
+                    $add_edit_access = $this->filter->checkAccessCapability("missing_pet_management_update", TRUE);
                 }
                 else
                 {
-                    $add_edit_access = $this->filter->checkAccessCapability("abusive_reports_add", TRUE);
+                    $add_edit_access = $this->filter->checkAccessCapability("missing_pet_management_add", TRUE);
                 }
             }
             else
             {
-                $add_edit_access = $this->filter->getModuleWiseAccess("abusive_reports", $mode, TRUE, TRUE);
+                $add_edit_access = $this->filter->getModuleWiseAccess("missing_pet_management", $mode, TRUE, TRUE);
             }
             if (!$add_edit_access)
             {
@@ -847,68 +860,167 @@ class Abusive_reports extends Cit_Controller
                 }
             }
 
-            $form_config = $this->abusive_reports_model->getFormConfiguration();
+            $form_config = $this->missing_pet_management_model->getFormConfiguration();
             $params_arr = $this->_request_params();
-            $ar_reported_by = $params_arr["ar_reported_by"];
-            $ar_reported_on = $params_arr["ar_reported_on"];
-            $ar_message = $params_arr["ar_message"];
-            $ar_added_at = $params_arr["ar_added_at"];
+            $r_star = $params_arr["r_star"];
+            $r_description = $params_arr["r_description"];
+            $r_profile_image = $params_arr["r_profile_image"];
+            $r_first_name = $params_arr["r_first_name"];
+            $r_last_name = $params_arr["r_last_name"];
+            $r_email = $params_arr["r_email"];
+            $r_mobile_no = $params_arr["r_mobile_no"];
+            $r_address = $params_arr["r_address"];
+            $r_city = $params_arr["r_city"];
+            $r_state_id = $params_arr["r_state_id"];
+            $r_zip_code = $params_arr["r_zip_code"];
+            $r_deleted_at = $params_arr["r_deleted_at"];
+            $r_added_at = $params_arr["r_added_at"];
+            $r_updated_at = $params_arr["r_updated_at"];
+            $r_status = $params_arr["r_status"];
+            $r_latitude = $params_arr["r_latitude"];
+            $r_longitude = $params_arr["r_longitude"];
+            $r_user_id = $params_arr["r_user_id"];
+            $r_business_name = $params_arr["r_business_name"];
+            $r_business_type = $params_arr["r_business_type"];
+            $r_position = $params_arr["r_position"];
+            $r_place_id = $params_arr["r_place_id"];
+            $r_claimed_email = $params_arr["r_claimed_email"];
+            $r_is_claimed = $params_arr["r_is_claimed"];
+          
 
             $data = $save_data_arr = $file_data = array();
-            $data["iReportedBy"] = $ar_reported_by;
-            $data["iReportedOn"] = $ar_reported_on;
-            $data["vMessage"] = $ar_message;
-            $data["dtAddedAt"] = $this->filter->formatActionData($ar_added_at, $form_config["ar_added_at"]);
+            $data["vProfileImage"] = $r_profile_image;
+            $data["vFirstName"] = $r_first_name;
+            $data["vLastName"] = $r_last_name;
+            $data["vEmail"] = $r_email;
+            $data["vMobileNo"] = $r_mobile_no;
+            $data["tAddress"] = $r_address;
+            $data["vCity"] = $r_city;
+            $data["iStateId"] = $r_state_id;
+            $data["vZipCode"] = $r_zip_code;
+            $data["dAddedAt"] = $this->filter->formatActionData($r_added_at, $form_config["r_added_at"]);
+            $data["dtUpdatedAt"] = $this->filter->formatActionData($r_updated_at, $form_config["r_updated_at"]);
+            $data["dtDeletedAt"] = $this->filter->formatActionData($r_deleted_at, $form_config["r_deleted_at"]);
+            $data["eStatus"] = $r_status;
+            $data["dLatitude"] = $r_latitude;
+            $data["dLongitude"] = $r_longitude;
+            $data["iStars"] = $r_star;
+            $data["vDescription"] = $r_description;
+            $data["iUserId"] = $r_user_id;
+            $data["vBussinessName"] = $r_business_name;
+            $data["iBussinessType"] = $r_business_type;
+            $data["vPosition"] = $r_position;
+            $data["vPlaceId"] = $r_place_id;
+            $data["vClaimedEmail"] = $r_claimed_email;
+            $data["bIsClaimed"] = $r_is_claimed;
 
-            $save_data_arr["ar_reported_by"] = $data["iReportedBy"];
-            $save_data_arr["ar_reported_on"] = $data["iReportedOn"];
-            $save_data_arr["ar_message"] = $data["vMessage"];
-            $save_data_arr["ar_added_at"] = $data["dtAddedAt"];
+
+            $save_data_arr["r_profile_image"] = $data["vProfileImage"];
+            $save_data_arr["r_first_name"] = $data["vFirstName"];
+            $save_data_arr["r_last_name"] = $data["vLastName"];
+            $save_data_arr["r_email"] = $data["vEmail"];
+            $save_data_arr["r_mobile_no"] = $data["vMobileNo"];
+            $save_data_arr["r_address"] = $data["tAddress"];
+            $save_data_arr["r_city"] = $data["vCity"];
+            $save_data_arr["r_state_id"] = $data["iStateId"];
+            $save_data_arr["r_zip_code"] = $data["vZipCode"];
+            $save_data_arr["r_deleted_at"] = $data["dtDeletedAt"];
+            $save_data_arr["r_status"] = $data["eStatus"];
+            $save_data_arr["r_latitude"] = $data["dLatitude"];
+            $save_data_arr["r_longitude"] = $data["dLongitude"];
+            $save_data_arr["r_added_at"] = $data["dtAddedAt"];
+            $save_data_arr["r_updated_at"] = $data["dtUpdatedAt"];
+            $save_data_arr["r_star"] = $data["iStars"];
+            $save_data_arr["r_description"] = $data["vDescription"];
+            $save_data_arr["r_user_id"] = $data["iUserId"];
+            $save_data_arr["r_business_name"] = $data["vBussinessName"];
+            $save_data_arr["r_business_type"] = $data["vBusinessType"];
+            $save_data_arr["r_position"] = $data["vPosition"];
+            $save_data_arr["r_place_id"] = $data["vPlaceId"];
+            $save_data_arr["r_claimed_email"] = $data["vClaimedEmail"];
+            $save_data_arr["r_is_claimed"] = $data["bIsClaimed"];
             if ($mode == 'Add')
             {
-                $id = $this->abusive_reports_model->insert($data);
+                $id = $this->missing_pet_management_model->insert($data);
                 if (intval($id) > 0)
                 {
-                    $save_data_arr["iAbusiveReportsId"] = $data["iAbusiveReportsId"] = $id;
+                    $save_data_arr["iMissingPetId"] = $data["iMissingPetId"] = $id;
                     $msg = $this->general->processMessageLabel('ACTION_RECORD_ADDED_SUCCESSFULLY_C46_C46_C33');
                 }
                 else
                 {
                     throw new Exception($this->general->processMessageLabel('ACTION_FAILURE_IN_ADDING_RECORD_C46_C46_C33'));
                 }
-                $track_cond = $this->db->protect("ar.iAbusiveReportsId")." = ".$this->db->escape($id);
-                $switch_combo = $this->abusive_reports_model->getSwitchTo($track_cond);
+                $track_cond = $this->db->protect("r.iMissingPetId")." = ".$this->db->escape($id);
+                $switch_combo = $this->missing_pet_management_model->getSwitchTo($track_cond);
                 $recName = $switch_combo[0]["val"];
-                $this->general->trackModuleNavigation("Module", "Form", "Added", $this->mod_enc_url["add"], "abusive_reports", $recName, "mode|".$this->general->getAdminEncodeURL("Update")."|id|".$this->general->getAdminEncodeURL($id));
+                $this->general->trackModuleNavigation("Module", "Form", "Added", $this->mod_enc_url["add"], "missing_pet_management", $recName, "mode|".$this->general->getAdminEncodeURL("Update")."|id|".$this->general->getAdminEncodeURL($id));
             }
             elseif ($mode == 'Update')
             {
-                $res = $this->abusive_reports_model->update($data, intval($id));
+                $res = $this->missing_pet_management_model->update($data, intval($id));
                 if (intval($res) > 0)
                 {
-                    $save_data_arr["iAbusiveReportsId"] = $data["iAbusiveReportsId"] = $id;
+                    $save_data_arr["iMissingPetId"] = $data["iMissingPetId"] = $id;
                     $msg = $this->general->processMessageLabel('ACTION_RECORD_SUCCESSFULLY_UPDATED_C46_C46_C33');
                 }
                 else
                 {
                     throw new Exception($this->general->processMessageLabel('ACTION_FAILURE_IN_UPDATING_OF_THIS_RECORD_C46_C46_C33'));
                 }
-                $track_cond = $this->db->protect("ar.iAbusiveReportsId")." = ".$this->db->escape($id);
-                $switch_combo = $this->abusive_reports_model->getSwitchTo($track_cond);
+                $track_cond = $this->db->protect("r.iMissingPetId")." = ".$this->db->escape($id);
+                $switch_combo = $this->missing_pet_management_model->getSwitchTo($track_cond);
                 $recName = $switch_combo[0]["val"];
-                $this->general->trackModuleNavigation("Module", "Form", "Modified", $this->mod_enc_url["add"], "abusive_reports", $recName, "mode|".$this->general->getAdminEncodeURL("Update")."|id|".$this->general->getAdminEncodeURL($id));
+                $this->general->trackModuleNavigation("Module", "Form", "Modified", $this->mod_enc_url["add"],"missing_pet_management", $recName, "mode|".$this->general->getAdminEncodeURL("Update")."|id|".$this->general->getAdminEncodeURL($id));
             }
             $ret_arr['id'] = $id;
             $ret_arr['mode'] = $mode;
             $ret_arr['message'] = $msg;
             $ret_arr['success'] = 1;
 
+            $file_data["r_profile_image"]["file_name"] = $r_profile_image;
+            $file_data["r_profile_image"]["old_file_name"] = $params_arr["old_r_profile_image"];
+            $file_data["r_profile_image"]["unique_name"] = "r_profile_image";
+            $file_data["r_profile_image"]["primary_key"] = "iMissingPetId";
+
+            $this->listing->uploadFilesOnSaveForm($file_data, $form_config, $save_data_arr);
+            if (method_exists($this, 'updateDeletedAt'))
+            {
+                $event_res = $this->updateDeletedAt($mode, $id, $params_arr['parID'], $params_arr['parMod']);
+                $ret_arr['success'] = $event_res['success'];
+                if (isset($event_res['data']))
+                {
+                    $ret_arr['data'] = $event_res['data'];
+                }
+                if (!$event_res['success'])
+                {
+                    $after_error_msg = $this->general->processMessageLabel('ACTION_AFTER_EVENT_HAS_BEEN_FAILED_C46_C46_C33');
+                    $error_msg = ($event_res['message']) ? $event_res['message'] : $after_error_msg;
+                    $ret_arr['message'] = $error_msg;
+                }
+                elseif ($event_res['message'] != '')
+                {
+                    $ret_arr['message'] = $event_res['message'];
+                }
+                if (intval($event_res['success']) == 2)
+                {
+                    throw new Exception($ret_arr['message']);
+                }
+            }
+
             $params_arr = $this->_request_params();
         }
         catch(Exception $e)
         {
-            $ret_arr["message"] = $e->getMessage();
-            $ret_arr["success"] = 0;
+            if ($ret_arr["success"] > 0)
+            {
+                $ret_arr["message"] = $e->getMessage();
+            }
+            else
+            {
+                $ret_arr["message"] = $e->getMessage();
+                $ret_arr["success"] = 0;
+            }
         }
         $ret_arr['mod_enc_url']['add'] = $this->mod_enc_url['add'];
         $ret_arr['mod_enc_url']['index'] = $this->mod_enc_url['index'];
@@ -940,10 +1052,10 @@ class Abusive_reports extends Cit_Controller
             $search_mode = ($operartor == "del") ? "Delete" : "Update";
             $search_join = $search_alias = "Yes";
             $config_arr['module_name'] = $this->module_name;
-            $config_arr['list_config'] = $this->abusive_reports_model->getListConfiguration();
-            $config_arr['form_config'] = $this->abusive_reports_model->getFormConfiguration();
-            $config_arr['table_name'] = $this->abusive_reports_model->table_name;
-            $config_arr['table_alias'] = $this->abusive_reports_model->table_alias;
+            $config_arr['list_config'] = $this->missing_pet_management_model->getListConfiguration();
+            $config_arr['form_config'] = $this->missing_pet_management_model->getFormConfiguration();
+            $config_arr['table_name'] = $this->missing_pet_management_model->table_name;
+            $config_arr['table_alias'] = $this->missing_pet_management_model->table_alias;
             $filter_main = $this->filter->applyFilter($filters, $config_arr, $search_mode);
             $filter_left = $this->filter->applyLeftFilter($filters, $config_arr, $search_mode);
             $filter_range = $this->filter->applyRangeFilter($filters, $config_arr, $search_mode);
@@ -962,11 +1074,11 @@ class Abusive_reports extends Cit_Controller
         }
         if ($search_alias == "Yes")
         {
-            $primary_field = $this->abusive_reports_model->table_alias.".".$this->abusive_reports_model->primary_key;
+            $primary_field = $this->missing_pet_management_model->table_alias.".".$this->missing_pet_management_model->primary_key;
         }
         else
         {
-            $primary_field = $this->abusive_reports_model->primary_key;
+            $primary_field = $this->missing_pet_management_model->primary_key;
         }
         if (is_array($primary_ids))
         {
@@ -993,11 +1105,11 @@ class Abusive_reports extends Cit_Controller
                     $mode = "Delete";
                     if ($this->config->item("ENABLE_ROLES_CAPABILITIES"))
                     {
-                        $del_access = $this->filter->checkAccessCapability("abusive_reports_delete", TRUE);
+                        $del_access = $this->filter->checkAccessCapability("missing_pet_management_delete", TRUE);
                     }
                     else
                     {
-                        $del_access = $this->filter->getModuleWiseAccess("abusive_reports", "Delete", TRUE, TRUE);
+                        $del_access = $this->filter->getModuleWiseAccess("missing_pet_management", "Delete", TRUE, TRUE);
                     }
                     if (!$del_access)
                     {
@@ -1008,23 +1120,34 @@ class Abusive_reports extends Cit_Controller
                         throw new Exception($this->general->processMessageLabel('ACTION_FAILURE_IN_DELETION_THIS_RECORD_C46_C46_C33'));
                     }
                     $params_arr = $this->_request_params();
-
-                    $success = $this->abusive_reports_model->delete($extra_cond, $search_alias, $search_join);
+                    if (is_array($primary_ids))
+                    {
+                        $main_cond = $this->db->protect("r.iMissingPetId")." IN ('".implode("','", $primary_ids)."')";
+                    }
+                    else
+                    {
+                        $main_cond = $this->db->protect("r.iMissingPetId")." = ".$this->db->escape($primary_ids);
+                    }
+                    $main_data = $this->missing_pet_management_model->getData($main_cond, array('r.vProfileImage'));
+                    $success = $this->missing_pet_management_model->delete($extra_cond, $search_alias, $search_join);
                     if (!$success)
                     {
                         throw new Exception($this->general->processMessageLabel('ACTION_FAILURE_IN_DELETION_THIS_RECORD_C46_C46_C33'));
                     }
                     $message = $this->general->processMessageLabel('ACTION_RECORD_C40S_C41_DELETED_SUCCESSFULLY_C46_C46_C33');
+
+                    $form_config = $this->missing_pet_management_model->getFormConfiguration();
+                    $this->general->deleteMediaFiles($form_config, $main_data, $this->module_config["physical_data_remove"]);
                     break;
                 case 'edit':
                     $mode = "Update";
                     if ($this->config->item("ENABLE_ROLES_CAPABILITIES"))
                     {
-                        $edit_access = $this->filter->checkAccessCapability("abusive_reports_update", TRUE);
+                        $edit_access = $this->filter->checkAccessCapability("missing_pet_management_update", TRUE);
                     }
                     else
                     {
-                        $edit_access = $this->filter->getModuleWiseAccess("abusive_reports", "Update", TRUE, TRUE);
+                        $edit_access = $this->filter->getModuleWiseAccess("missing_pet_management", "Update", TRUE, TRUE);
                     }
                     if (!$edit_access)
                     {
@@ -1033,8 +1156,8 @@ class Abusive_reports extends Cit_Controller
                     $post_name = $params_arr['name'];
                     $post_val = is_array($params_arr['value']) ? implode(",", $params_arr['value']) : $params_arr['value'];
 
-                    $list_config = $this->abusive_reports_model->getListConfiguration($post_name);
-                    $form_config = $this->abusive_reports_model->getFormConfiguration($list_config['source_field']);
+                    $list_config = $this->missing_pet_management_model->getListConfiguration($post_name);
+                    $form_config = $this->missing_pet_management_model->getFormConfiguration($list_config['source_field']);
                     if (!is_array($form_config) || count($form_config) == 0)
                     {
                         throw new Exception($this->general->processMessageLabel('ACTION_FORM_CONFIGURING_NOT_DONE_C46_C46_C33'));
@@ -1050,9 +1173,26 @@ class Abusive_reports extends Cit_Controller
                     $field_name = $form_config['field_name'];
                     $unique_name = $form_config['name'];
 
+                    $db_rec_arr = $this->missing_pet_management_model->getData(intval($primary_ids));
+
                     $data_arr[$field_name] = $post_val;
-                    $success = $this->abusive_reports_model->update($data_arr, intval($primary_ids));
+                    $success = $this->missing_pet_management_model->update($data_arr, intval($primary_ids));
                     $message = $this->general->processMessageLabel('ACTION_RECORD_SUCCESSFULLY_UPDATED_C46_C46_C33');
+                    if (method_exists($this, 'ActiveMissingPetInlineEdition'))
+                    {
+                        $event_res = $this->ActiveMissingPetInlineEdition($field_name, $post_val, $primary_ids, $params_arr['parID'], $params_arr['parMod']);
+                        $success = $event_res['success'];
+                        if (!$event_res['success'])
+                        {
+                            $edit_error_msg = $this->general->processMessageLabel('ACTION_AFTER_EVENT_HAS_BEEN_FAILED_C46_C46_C33');
+                            $error_msg = ($event_res['message']) ? $event_res['message'] : $edit_error_msg;
+                            throw new Exception($error_msg);
+                        }
+                        elseif ($event_res['message'] != '')
+                        {
+                            $message = $event_res['message'];
+                        }
+                    }
                     if (!$success)
                     {
                         throw new Exception($this->general->processMessageLabel('ACTION_FAILURE_IN_UPDATING_OF_THIS_RECORD_C46_C46_C33'));
@@ -1062,11 +1202,11 @@ class Abusive_reports extends Cit_Controller
                     $mode = "Status";
                     if ($this->config->item("ENABLE_ROLES_CAPABILITIES"))
                     {
-                        $edit_access = $this->filter->checkAccessCapability("abusive_reports_update", TRUE);
+                        $edit_access = $this->filter->checkAccessCapability("missing_pet_management_update", TRUE);
                     }
                     else
                     {
-                        $edit_access = $this->filter->getModuleWiseAccess("abusive_reports", "Update", TRUE, TRUE);
+                        $edit_access = $this->filter->getModuleWiseAccess("missing_pet_management", "Update", TRUE, TRUE);
                     }
                     if (!$edit_access)
                     {
@@ -1076,30 +1216,58 @@ class Abusive_reports extends Cit_Controller
                     {
                         throw new Exception($this->general->processMessageLabel('ACTION_FAILURE_IN_DELETION_THIS_RECORD_C46_C46_C33'));
                     }
-                    $status_field = "";
+                    $status_field = "eStatus";
                     if ($status_field == "")
                     {
                         throw new Exception($this->general->processMessageLabel('ACTION_FORM_CONFIGURING_NOT_DONE_C46_C46_C33'));
                     }
                     if ($search_mode == "Yes" || $search_alias == "Yes")
                     {
-                        $field_name = $this->abusive_reports_model->table_alias.".";
+                        $field_name = $this->missing_pet_management_model->table_alias.".eStatus";
                     }
                     else
                     {
                         $field_name = $status_field;
                     }
                     $data_arr[$field_name] = $params_arr['status'];
-                    $success = $this->abusive_reports_model->update($data_arr, $extra_cond, $search_alias, $search_join);
+                    $success = $this->missing_pet_management_model->update($data_arr, $extra_cond, $search_alias, $search_join);
                     if (!$success)
                     {
                         throw new Exception($this->general->processMessageLabel('ACTION_FAILURE_IN_MODIFYING_THESE_RECORDS_C46_C46_C33'));
                     }
                     $message = $this->general->processMessageLabel('ACTION_RECORD_C40S_C41_MODIFIED_SUCCESSFULLY_C46_C46_C33');
+                    if (method_exists($this, 'ActiveMissingPetAfterChangeStatus'))
+                    {
+                        $event_res = $this->ActiveMissingPetAfterChangeStatus($params_arr['status'], $primary_ids, $params_arr['parID'], $params_arr['parMod']);
+                        $success = $event_res['success'];
+                        if (!$event_res['success'])
+                        {
+                            $edit_error_msg = $this->general->processMessageLabel('ACTION_AFTER_EVENT_HAS_BEEN_FAILED_C46_C46_C33');
+                            $error_msg = ($event_res['message']) ? $event_res['message'] : $edit_error_msg;
+                            throw new Exception($error_msg);
+                        }
+                        elseif ($event_res['message'] != '')
+                        {
+                            $message = $event_res['message'];
+                        }
+                    }
                     break;
             }
             $ret_arr['success'] = "true";
             $ret_arr['message'] = $message;
+            if ($mode == "Update")
+            {
+                $save_data_arr = $db_rec_arr[0];
+                $save_data_arr[$unique_name] = $post_val;
+                if ($form_config["type"] == "file")
+                {
+                    $file_data[$unique_name]["file_name"] = $post_val;
+                    $file_data[$unique_name]["old_file_name"] = $params_arr["old_file"];
+                    $file_data[$unique_name]["unique_name"] = $unique_name;
+                    $file_data[$unique_name]["primary_key"] = "iMissingPetId";
+                    $this->listing->uploadFilesOnSaveForm($file_data, array($unique_name => $form_config), $save_data_arr);
+                }
+            }
         }
         catch(Exception $e)
         {
@@ -1251,7 +1419,7 @@ class Abusive_reports extends Cit_Controller
                 }
                 if ($combo_config['parent_child'] == "Yes" && $combo_config['nlevel_child'] == "Yes")
                 {
-                    $combo_config['main_table'] = $this->abusive_reports_model->table_name;
+                    $combo_config['main_table'] = $this->missing_pet_management_model->table_name;
                     $data_arr = $this->filter->getTreeLevelDropdown($combo_config, $id, $extra, $rtype);
                 }
                 else
@@ -1291,9 +1459,9 @@ class Abusive_reports extends Cit_Controller
                 elseif (substr($phpfunc, 0, 7) == 'model::' && substr($phpfunc, 7) !== FALSE)
                 {
                     $phpfunc = substr($phpfunc, 7);
-                    if (method_exists($this->abusive_reports_model, $phpfunc))
+                    if (method_exists($this->missing_pet_management_model, $phpfunc))
                     {
-                        $data_arr = $this->abusive_reports_model->$phpfunc($data[$name], $mode, $id, $data, $parent_src, $this->term);
+                        $data_arr = $this->missing_pet_management_model->$phpfunc($data[$name], $mode, $id, $data, $parent_src, $this->term);
                     }
                 }
                 elseif (method_exists($this->general, $phpfunc))
@@ -1314,14 +1482,14 @@ class Abusive_reports extends Cit_Controller
 
         $term = strtolower($params_arr['data']['q']);
 
-        $switchto_fields = $this->abusive_reports_model->switchto_fields;
-        $extra_cond = $this->abusive_reports_model->extra_cond;
+        $switchto_fields = $this->missing_pet_management_model->switchto_fields;
+        $extra_cond = $this->missing_pet_management_model->extra_cond;
 
         $concat_fields = $this->db->concat_cast($switchto_fields);
         $search_cond = "(LOWER(".$concat_fields.") LIKE '".$this->db->escape_like_str($term)."%' OR LOWER(".$concat_fields.") LIKE '% ".$this->db->escape_like_str($term)."%')";
         $extra_cond = ($extra_cond == "") ? $search_cond : $extra_cond." AND ".$search_cond;
 
-        $switch_arr = $this->abusive_reports_model->getSwitchTo($extra_cond);
+        $switch_arr = $this->missing_pet_management_model->getSwitchTo($extra_cond);
         $html_arr = $this->filter->getChosenAutoJSON($switch_arr, array(), FALSE, "auto");
 
         $json_array['q'] = $term;
@@ -1342,13 +1510,13 @@ class Abusive_reports extends Cit_Controller
         $rformat = $params_arr['rformat'];
         $id = $params_arr['id'];
         $mode = ($params_arr['mode'] == "Search") ? "Search" : (($params_arr['mode'] == "Update") ? "Update" : "Add");
-        $config_arr = $this->abusive_reports_model->getListConfiguration($alias_name);
+        $config_arr = $this->missing_pet_management_model->getListConfiguration($alias_name);
         $source_field = $config_arr['source_field'];
         $combo_config = $this->dropdown_arr[$source_field];
         $data_arr = array();
         if ($mode == "Update")
         {
-            $data_arr = $this->abusive_reports_model->getData(intval($id));
+            $data_arr = $this->missing_pet_management_model->getData(intval($id));
         }
         $combo_arr = $this->getSourceOptions($source_field, $mode, $id, $data_arr[0]);
         if ($rformat == "json")
@@ -1370,6 +1538,247 @@ class Abusive_reports extends Cit_Controller
             $html_str = $this->dropdown->display($source_field, $source_field, ' multiple=true ', $top_option);
         }
         echo $html_str;
+        $this->skip_template_view();
+    }
+
+    /**
+     * downloadListFile method is used to download grid listing files
+     */
+    public function downloadListFile()
+    {
+        $params_arr = $this->params_arr;
+        $alias_name = $params_arr['alias_name'];
+        $folder = $params_arr['folder'];
+        $id = $params_arr['id'];
+        $config_arr = $this->missing_pet_management_model->getListConfiguration($alias_name);
+        if (is_array($config_arr) && count($config_arr) > 0)
+        {
+            $fields = $config_arr['display_query']." AS ".$alias_name;
+            $data_arr = $this->missing_pet_management_model->getData(intval($id), $fields, '', '', '', 'Yes');
+            $file_name = $data_arr[0][$alias_name];
+            $this->listing->downloadFiles("List", $config_arr, $file_name, $folder);
+        }
+        $this->skip_template_view();
+    }
+    /**
+     * uploadFormFile method is used to upload files or images through add or update form
+     */
+    public function uploadFormFile()
+    {
+        $this->load->library('upload');
+        $params_arr = $this->params_arr;
+        $unique_name = $params_arr['unique_name'];
+        $id = $params_arr['id'];
+        $old_file = $params_arr['oldFile'];
+        $type = $params_arr['type'];
+        $upload_files = $_FILES['Filedata'];
+        list($file_name, $extension) = $this->general->get_file_attributes($upload_files['name']);
+        $this->general->createUploadFolderIfNotExists('__temp');
+        $config_arr = $this->missing_pet_management_model->getFormConfiguration($unique_name);
+
+        $temp_folder_path = $this->config->item('admin_upload_temp_path');
+        $temp_folder_url = $this->config->item('admin_upload_temp_url');
+        try
+        {
+            if ($type == 'webcam')
+            {
+                $img_pic = $params_arr['newFile'];
+                $res = $this->general->imageupload_base64($temp_folder_path, $img_pic);
+                if ($res[0] == FALSE)
+                {
+                    throw new Exception($this->general->processMessageLabel('ACTION_FAILURE_IN_UPLOADING_C46_C46_C33'));
+                }
+                $file_name = $res[0];
+            }
+            else
+            {
+                $file_size = ($config_arr['file_size']) ? $config_arr['file_size'] : $this->config->item('ADMIN_MAX_UPLOAD_FILE_SIZE');
+                $file_format = ($config_arr['file_format']) ? $config_arr['file_format'] : $this->config->item('IMAGE_EXTENSION_ARR');
+                if ($config_arr['file_folder'] == "")
+                {
+                    throw new Exception($this->general->processMessageLabel('ACTION_PLEASE_SPECIFY_THE_UPLOAD_FOLDER_NAME_C46_C46_C33'));
+                }
+                if ($upload_files['name'] == "")
+                {
+                    throw new Exception($this->general->processMessageLabel('ACTION_UPLOAD_FILE_NOT_FOUND_C46_C46_C33'));
+                }
+                if (!$this->general->validateFileFormat($file_format, $file_name))
+                {
+                    throw new Exception($this->general->processMessageLabel('ACTION_FILE_TYPE_IS_NOT_ACCEPTABLE'));
+                }
+                if (!$this->general->validateFileSize($file_size, $upload_files['size']))
+                {
+                    throw new Exception($this->general->processMessageLabel('ACTION_FILE_SIZE_NOT_A_VALID_ONE_C46_C46_C33'));
+                }
+                $upload_config = array(
+                    'upload_path' => $temp_folder_path,
+                    'allowed_types' => '*',
+                    'max_size' => $file_size,
+                    'file_name' => $file_name,
+                    'remove_space' => TRUE,
+                    'overwrite' => FALSE,
+                );
+                $this->upload->initialize($upload_config);
+                if (!$this->upload->do_upload('Filedata'))
+                {
+                    $upload_error = $this->upload->display_errors('', '');
+                    throw new Exception($this->general->processMessageLabel('ACTION_FAILURE_IN_UPLOADING_C46_C46_C33'));
+                }
+                $file_info = $this->upload->data();
+                $file_name = $file_info['file_name'];
+            }
+            if (!$file_name)
+            {
+                throw new Exception($this->general->processMessageLabel('ACTION_FAILURE_IN_UPLOADING_C46_C46_C33'));
+            }
+            $image_valid_ext = explode('.', $file_name);
+            $ret_arr['fileURL'] = $temp_folder_url.$file_name;
+            if (in_array(strtolower(end($image_valid_ext)), $this->config->item('IMAGE_EXTENSION_ARR')))
+            {
+                $ret_arr['width'] = ($config_arr['file_width']) ? $config_arr['file_width'] : $this->config->item('ADMIN_DEFAULT_IMAGE_WIDTH');
+                $ret_arr['height'] = ($config_arr['file_height']) ? $config_arr['file_height'] : $this->config->item('ADMIN_DEFAULT_IMAGE_HEIGHT');
+                $ret_arr['imgURL'] = $this->general->resize_image($temp_folder_url.$file_name, $ret_arr['width'], $ret_arr['height']);
+                $ret_arr['resized'] = 1;
+                $icon_class = 'fa-file-image-o';
+            }
+            else
+            {
+                $icon_class = 'fa-file-text-o';
+                $ret_arr['resized'] = 0;
+            }
+            $icon_file = $file_name;
+            if (function_exists("get_file_icon_class"))
+            {
+                $icon_class = get_file_icon_class($file_name);
+                $icon_file = format_uploaded_file($file_name);
+            }
+            $ret_arr['iconclass'] = $icon_class;
+            $ret_arr['iconfile'] = $icon_file;
+            $ret_arr['filename'] = $icon_file;
+            if (is_file($temp_folder_path.$old_file) && $old_file != '')
+            {
+                unlink($temp_folder_path.$old_file);
+            }
+
+            $ret_arr['success'] = 1;
+            $ret_arr['message'] = $this->general->processMessageLabel('ACTION_FILE_UPLOADED_SUCCESSFULLY_C46_C46_C33');
+            $ret_arr['uploadfile'] = $file_name;
+            $ret_arr['oldfile'] = $file_name;
+        }
+        catch(Exception $e)
+        {
+            $ret_arr['success'] = 0;
+            $ret_arr['message'] = $e->getMessage();
+        }
+        echo json_encode($ret_arr);
+        $this->skip_template_view();
+    }
+    /**
+     * downloadFormFile method is used to download add or update form files
+     */
+    public function downloadFormFile()
+    {
+        $params_arr = $this->params_arr;
+        $unique_name = $params_arr['unique_name'];
+        $folder = $params_arr['folder'];
+        $id = $params_arr['id'];
+        $config_arr = $this->missing_pet_management_model->getFormConfiguration($unique_name);
+        try
+        {
+            if (!is_array($config_arr) || count($config_arr) == 0)
+            {
+                throw new Exception($this->general->processMessageLabel('ACTION_FORM_CONFIGURING_NOT_DONE_C46_C46_C33'));
+            }
+            if ($config_arr['entry_type'] == "Custom")
+            {
+                $file_name = $params_arr['file'];
+            }
+            else
+            {
+                $fields = $config_arr['table_alias'].".".$config_arr['field_name']." AS ".$unique_name;
+                $data_arr = $this->missing_pet_management_model->getData(intval($id), $fields, '', '', '', 'Yes');
+                if (!is_array($data_arr) || count($data_arr) == 0)
+                {
+                    throw new Exception($this->general->processMessageLabel('ACTION_RECORDS_WHICH_YOU_ARE_TRYING_TO_ACCESS_ARE_NOT_AVAILABLE_C46_C46_C33'));
+                }
+                $file_name = $data_arr[0][$unique_name];
+            }
+            $this->listing->downloadFiles("Form", $config_arr, $file_name, $folder);
+        }
+        catch(Exception $e)
+        {
+            $ret_arr['success'] = 0;
+            $ret_arr['message'] = $e->getMessage();
+            echo json_encode($ret_arr);
+        }
+        $this->skip_template_view();
+    }
+    /**
+     * deleteFormFile method is used to delete add or update form files
+     */
+    public function deleteFormFile()
+    {
+        $params_arr = $this->params_arr;
+        $unique_name = $params_arr['unique_name'];
+        $folder = $params_arr['folder'];
+        $id = $params_arr['id'];
+        $config_arr = $this->missing_pet_management_model->getFormConfiguration($unique_name);
+        try
+        {
+            if (!is_array($config_arr) || count($config_arr) == 0)
+            {
+                throw new Exception($this->general->processMessageLabel('ACTION_FORM_CONFIGURING_NOT_DONE_C46_C46_C33'));
+            }
+            if ($config_arr['entry_type'] == "Custom")
+            {
+                //custom fields does not have delete from DB.
+                $file_name = $params_arr['file'];
+            }
+            else
+            {
+                $field_name = $config_arr['field_name'];
+                $fields = $config_arr['table_alias'].".".$field_name." AS ".$unique_name;
+                $data_arr = $this->missing_pet_management_model->getData(intval($id), $fields, '', '', '', 'Yes');
+                if (!is_array($data_arr) || count($data_arr) == 0)
+                {
+                    throw new Exception();
+                }
+                $fields = $config_arr['table_alias'].'.'.$field_name.' AS '.$unique_name;
+                $data_arr = $this->missing_pet_management_model->getData(intval($id), $fields, '', '', '', 'Yes');
+                if (!is_array($data_arr) || count($data_arr) == 0)
+                {
+                    throw new Exception($this->general->processMessageLabel('ACTION_RECORDS_WHICH_YOU_ARE_TRYING_TO_ACCESS_ARE_NOT_AVAILABLE_C46_C46_C33'));
+                }
+                $fields = $config_arr['table_alias'].'.'.$field_name.' AS '.$unique_name;
+                $data_arr = $this->missing_pet_management_model->getData(intval($id), $fields, '', '', '', 'Yes');
+                if (!is_array($data_arr) || count($data_arr) == 0)
+                {
+                    throw new Exception($this->general->processMessageLabel('ACTION_RECORDS_WHICH_YOU_ARE_TRYING_TO_ACCESS_ARE_NOT_AVAILABLE_C46_C46_C33'));
+                }
+                $update_arr[$field_name] = '';
+                $res = $this->missing_pet_management_model->update($update_arr, intval($id));
+                if (!$res)
+                {
+                    throw new Exception($this->general->processMessageLabel('ACTION_FAILURE_IN_FILE_DELETION_C46_C46_C33'));
+                }
+                $file_name = $data_arr[0][$unique_name];
+            }
+            $res = $this->listing->deleteFiles($config_arr, $file_name, $folder, "Form");
+            if (!$res)
+            {
+                throw new Exception($this->general->processMessageLabel('ACTION_FAILURE_IN_FILE_DELETION_C46_C46_C33'));
+            }
+            $success = 1;
+            $message = $this->general->processMessageLabel('ACTION_FILE_DELETED_SUCCESSFULLY_C46_C46_C33');
+        }
+        catch(Exception $e)
+        {
+            $success = 0;
+            $message = $e->getMessage();
+        }
+        $ret_arr['success'] = $success;
+        $ret_arr['message'] = $message;
+        echo json_encode($ret_arr);
         $this->skip_template_view();
     }
 }

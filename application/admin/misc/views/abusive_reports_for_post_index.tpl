@@ -225,7 +225,7 @@
         "searchoptions": {
             "attr": {
                 "aria-grid-id": el_tpl_settings.main_grid_id,
-                "aria-module-name": "user_store_review",
+                "aria-module-name": "users",
                 "aria-unique-name": "usr_review_owner",
                 "autocomplete": "off",
                 "data-placeholder": " ",
@@ -242,7 +242,7 @@
         },
         "editoptions": {
             "aria-grid-id": el_tpl_settings.main_grid_id,
-            "aria-module-name": "user_store_review",
+            "aria-module-name": "users",
             "aria-unique-name": "usr_review_owner",
             "dataUrl": '<%$admin_url%><%$mod_enc_url["get_list_options"]%>?alias_name=owner_first_name&mode=<%$mod_enc_mode["Update"]%>&rformat=html<%$extra_qstr%>',
             "dataInit": <%if $count_arr['owner_first_name']['ajax'] eq 'Yes' %>initEditGridAjaxChosenEvent<%else%>initGridChosenEvent<%/if%>,
