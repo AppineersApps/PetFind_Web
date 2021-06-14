@@ -70,7 +70,7 @@ class Wscontroller extends Cit_Controller
         header('Access-Control-Allow-Origin: *');
         $this->config->load('cit_webservices', TRUE);
         $all_methods = $this->config->item('cit_webservices');
-        // print_r($all_methods);exit;
+       
         $res_format = NULL;
         if (stristr($func_arg, ".") !== FALSE) {
             $func_arr = explode(".", $func_arg);
@@ -102,7 +102,7 @@ class Wscontroller extends Cit_Controller
             $msg = "App maintenance mode";
         }
 
-        $api_allowed_without_access_token = array('social_login','user_login_phone','user_login_email','send_verification_link','check_unique_user','social_sign_up','user_sign_up_phone','user_sign_up_email','user_email_confirmation','send_sms','static_pages','reset_password_confirmation','reset_password_phone','get_template_message','forgot_password_phone','reset_password','forgot_password','states_list','get_config_paramaters');
+        $api_allowed_without_access_token = array('social_login','user_login_phone','user_login_email','send_verification_link','check_unique_user','social_sign_up','user_sign_up_phone','user_sign_up_email','user_email_confirmation','static_pages','send_sms','reset_password_confirmation','reset_password_phone','get_template_message','forgot_password_phone','reset_password','forgot_password','states_list','get_config_paramaters');
 
             //JWT token verification
             $auth_header = $this->input->get_request_header('AUTHTOKEN');
@@ -175,6 +175,7 @@ class Wscontroller extends Cit_Controller
 
         $this->session->set_userdata("iUserId", $request_arr['user_id']);
 
+
         //data encryption process
         if ($this->config->item('WS_RESPONSE_ENCRYPTION') == "Y") {
             $request_arr = $this->wschecker->decrypt_params($request_arr);
@@ -227,7 +228,7 @@ class Wscontroller extends Cit_Controller
                 }
             }
 
-            if($func_name=='check_unique_user'){
+            if($func_name=='check_unique_user' || $func_name=='send_verification_code'){
                 if(!empty($output_arr['data'])){
                     $output_arr['data']=array($output_arr['data']);
                 }else{

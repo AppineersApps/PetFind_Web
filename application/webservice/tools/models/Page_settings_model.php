@@ -15,12 +15,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
  * @class Page_settings_model.php
  *
  * @path application\webservice\tools\models\Page_settings_model.php
- *
- * @version 4.4
- *
- * @author CIT Dev Team
- *
- * @since 18.09.2019
+
  */
 
 class Page_settings_model extends CI_Model
@@ -34,13 +29,12 @@ class Page_settings_model extends CI_Model
     {
         parent::__construct();
         $this->load->helper('listing');
-        $this->default_lang = $this->general->getLangRequestValue();
+        $this->default_lang = $this->general->getLangRequestValue();        
+        $this->load->library('lib_log');
     }
 
     /**
      * get_page_details method is used to execute database queries for Static Pages API.
-     * @created CIT Dev Team
-     * @modified priyanka chillakuru | 09.09.2019
      * @param string $page_code page_code is used to process query block.
      * @return array $return_arr returns response of query block.
      */
@@ -64,6 +58,10 @@ class Page_settings_model extends CI_Model
 
             $result_obj = $this->db->get();
             $result_arr = is_object($result_obj) ? $result_obj->result_array() : array();
+            $db_error = $this->db->error();
+            if ($db_error['code']) {
+                throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
+            }
             if (!is_array($result_arr) || count($result_arr) == 0)
             {
                 throw new Exception('No records found.');
@@ -74,6 +72,8 @@ class Page_settings_model extends CI_Model
         {
             $success = 0;
             $message = $e->getMessage();
+            $params_arr['db_query'] = $this->db->last_query();
+            $this->general->apiLogger($params_arr, $e);
         }
 
         $this->db->_reset_all();

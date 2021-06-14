@@ -71,7 +71,7 @@ class Api_access_logs_model extends CI_Model
         $this->primary_key = "iAccessLogId";
         $this->primary_alias = "aa_access_log_id";
         $this->physical_data_remove = "Yes";
-        $this->grid_fields = array("u_email", "aa_api_url", "aa_request_uri", "aa_request_method", "aa_i_paddress", "aa_access_date", "sys_custom_field_1", "sys_custom_field_2", "aa_performed_by");
+        $this->grid_fields = array("u_email", "aa_api_url", "aa_request_uri", "aa_request_method","aa_excution_time", "aa_error_type", "aa_error_message","aa_i_paddress", "aa_access_date", "sys_custom_field_1", "sys_custom_field_2", "aa_performed_by");
         $this->join_tables = array(
             array(
                 "table_name" => "users",
@@ -89,7 +89,7 @@ class Api_access_logs_model extends CI_Model
         $this->having_cond = "";
         $this->orderby_cond = array(
                     array(
-                        "field" => "aa.dtExecutedDate",
+                        "field" => "aa.iAccessLogId",
                         "order" => "DESC"
                     ));
         $this->unique_type = "OR";
@@ -293,6 +293,9 @@ class Api_access_logs_model extends CI_Model
         $this->db->select("('input_params') AS sys_custom_field_1", FALSE);
         $this->db->select("('output_response') AS sys_custom_field_2", FALSE);
         $this->db->select("aa.iPerformedBy AS aa_performed_by");
+        $this->db->select("aa.vErrorType AS aa_error_type");
+        $this->db->select("aa.vErrorMessage AS aa_error_message");
+        $this->db->select("aa.fExcutionTime AS aa_excution_time");
         
         } else {
             $this->db->select("aa.iAccessLogId AS iAccessLogId");
@@ -306,6 +309,9 @@ class Api_access_logs_model extends CI_Model
             $this->db->select("aa.dtExecutedDate AS aa_executed_date");
             $this->db->select("aa.iPerformedBy AS aa_performed_by");
             $this->db->select("aa.vAPIURL AS aa_api_url");
+            $this->db->select("aa.vErrorType AS aa_error_type");
+            $this->db->select("aa.vErrorMessage AS aa_error_message");
+            $this->db->select("aa.fExcutionTime AS aa_excution_time");
            
             
         }
@@ -442,6 +448,9 @@ class Api_access_logs_model extends CI_Model
         $this->db->select("('input_params') AS sys_custom_field_1", FALSE);
         $this->db->select("('output_response') AS sys_custom_field_2", FALSE);
         $this->db->select("aa.iPerformedBy AS aa_performed_by");
+        $this->db->select("aa.vErrorType AS aa_error_type");
+        $this->db->select("aa.vErrorMessage AS aa_error_message");
+        $this->db->select("aa.fExcutionTime AS aa_excution_time");
         
         
         if($sdef == "Yes"){
@@ -546,6 +555,9 @@ class Api_access_logs_model extends CI_Model
         $this->db->select("('input_params') AS sys_custom_field_1", FALSE);
         $this->db->select("('output_response') AS sys_custom_field_2", FALSE);
         $this->db->select("aa.iPerformedBy AS aa_performed_by");
+        $this->db->select("aa.vErrorType AS aa_error_type");
+        $this->db->select("aa.vErrorMessage AS aa_error_message");
+        $this->db->select("aa.fExcutionTime AS aa_excution_time");
         
         if($sdef == "Yes"){
             if(is_array($order_by) && count($order_by) > 0){
@@ -673,9 +685,9 @@ class Api_access_logs_model extends CI_Model
                 "name" => "aa_request_method",
                 "table_name" => "api_accesslogs",
                 "table_alias" => "aa",
-                "field_name" => "vRequest_method",
+                "field_name" => "vRequestMethod",
                 "source_field" => "aa_request_method",
-                "display_query" => "aa.vRequest_method",
+                "display_query" => "aa.vRequestMethod",
                 "entry_type" => "Table",
                 "data_type" => "varchar",
                 "show_in" => "Both",
@@ -684,6 +696,75 @@ class Api_access_logs_model extends CI_Model
                 "label" => "API Method",
                 "lang_code" => "API_ACCESS_LOGS_API_METHOD",
                 "label_lang" => $this->lang->line('API_ACCESS_LOGS_API_METHOD'),
+                "width" => 100,
+                "search" => "Yes",
+                "export" => "Yes",
+                "sortable" => "Yes",
+                "addable" => "No",
+                "editable" => "No",
+                "viewedit" => "No"
+            ),
+            "aa_excution_time" => array(
+                "name" => "aa_excution_time",
+                "table_name" => "api_accesslogs",
+                "table_alias" => "aa",
+                "field_name" => "fExcutionTime",
+                "source_field" => "aa_excution_time",
+                "display_query" => "aa.fExcutionTime",
+                "entry_type" => "Table",
+                "data_type" => "varchar",
+                "show_in" => "Both",
+                "type" => "textbox",
+                "align" => "left",
+                "label" => "API Method",
+                "lang_code" => "API_ACCESS_LOGS_EXCUTION_TIME",
+                "label_lang" => $this->lang->line('API_ACCESS_LOGS_EXCUTION_TIME'),
+                "width" => 80,
+                "search" => "Yes",
+                "export" => "Yes",
+                "sortable" => "Yes",
+                "addable" => "No",
+                "editable" => "No",
+                "viewedit" => "No"
+            ),
+            "aa_error_type" => array(
+                "name" => "aa_error_type",
+                "table_name" => "api_accesslogs",
+                "table_alias" => "aa",
+                "field_name" => "vErrorType",
+                "source_field" => "aa_error_type",
+                "display_query" => "aa.vErrorType",
+                "entry_type" => "Table",
+                "data_type" => "varchar",
+                "show_in" => "Both",
+                "type" => "textbox",
+                "align" => "left",
+                "label" => "API Name",
+                "lang_code" => "API_ACCESS_LOGS_ERROR_TYPE",
+                "label_lang" => $this->lang->line('API_ACCESS_LOGS_ERROR_TYPE'),
+                "width" => 100,
+                "search" => "Yes",
+                "export" => "Yes",
+                "sortable" => "Yes",
+                "addable" => "No",
+                "editable" => "No",
+                "viewedit" => "No"
+            ),
+                "aa_error_message" => array(
+                "name" => "aa_error_message",
+                "table_name" => "api_accesslogs",
+                "table_alias" => "aa",
+                "field_name" => "vErrorMessage",
+                "source_field" => "aa_error_message",
+                "display_query" => "aa.vErrorMessage",
+                "entry_type" => "Table",
+                "data_type" => "varchar",
+                "show_in" => "Both",
+                "type" => "textbox",
+                "align" => "left",
+                "label" => "API Method",
+                "lang_code" => "API_ACCESS_LOGS_ERROR_MESSAGE",
+                "label_lang" => $this->lang->line('API_ACCESS_LOGS_ERROR_MESSAGE'),
                 "width" => 100,
                 "search" => "Yes",
                 "export" => "Yes",
@@ -862,6 +943,45 @@ class Api_access_logs_model extends CI_Model
                 "lang_code" => "API_ACCESS_LOGS_API_METHOD",
                 "label_lang" => $this->lang->line('API_ACCESS_LOGS_API_METHOD')
             ),
+            "aa_excution_time" => array(
+                "name" => "aa_excution_time",
+                "table_name" => "api_accesslogs",
+                "table_alias" => "aa",
+                "field_name" => "fExcutionTime",
+                "entry_type" => "Table",
+                "data_type" => "varchar",
+                "show_input" => "Both",
+                "type" => "textbox",
+                "label" => "API Method",
+                "lang_code" => "API_ACCESS_LOGS_EXCUTION_TIME",
+                "label_lang" => $this->lang->line('API_ACCESS_LOGS_EXCUTION_TIME')
+            ),
+            "aa_error_type" => array(
+                "name" => "aa_error_type",
+                "table_name" => "aa_error_type",
+                "table_alias" => "aa",
+                "field_name" => "vErrorType",
+                "entry_type" => "Table",
+                "data_type" => "varchar",
+                "show_input" => "Both",
+                "type" => "textbox",
+                "label" => "Error Type",
+                "lang_code" => "API_ACCESS_LOGS_ERROR_TYPE",
+                "label_lang" => $this->lang->line('API_ACCESS_LOGS_ERROR_TYPE')
+            ),
+                "aa_error_message" => array(
+                "name" => "aa_error_message",
+                "table_name" => "api_accesslogs",
+                "table_alias" => "aa",
+                "field_name" => "vErrorMessage",
+                "entry_type" => "Table",
+                "data_type" => "varchar",
+                "show_input" => "Both",
+                "type" => "textbox",
+                "label" => "API Method",
+                "lang_code" => "API_ACCESS_LOGS_ERROR_MESSAGE",
+                "label_lang" => $this->lang->line('API_ACCESS_LOGS_ERROR_MESSAGE')
+            ),
                 "aa_access_date" => array(
                 "name" => "aa_access_date",
                 "table_name" => "api_accesslogs",
@@ -1030,19 +1150,6 @@ class Api_access_logs_model extends CI_Model
             return $switch_data;
         }
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     
 }
