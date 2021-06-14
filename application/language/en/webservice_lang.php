@@ -292,15 +292,15 @@
 $lang["report_abusive_user"]["user_id_required"] = "User Id is required." ;  
 $lang["report_abusive_user"]["report_on_required"] = "Reporter ID is required." ;    
 $lang["report_abusive_user"]["message_required"] = "Message is required." ;    
-$lang["report_abusive_user"]["abusive_reports_finish_success_1"] = "#message# not reported" ;    
-$lang["report_abusive_user"]["abusive_reports_finish_success"] = "#message# reported" ;      
+$lang["report_abusive_user"]["abusive_reports_finish_success_1"] = "Failed to report user." ;    
+$lang["report_abusive_user"]["abusive_reports_finish_success"] = "User reported successfully." ;      
 
 // Abusive report for missing pet post messages
 $lang["report_abusive_pets_post"]["user_id_required"] = "User ID is required" ;    
 $lang["report_abusive_pets_post"]["missing_pets_id_required"] = "Missing Pet ID is required" ;
 $lang["report_abusive_pets_post"]["message_required"] = "Message is required" ;    
-$lang["report_abusive_pets_post"]["abusive_reports_finish_success"] = "#message# missing reported" ;    
-$lang["report_abusive_pets_post"]["abusive_reports_finish_success_1"] = "#message# not reported" ;   
+$lang["report_abusive_pets_post"]["abusive_reports_finish_success"] = "Post reported successfully." ;    
+$lang["report_abusive_pets_post"]["abusive_reports_finish_success_1"] = "Failed to report post." ;   
 
 //  Comment API messages
 $lang["comment_a_post"]["missing_pets_id_required"] = "Missing Pet ID is required" ;    

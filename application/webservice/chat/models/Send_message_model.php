@@ -501,14 +501,14 @@ class Send_message_model extends CI_Model
      * @param string $where_clause where_clause is used to process query block.
      * @return array $return_arr returns response of query block.
      */
-    public function get_message($user_id,$page_code)
+    public function get_message($user_id,$page_code,$keyword)
     {
-        // print_r($page_code);exit;
+        // print_r($keyword);exit;
        
         try
         {
             $result_arr = array();
-
+            $strWhere ='';
             $this->db->from("messages AS m");
             $this->db->join("users AS u", "m.iMessageFrom = u.iUserId", "left");
             $this->db->join("users AS u1", "m.iMessageTo = u1.iUserId", "left");
@@ -532,13 +532,29 @@ class Send_message_model extends CI_Model
             $this->db->select("(".$this->db->escape("").") AS receiver_image", FALSE);
             $this->db->where("((m.iMessageFrom = ".$user_id.") OR ( m.iMessageTo = ".$user_id."))", FALSE, FALSE);
 
-
+            $strWhere .= "u.eStatus= 'Active' ";
             // $this->db->where("m.iMessageTo",$user_id);
             
-            if($page_code!="all_chat_list")
+            if($page_code!="all_chat_list" && $page_code!="chat_search")
             {
-                $this->db->where("m.eMessageStatus",'pending');
+                $strWhere .= " AND m.eMessageStatus= 'pending' AND m.iMessageTo=".$user_id."";
+
+                // $this->db->where("m.eMessageStatus",'pending');
             }
+
+            if (isset($page_code) && $page_code == "chat_search")
+            {
+                $strWhere .= "AND (`mp`.`vDogsName` LIKE '%".$keyword."%' ESCAPE '!' 
+                    OR u.vLastName LIKE '%".$keyword."%' ESCAPE '!'
+                    OR u1.vLastName LIKE '%".$keyword."%' ESCAPE '!' 
+                    OR u.vFirstName LIKE '%".$keyword."%' ESCAPE '!' 
+                    OR u1.vFirstName LIKE '%".$keyword."%' ESCAPE '!' )
+                     ";
+                
+            }
+
+            $this->db->where($strWhere);
+
         
             $this->db->order_by("m.dtAddedAt", "desc");
 
@@ -672,25 +688,29 @@ class Send_message_model extends CI_Model
             $result_arr = array();
            
             if($connection_id != $user_id){
-               $strSql="SELECT 
-               			CASE WHEN iBlockedTo= ".$user_id." AND iBlockedFrom=".$connection_id." THEN '1'
-               				WHEN iBlockedTo= ".$connection_id." AND iBlockedFrom=".$user_id." THEN '2'
-               				ELSE '0' 
-               				END AS block_status
+            //    $strSql="SELECT 
+            //    			CASE WHEN iBlockedTo= ".$user_id." AND iBlockedFrom=".$connection_id." THEN '1'
+            //    				WHEN iBlockedTo= ".$connection_id." AND iBlockedFrom=".$user_id." THEN '2'
+            //    				ELSE '0' 
+            //    				END AS block_status
        
-                        FROM blocked_user LIMIT 1";
+            //             FROM blocked_user LIMIT 1";
+               $strSql="select count(iBlockedId) AS block_status from blocked_user where (iBlockedTo= ".$user_id." AND iBlockedFrom=".$connection_id.") OR
+               (iBlockedFrom= ".$user_id." AND iBlockedTo=".$connection_id.")";
 
                 $result_obj =  $this->db->query($strSql);
            
 
             }else{
-                $strSql="SELECT 
-               			CASE WHEN iBlockedTo= ".$user_id." AND iBlockedFrom=".$other_user_id." THEN '1'
-               				WHEN iBlockedTo= ".$other_user_id." AND iBlockedFrom=".$user_id." THEN '2'
-               				ELSE '0' 
-               				END AS block_status
+                // $strSql="SELECT 
+               	// 		CASE WHEN iBlockedTo= ".$user_id." AND iBlockedFrom=".$other_user_id." THEN '1'
+               	// 			WHEN iBlockedTo= ".$other_user_id." AND iBlockedFrom=".$user_id." THEN '2'
+               	// 			ELSE '0' 
+               	// 			END AS block_status
        
-                        FROM blocked_user LIMIT 1";
+                //         FROM blocked_user LIMIT 1";
+                $strSql="select count(iBlockedId) AS block_status from blocked_user where (iBlockedTo= ".$user_id." AND iBlockedFrom=".$other_user_id.") OR
+                (iBlockedFrom= ".$user_id." AND iBlockedTo=".$other_user_id.") ";
 
                 $result_obj =  $this->db->query($strSql);
 
@@ -710,7 +730,7 @@ class Send_message_model extends CI_Model
         }
 
         $this->db->_reset_all();
-        // echo $this->db->last_query();exit;
+        echo $this->db->last_query();exit;
         $return_arr["success"] = $success;
         $return_arr["message"] = $message;
         $return_arr["data"] = $result_arr;

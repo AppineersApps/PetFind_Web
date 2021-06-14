@@ -236,6 +236,8 @@ class Abusive_reports extends Cit_Controller
         $data_config['order_by'] = $orderby_cond;
 
         $data_recs = $this->abusive_reports_model->getListingData($data_config);
+
+        // print_r($data_recs);exit;
         $data_recs['no_records_msg'] = $this->general->processMessageLabel('ACTION_NO_ABUSIVE_REPORTS_FOR_USER_DATA_FOUND_C46_C46_C33');
 
         $data_recs = $this->abusive_reports_model->processCustomLinks($data_recs, $list_config);
@@ -850,20 +852,17 @@ class Abusive_reports extends Cit_Controller
             $ar_reported_by = $params_arr["ar_reported_by"];
             $ar_reported_on = $params_arr["ar_reported_on"];
             $ar_message = $params_arr["ar_message"];
-             $res_reason = $params_arr["res_reason"];
             $ar_added_at = $params_arr["ar_added_at"];
 
             $data = $save_data_arr = $file_data = array();
             $data["iReportedBy"] = $ar_reported_by;
             $data["iReportedOn"] = $ar_reported_on;
             $data["vMessage"] = $ar_message;
-            $data["vReason"] = $res_reason;
             $data["dtAddedAt"] = $this->filter->formatActionData($ar_added_at, $form_config["ar_added_at"]);
 
             $save_data_arr["ar_reported_by"] = $data["iReportedBy"];
             $save_data_arr["ar_reported_on"] = $data["iReportedOn"];
             $save_data_arr["ar_message"] = $data["vMessage"];
-             $save_data_arr["res_reason"] = $data["vReason"];
             $save_data_arr["ar_added_at"] = $data["dtAddedAt"];
             if ($mode == 'Add')
             {

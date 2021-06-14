@@ -389,7 +389,7 @@ class Abusive_reports_model extends CI_Model
             $this->db->where("ron.iUserId IS NOT NULL");
             $this->db->select("concat(rb.vFirstName,\" \",rb.vLastName) AS rb_first_name");
             $this->db->select("concat(ron.vFirstName,\" \",ron.vLastName) AS ron_first_name");
-            $this->db->select("ar.vMessage AS ar_message");
+            $this->db->select("ar.tReasonDescription AS ar_message");
             $this->db->select("res.vReason AS res_reason");
             $this->db->select("ar.dtAddedAt AS ar_added_at");
             $this->db->select("ron.iUserId AS ron_users_id");
@@ -402,7 +402,7 @@ class Abusive_reports_model extends CI_Model
             $this->db->select("ar.iAbusiveReportsId AS ar_abusive_reports_id");
             $this->db->select("ar.iReportedBy AS ar_reported_by");
             $this->db->select("ar.iReportedOn AS ar_reported_on");
-            $this->db->select("ar.vMessage AS ar_message");
+            $this->db->select("ar.tReasonDescription AS ar_message");
             $this->db->select("res.vReason AS res_reason");
             $this->db->select("ar.dtAddedAt AS ar_added_at");
         }
@@ -541,7 +541,7 @@ class Abusive_reports_model extends CI_Model
          $this->db->where("ron.iUserId IS NOT NULL");
         $this->db->select("concat(rb.vFirstName,\" \",rb.vLastName) AS rb_first_name");
         $this->db->select("concat(ron.vFirstName,\" \",ron.vLastName) AS ron_first_name");
-        $this->db->select("ar.vMessage AS ar_message");
+        $this->db->select("ar.tReasonDescription AS ar_message");
         $this->db->select("res.vReason AS res_reason");
         $this->db->select("ar.dtAddedAt AS ar_added_at");
         $this->db->select("ron.iUserId AS ron_users_id");
@@ -662,7 +662,7 @@ class Abusive_reports_model extends CI_Model
          $this->db->where("ron.iUserId IS NOT NULL");
         $this->db->select("concat(rb.vFirstName,\" \",rb.vLastName) AS rb_first_name");
         $this->db->select("concat(ron.vFirstName,\" \",ron.vLastName) AS ron_first_name");
-        $this->db->select("ar.vMessage AS ar_message");
+        $this->db->select("ar.tReasonDescription AS ar_message");
         $this->db->select("res.vReason AS res_reason");
         $this->db->select("ar.dtAddedAt AS ar_added_at");
         $this->db->select("ron.iUserId AS ron_users_id");

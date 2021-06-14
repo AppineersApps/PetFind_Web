@@ -186,6 +186,20 @@ class Notification_model extends CI_Model
              $this->db->select("u.vEmail AS sender_email");
             $this->db->select("m.vDogsName AS dog_name");
              $this->db->select("(select mi.vImage from missing_pet_images as mi where mi.iMissingPetId = m.iMissingPetId limit 1) AS dog_image", FALSE);
+             $this->db->select("(select iUserId from users where iUserId = ".$user_id." limit 1) AS receiver_id", FALSE);
+             $this->db->select("(select count(iBlockedId) from blocked_user where ((iBlockedTo= ".$user_id." AND iBlockedFrom=n.iSenderId) OR
+             (iBlockedFrom= ".$user_id." AND iBlockedTo=n.iSenderId)) limit 1) AS block_status", FALSE);
+            //  $this->db->select("CASE WHEN m.iMessageFrom= '".$receiver_id."' THEN (select vDeviceToken from users WHERE iUserId='".$receiver_id."')
+            //  WHEN  m.iMessageTo= '".$receiver_id."' THEN (select vDeviceToken from users WHERE iUserId='".$receiver_id."')
+            //  END AS  r_device_token
+            //  ");
+//              $this->db->select("(SELECT 
+//              CASE WHEN iBlockedTo= ".$user_id." AND iBlockedFrom=n.iSenderId OR
+//                   iBlockedFrom= ".$user_id." AND iBlockedTo=n.iSenderId THEN '1'
+//                  ELSE '0' 
+//                  END 
+//           FROM blocked_user WHERE ((iBlockedTo= ".$user_id." AND iBlockedFrom=n.iSenderId) OR
+// (iBlockedFrom= ".$user_id." AND iBlockedTo=n.iSenderId)) LIMIT 1 ) AS block_status");
 
              if (isset($user_id) && $user_id != "")
                 {

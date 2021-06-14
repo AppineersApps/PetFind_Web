@@ -74,7 +74,6 @@ class Abusive_reports_model extends CI_Model
             "rb_first_name",
             "ron_first_name",
             "ar_message",
-             "res_reason",
             "ar_added_at",
             "ron_users_id",
             "rb_users_id",
@@ -97,16 +96,6 @@ class Abusive_reports_model extends CI_Model
                 "rel_table_name" => "abusive_reports",
                 "rel_table_alias" => "ar",
                 "rel_field_name" => "iReportedOn",
-                "join_type" => "left",
-                "extra_condition" => "",
-            ),
-            array(
-                "table_name" => "reasons",
-                "table_alias" => "res",
-                "field_name" => "iReasonId",
-                "rel_table_name" => "abusive_reports",
-                "rel_table_alias" => "ar",
-                "rel_field_name" => "iReasonId",
                 "join_type" => "left",
                 "extra_condition" => "",
             )
@@ -390,7 +379,6 @@ class Abusive_reports_model extends CI_Model
             $this->db->select("concat(rb.vFirstName,\" \",rb.vLastName) AS rb_first_name");
             $this->db->select("concat(ron.vFirstName,\" \",ron.vLastName) AS ron_first_name");
             $this->db->select("ar.vMessage AS ar_message");
-            $this->db->select("res.vReason AS res_reason");
             $this->db->select("ar.dtAddedAt AS ar_added_at");
             $this->db->select("ron.iUserId AS ron_users_id");
             $this->db->select("rb.iUserId AS rb_users_id");
@@ -403,7 +391,6 @@ class Abusive_reports_model extends CI_Model
             $this->db->select("ar.iReportedBy AS ar_reported_by");
             $this->db->select("ar.iReportedOn AS ar_reported_on");
             $this->db->select("ar.vMessage AS ar_message");
-            $this->db->select("res.vReason AS res_reason");
             $this->db->select("ar.dtAddedAt AS ar_added_at");
         }
 
@@ -542,7 +529,6 @@ class Abusive_reports_model extends CI_Model
         $this->db->select("concat(rb.vFirstName,\" \",rb.vLastName) AS rb_first_name");
         $this->db->select("concat(ron.vFirstName,\" \",ron.vLastName) AS ron_first_name");
         $this->db->select("ar.vMessage AS ar_message");
-        $this->db->select("res.vReason AS res_reason");
         $this->db->select("ar.dtAddedAt AS ar_added_at");
         $this->db->select("ron.iUserId AS ron_users_id");
         $this->db->select("rb.iUserId AS rb_users_id");
@@ -580,7 +566,7 @@ class Abusive_reports_model extends CI_Model
         $this->db->flush_cache();
         $listing_data = $this->listing->getDataForJqGrid($return_data, $filter_config, $page, $total_pages, $total_records);
         $this->listing_data = $return_data;
-        #echo $this->db->last_query();
+        // echo $this->db->last_query();exit;
         return $listing_data;
     }
 
@@ -663,7 +649,6 @@ class Abusive_reports_model extends CI_Model
         $this->db->select("concat(rb.vFirstName,\" \",rb.vLastName) AS rb_first_name");
         $this->db->select("concat(ron.vFirstName,\" \",ron.vLastName) AS ron_first_name");
         $this->db->select("ar.vMessage AS ar_message");
-        $this->db->select("res.vReason AS res_reason");
         $this->db->select("ar.dtAddedAt AS ar_added_at");
         $this->db->select("ron.iUserId AS ron_users_id");
         $this->db->select("rb.iUserId AS rb_users_id");
@@ -794,13 +779,13 @@ class Abusive_reports_model extends CI_Model
                 "edit_link" => "No",
                 "php_func" => "controller::setLimitForDescription",
             ),
-              "res_reason" => array(
-                "name" => "res_reason",
-                "table_name" => "reasons",
-                "table_alias" => "res",
-                "field_name" => "vReason",
-                "source_field" => "res_reason",
-                "display_query" => "res.vReason",
+            "ar_reason" => array(
+                "name" => "ar_reason",
+                "table_name" => "abusive_reports",
+                "table_alias" => "ar",
+                "field_name" => "iReasonId",
+                "source_field" => "ar_reason",
+                "display_query" => "ar.iReasonId",
                 "entry_type" => "Table",
                 "data_type" => "varchar",
                 "show_in" => "Both",
@@ -809,7 +794,7 @@ class Abusive_reports_model extends CI_Model
                 "label" => "Reason",
                 "lang_code" => "ABUSIVE_REPORTS_REASON",
                 "label_lang" => $this->lang->line('ABUSIVE_REPORTS_REASON'),
-                "width" => 80,
+                "width" => 50,
                 "search" => "Yes",
                 "export" => "Yes",
                 "sortable" => "Yes",
@@ -962,6 +947,19 @@ class Abusive_reports_model extends CI_Model
                 "label" => "Message",
                 "lang_code" => "ABUSIVE_REPORTS_MESSAGE",
                 "label_lang" => $this->lang->line('ABUSIVE_REPORTS_MESSAGE')
+            ),
+            "ar_reason" => array(
+                "name" => "ar_reason",
+                "table_name" => "abusive_reports",
+                "table_alias" => "ar",
+                "field_name" => "iReasonId",
+                "entry_type" => "Table",
+                "data_type" => "varchar",
+                "show_input" => "Both",
+                "type" => "textbox",
+                "label" => "Message",
+                "lang_code" => "ABUSIVE_REPORTS_REASON",
+                "label_lang" => $this->lang->line('ABUSIVE_REPORTS_REASON')
             ),
             "ar_added_at" => array(
                 "name" => "ar_added_at",

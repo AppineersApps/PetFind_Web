@@ -130,7 +130,7 @@ class Send_message extends Cit_Controller
 
                 $condition_res = $this->is_intiated($input_params);
 
-               
+               print_r($input_params);exit;
 
                 // if chat initiated previuosly then call if condition
                 if ($condition_res["success"]) {
@@ -358,9 +358,9 @@ class Send_message extends Cit_Controller
             $output_response = array();
             $input_params = $validation_res['input_params'];
             $output_array = $func_array = array();
-
+           
             $input_params = $this->get_message($input_params);
-
+           
             $condition_res = $this->check_for_message($input_params);
             // print_r($input_params);exit;
             if ($condition_res["success"] && $input_params["page_code"] != "" && count($input_params['get_message']) > 0) {
@@ -604,9 +604,12 @@ class Send_message extends Cit_Controller
         try {
             $user_id = isset($input_params["user_id"]) ? $input_params["user_id"] : "";
             $page_code = isset($input_params["page_code"]) ? $input_params["page_code"] : "";
-
-            $this->block_result = $this->send_message_model->get_message($user_id, $page_code);
-            //    print_r($this->block_result);exit;
+            $keyword = isset($input_params["keyword"]) ? $input_params["keyword"] : "";
+           
+            
+           
+            $this->block_result = $this->send_message_model->get_message($user_id, $page_code,$keyword);
+              
             if (!$this->block_result["success"]) {
                 throw new Exception("No records found.");
             }
@@ -1051,9 +1054,7 @@ class Send_message extends Cit_Controller
            
             if (isset($input_params["timestamp"])) {
                 $params_arr["vLastTimestamp"] = $input_params["timestamp"];
-            }
-
-            
+            }           
             $params_arr["_dtaddeddate"] = "NOW()";
            
             $params_arr["eMessageStatus"] = "Pending";

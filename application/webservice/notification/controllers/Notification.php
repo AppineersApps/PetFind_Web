@@ -199,6 +199,7 @@ class Notification extends Cit_Controller
             $condition_res = $this->is_notify_found($input_params);
 
             $input_params=$this->is_valid_post($input_params);
+            // print_r($input_params);exit;
            
             if ($condition_res["success"] || $input_params['checkValidPost']['status']!=0)
             {
@@ -638,6 +639,7 @@ class Notification extends Cit_Controller
             else{
                 
                 $this->block_result = $this->notification_model->get_notification_details($user_id, $input_params);
+                
             }
 
            
@@ -879,7 +881,9 @@ class Notification extends Cit_Controller
             'sender_lattitude',
             'sender_longitude',
             'sender_email',
-            'sender_phone'
+            'sender_phone',
+            'receiver_id',
+            'block_status'
         );
         $output_keys = array(
             'get_notification_details',

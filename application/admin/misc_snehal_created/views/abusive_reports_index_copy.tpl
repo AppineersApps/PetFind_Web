@@ -61,7 +61,7 @@
     el_grid_settings['status_lang_arr'] = $.parseJSON('<%$status_label|@json_encode%>');
                 
     el_grid_settings['hide_add_btn'] = '';
-    el_grid_settings['hide_del_btn'] = '';
+    el_grid_settings['hide_del_btn'] = '1';
     el_grid_settings['hide_status_btn'] = '';
     el_grid_settings['hide_export_btn'] = '';
     el_grid_settings['hide_columns_btn'] = 'Yes';
@@ -130,10 +130,6 @@
     {
         "name": "ar_message",
         "label": "<%$list_config['ar_message']['label_lang']%>"
-    },
-    {
-        "name": "res_reason",
-        "label": "<%$list_config['res_reason']['label_lang']%>"
     },
     {
         "name": "ar_added_at",
@@ -294,47 +290,6 @@
         },
         "ctrl_type": "textbox",
         "default_value": "<%$list_config['ar_message']['default']%>",
-        "filterSopt": "bw"
-    },
-
-        {
-        "name": "res_reason",
-        "index": "res_reason",
-        "label": "<%$list_config['res_reason']['label_lang']%>",
-        "labelClass": "header-align-left",
-        "resizable": true,
-        "width": "<%$list_config['res_reason']['width']%>",
-        "search": <%if $list_config['res_reason']['search'] eq 'No' %>false<%else%>true<%/if%>,
-        "export": <%if $list_config['res_reason']['export'] eq 'No' %>false<%else%>true<%/if%>,
-        "sortable": <%if $list_config['res_reason']['sortable'] eq 'No' %>false<%else%>true<%/if%>,
-        "hidden": <%if $list_config['res_reason']['hidden'] eq 'Yes' %>true<%else%>false<%/if%>,
-        "hideme": <%if $list_config['res_reason']['hideme'] eq 'Yes' %>true<%else%>false<%/if%>,
-        "addable": <%if $list_config['res_reason']['addable'] eq 'Yes' %>true<%else%>false<%/if%>,
-        "editable": <%if $list_config['res_reason']['editable'] eq 'Yes' %>true<%else%>false<%/if%>,
-        "align": "left",
-        "edittype": "text",
-        "editrules": {
-            "infoArr": []
-        },
-        "searchoptions": {
-            "attr": {
-                "aria-grid-id": el_tpl_settings.main_grid_id,
-                "aria-module-name": "abusive_reports",
-                "aria-unique-name": "res_reason",
-                "autocomplete": "off"
-            },
-            "sopt": strSearchOpts,
-            "searchhidden": <%if $list_config['res_reason']['search'] eq 'Yes' %>true<%else%>false<%/if%>
-        },
-        "editoptions": {
-            "aria-grid-id": el_tpl_settings.main_grid_id,
-            "aria-module-name": "abusive_reports",
-            "aria-unique-name": "res_reason",
-            "placeholder": "",
-            "class": "inline-edit-row "
-        },
-        "ctrl_type": "textbox",
-        "default_value": "<%$list_config['res_reason']['default']%>",
         "filterSopt": "bw"
     },
     {
