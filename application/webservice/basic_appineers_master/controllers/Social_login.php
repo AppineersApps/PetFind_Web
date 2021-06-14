@@ -290,7 +290,9 @@ class Social_login extends Cit_Controller
             $auth_token = isset($input_params["auth_token"]) ? $input_params["auth_token"] : "";
             $where_clause = isset($input_params["where_clause"]) ? $input_params["where_clause"] : "";
             $this->block_result = $this->users_model->get_user_login_details_v1_v1($auth_token, $where_clause);
-            
+            if (isset($this->block_result['data'][0]['u_is_login']) && $this->block_result['data'][0]['u_is_login'] == '0') {
+                $update_is_login = $this->users_model->update_is_login_status($auth_token, $where_clause);
+            }
             if (!$this->block_result["success"]) {
                 throw new Exception("No records found.");
             }
@@ -310,12 +312,12 @@ class Social_login extends Cit_Controller
                     $aws_folder_name = $this->config->item("AWS_FOLDER_NAME");
                     $folder_name = $aws_folder_name . "/user_profile";
                     $image_arr["path"] = $aws_folder_name . "/user_profile/" . $user_id;
-                   // $data = $this->general->get_image_aws($image_arr);
-                   $folder_name = $aws_folder_name."/user_profile/".$user_id;
-                
-                   $data11 = $this->general->getFileFromAWS('', $folder_name, $data);
+                    // $data = $this->general->get_image_aws($image_arr);
+                    $folder_name = $aws_folder_name . "/user_profile/" . $user_id;
 
-                   $data = $data11['@metadata']['effectiveUri'];
+                    $data11 = $this->general->getFileFromAWS('', $folder_name, $data);
+
+                    $data = $data11['@metadata']['effectiveUri'];
 
                     $result_arr[$data_key]["u_profile_image"] = $data;
 
@@ -515,6 +517,7 @@ class Social_login extends Cit_Controller
             'u_device_os',
             'u_device_token',
             'u_status',
+            'u_is_login',
             'u_added_at',
             'u_updated_at',
             'auth_token1',
@@ -554,6 +557,7 @@ class Social_login extends Cit_Controller
             "u_device_os" => "device_os",
             "u_device_token" => "device_token",
             "u_status" => "status",
+            "u_is_login" => "is_login",
             "u_added_at" => "added_at",
             "u_updated_at" => "updated_at",
             "auth_token1" => "access_token",
