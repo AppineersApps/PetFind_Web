@@ -89,11 +89,11 @@ class Social_sign_up extends Cit_Controller
                 )
             ),
             "last_name" => array(
-                 array(
+                array(
                     "rule" => "required",
                     "value" => TRUE,
                     "message" => "last_name_required",
-                ), 
+                ),
                 array(
                     "rule" => "minlength",
                     "value" => 1,
@@ -236,27 +236,26 @@ class Social_sign_up extends Cit_Controller
             $output_array = $func_array = array();
 
             $input_params = $this->format_email_v2($input_params);
-           
+
             $input_params = $this->custom_function($input_params);
 
             $condition_res = $this->check_status($input_params);
-           
+
             if ($condition_res["success"]) {
-               
+
                 $input_params = $this->auth_token_generation($input_params);
 
-                $condition_auth=$this->check_authtoken($input_params);
+                $condition_auth = $this->check_authtoken($input_params);
 
-                if($condition_auth["success"]==0)
-                {
+                if ($condition_auth["success"] == 0) {
                     $exemessage = $condition_auth['message'];
                     throw new Exception($exemessage);
                 }
-               
+
                 $input_params = $this->create_user_social($input_params);
-                
+
                 $condition_res = $this->is_user_created($input_params);
-             
+
                 if ($condition_res["success"]) {
 
                     $input_params = $this->get_user_details_v1_v1($input_params);
@@ -273,19 +272,19 @@ class Social_sign_up extends Cit_Controller
                     return $output_response;
                 }
             } else {
-               
+
                 $output_response = $this->finish_success_1($input_params);
 
                 return $output_response;
             }
         } catch (Exception $e) {
-           
+
             $this->general->apiLogger($input_params, $e);
             $message = $e->getMessage();
             $output_response["success"] = 0;
             $output_response["message"] = $message;
         }
-        
+
         return $output_response;
     }
 
@@ -346,7 +345,7 @@ class Social_sign_up extends Cit_Controller
      */
     public function check_status($input_params = array())
     {
-       
+
         $this->block_result = array();
         try {
 
@@ -355,8 +354,8 @@ class Social_sign_up extends Cit_Controller
 
             $cc_fr_0 = ($cc_lo_0 == $cc_ro_0) ? TRUE : FALSE;
             if (!$cc_fr_0) {
-               
-                $message=$input_params["message"];
+
+                $message = $input_params["message"];
                 throw new Exception($message);
             }
             $success = 1;
@@ -381,7 +380,7 @@ class Social_sign_up extends Cit_Controller
      */
     public function check_authtoken($input_params = array())
     {
-      
+
         $this->block_result = array();
         try {
 
@@ -438,8 +437,8 @@ class Social_sign_up extends Cit_Controller
      */
     public function create_user_social($input_params = array())
     {
-        
-      
+
+
         $this->block_result = array();
         try {
 
@@ -539,9 +538,9 @@ class Social_sign_up extends Cit_Controller
                 // $params_arr["_vprivacypolicyversion"] = $this->getPrivacyPolicyVersion($params_arr["_vprivacypolicyversion"], $input_params);
                 $params_arr["_vprivacypolicyversion"] = $this->getPrivacyPolicyVersion();
             }
-           
+
             $this->block_result = $this->users_model->create_user_social($params_arr);
-            
+
             if (!$this->block_result["success"]) {
                 throw new Exception("Insertion failed.");
             }
@@ -551,15 +550,13 @@ class Social_sign_up extends Cit_Controller
                 $aws_folder_name = $this->config->item("AWS_FOLDER_NAME");
                 $folder_name = $aws_folder_name . "/user_profile/" . $data_arr['insert_id'];
                 $temp_file = $_FILES["user_profile"]["tmp_name"];
-                
+
                 $res = $this->general->uploadAWSData($temp_file, $folder_name, $images_arr["user_profile"]["name"]);
-                
+
                 if (!$res) {
                     //file upload failed
                     throw new Exception("Failed to upload file.");
                 }
-                
-                
             }
             $this->db->trans_commit();
         } catch (Exception $e) {
@@ -642,10 +639,10 @@ class Social_sign_up extends Cit_Controller
                     $p_key = ($data_arr["u_user_id"] != "") ? $data_arr["u_user_id"] : $data_arr["u_user_id"];
                     $image_arr["pk"] = $p_key;
                     //$data = $this->general->get_image_aws($image_arr);
-                    $folder_name = $aws_folder_name."/user_profile/".$user_id;
-                
+                    $folder_name = $aws_folder_name . "/user_profile/" . $user_id;
+
                     $data11 = $this->general->getFileFromAWS('', $folder_name, $data);
- 
+
                     $data = $data11['@metadata']['effectiveUri'];
                     $result_arr[$data_key]["u_profile_image"] = (false == empty($data)) ? $data : "";
 
