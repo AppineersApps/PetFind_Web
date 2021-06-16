@@ -9,7 +9,7 @@ defined('BASEPATH') || exit('No direct script access allowed');
  * @package basic_appineers_master
  *
  * @subpackage controllers
- *   
+ *
  * @module Social Sign Up
  *
  * @class Social_sign_up.php
@@ -545,26 +545,29 @@ class Social_sign_up extends Cit_Controller
             if (!$this->block_result["success"]) {
                 throw new Exception("Insertion failed.");
             }
-            $data_arr = $this->block_result["data"]['0'];
+            $data_arr = $this->block_result["array"];
+             $user_insert_id = $this->block_result['data'][0]['insert_id'];
+              // print_r($this->block_result['data']);exit;
+
             $upload_path = $this->config->item("upload_path");
-            if (!empty($images_arr["user_profile"]["name"])) {
-                $aws_folder_name = $this->config->item("AWS_FOLDER_NAME");
-                $folder_name = $aws_folder_name . "/user_profile/" . $data_arr['insert_id'];
+            if (!empty($images_arr["user_profile"]["name"]))
+            {
+
+               $aws_folder_name = $this->config->item("AWS_FOLDER_NAME");
+
+               $folder_name = $aws_folder_name."/user_profile/".$user_insert_id."/";             
+                
                 $temp_file = $_FILES["user_profile"]["tmp_name"];
-                
                 $res = $this->general->uploadAWSData($temp_file, $folder_name, $images_arr["user_profile"]["name"]);
-                
-                if (!$res) {
+                if ($upload_arr[0] == "")
+                {
                     //file upload failed
-                    throw new Exception("Failed to upload file.");
+
                 }
-                
-                
             }
-            $this->db->trans_commit();
-        } catch (Exception $e) {
-            $this->db->trans_rollback();
-            $this->general->apiLogger($input_params, $e);
+        }
+        catch(Exception $e)
+        {
             $success = 0;
             $this->block_result["data"] = array();
         }
@@ -575,86 +578,92 @@ class Social_sign_up extends Cit_Controller
     }
 
     /**
-     * This method is used to process conditions.
-     * 
+     * is_user_created method is used to process conditions.
+     * @created CIT Dev Team
+     * @modified priyanka chillakuru | 18.09.2019
      * @param array $input_params input_params array to process condition flow.
-     * 
      * @return array $block_result returns result of condition block as array.
      */
     public function is_user_created($input_params = array())
     {
 
         $this->block_result = array();
-        try {
+        try
+        {
 
             $cc_lo_0 = $input_params["insert_id"];
             $cc_ro_0 = 0;
 
             $cc_fr_0 = ($cc_lo_0 > $cc_ro_0) ? TRUE : FALSE;
-            if (!$cc_fr_0) {
-                throw new Exception("Failed to create user.");
+            if (!$cc_fr_0)
+            {
+                throw new Exception("Some conditions does not match.");
             }
             $success = 1;
             $message = "Conditions matched.";
-        } catch (Exception $e) {
-            $this->general->apiLogger($input_params, $e);
+        }
+        catch(Exception $e)
+        {
             $success = 0;
             $message = $e->getMessage();
         }
         $this->block_result["success"] = $success;
         $this->block_result["message"] = $message;
-
         return $this->block_result;
     }
 
     /**
-     * This method is used to process query block.
-     * 
+     * get_user_details_v1_v1 method is used to process query block.
+     * @created CIT Dev Team
+     * @modified priyanka chillakuru | 23.12.2019
      * @param array $input_params input_params array to process loop flow.
-     * 
      * @return array $input_params returns modfied input_params array.
      */
     public function get_user_details_v1_v1($input_params = array())
     {
 
         $this->block_result = array();
-        try {
+        try
+        {
 
             $insert_id = isset($input_params["insert_id"]) ? $input_params["insert_id"] : "";
             $this->block_result = $this->users_model->get_user_details_v1_v1($insert_id);
-            if (!$this->block_result["success"]) {
+            if (!$this->block_result["success"])
+            {
                 throw new Exception("No records found.");
             }
             $result_arr = $this->block_result["data"];
-            if (is_array($result_arr) && count($result_arr) > 0) {
+            if (is_array($result_arr) && count($result_arr) > 0)
+            {
                 $i = 0;
-                foreach ($result_arr as $data_key => $data_arr) {
-
+                foreach ($result_arr as $data_key => $data_arr)
+                {
+                    // print_r($input_params);exit;
+                    $aws_folder_name = $this->config->item("AWS_FOLDER_NAME");
                     $data = $data_arr["u_profile_image"];
-                    $user_id = $data_arr["u_user_id"];
                     $image_arr = array();
                     $image_arr["image_name"] = $data;
                     $image_arr["ext"] = implode(",", $this->config->item("IMAGE_EXTENSION_ARR"));
                     $image_arr["color"] = "FFFFFF";
                     $image_arr["no_img"] = FALSE;
-                    $aws_folder_name = $this->config->item("AWS_FOLDER_NAME");
-                    $image_arr["path"] = $aws_folder_name . "/user_profile/" . $user_id;
-                    $p_key = ($data_arr["u_user_id"] != "") ? $data_arr["u_user_id"] : $data_arr["u_user_id"];
+                    $dest_path = "user_profile";
+                   /* $image_arr["path"] = $this->general->getImageNestedFolders($dest_path);
+                    $data = $this->general->get_image($image_arr);*/
+                     $p_key = ($data_arr["u_user_id"] != "") ? $data_arr["u_user_id"] : $data_arr["u_user_id"];
                     $image_arr["pk"] = $p_key;
-                    //$data = $this->general->get_image_aws($image_arr);
-                    $folder_name = $aws_folder_name."/user_profile/".$user_id;
-                
-                    $data11 = $this->general->getFileFromAWS('', $folder_name, $data);
- 
-                    $data = $data11['@metadata']['effectiveUri'];
-                    $result_arr[$data_key]["u_profile_image"] = (false == empty($data)) ? $data : "";
+                    $image_arr["path"] =$aws_folder_name. "/user_profile";
+                    $data = $this->general->get_image_aws($image_arr);
+
+
+                    $result_arr[$data_key]["u_profile_image"] = $data;
 
                     $i++;
                 }
                 $this->block_result["data"] = $result_arr;
             }
-        } catch (Exception $e) {
-            $this->general->apiLogger($input_params, $e);
+        }
+        catch(Exception $e)
+        {
             $success = 0;
             $this->block_result["data"] = array();
         }
@@ -665,17 +674,18 @@ class Social_sign_up extends Cit_Controller
     }
 
     /**
-     * This method is used to process email notification.
-     * 
+     * email_notification method is used to process email notification.
+     * @created CIT Dev Team
+     * @modified priyanka chillakuru | 25.09.2019
      * @param array $input_params input_params array to process loop flow.
-     * 
      * @return array $input_params returns modfied input_params array.
      */
     public function email_notification($input_params = array())
     {
 
         $this->block_result = array();
-        try {
+        try
+        {
 
             $email_arr["vEmail"] = $input_params["email"];
 
@@ -689,19 +699,22 @@ class Social_sign_up extends Cit_Controller
             $log_arr['eNotificationType'] = "EmailNotify";
             $log_arr['vSubject'] = $this->general->getEmailOutput("subject");
             $log_arr['tContent'] = $this->general->getEmailOutput("content");
-            if (!$success) {
+            if (!$success)
+            {
                 $log_arr['tError'] = $this->general->getNotifyErrorOutput();
             }
             $log_arr['dtSendDateTime'] = date('Y-m-d H:i:s');
             $log_arr['eStatus'] = ($success) ? "Executed" : "Failed";
             $this->general->insertExecutedNotify($log_arr);
-            if (!$success) {
+            if (!$success)
+            {
                 throw new Exception("Failure in sending mail.");
             }
             $success = 1;
             $message = "Email notification send successfully.";
-        } catch (Exception $e) {
-            $this->general->apiLogger($input_params, $e);
+        }
+        catch(Exception $e)
+        {
             $success = 0;
             $message = $e->getMessage();
         }
@@ -713,10 +726,10 @@ class Social_sign_up extends Cit_Controller
     }
 
     /**
-     * This method is used to process finish flow.
-     * 
+     * users_finish_success method is used to process finish flow.
+     * @created CIT Dev Team
+     * @modified priyanka chillakuru | 23.12.2019
      * @param array $input_params input_params array to process loop flow.
-     * 
      * @return array $responce_arr returns responce array of api.
      */
     public function users_finish_success($input_params = array())
@@ -815,10 +828,10 @@ class Social_sign_up extends Cit_Controller
     }
 
     /**
-     * This method is used to process finish flow.
-     * 
+     * users_finish_success_1 method is used to process finish flow.
+     * @created CIT Dev Team
+     * @modified priyanka chillakuru | 12.09.2019
      * @param array $input_params input_params array to process loop flow.
-     * 
      * @return array $responce_arr returns responce array of api.
      */
     public function users_finish_success_1($input_params = array())
@@ -846,10 +859,10 @@ class Social_sign_up extends Cit_Controller
     }
 
     /**
-     * This method is used to process finish flow.
-     * 
+     * finish_success_1 method is used to process finish flow.
+     * @created CIT Dev Team
+     * @modified priyanka chillakuru | 12.09.2019
      * @param array $input_params input_params array to process loop flow.
-     * 
      * @return array $responce_arr returns responce array of api.
      */
     public function finish_success_1($input_params = array())

@@ -52,7 +52,7 @@ class Missing_pet_model extends CI_Model
             {
                 throw new Exception("Insert data not found.");
             }
-
+            $this->db->trans_begin();
             // print_r($params_arr["_dtaddedat"]);exit;
             // $this->db->set("dtAddedAt", $params_arr["_dtaddedat"]);
              $this->db->set($this->db->protect("dtAddedAt"), $params_arr["_dtaddedat"], FALSE);
@@ -138,7 +138,12 @@ class Missing_pet_model extends CI_Model
             
             $this->db->insert("missing_pets");
             $insert_id = $this->db->insert_id();
-               // echo "<pre>"; print_r($this->db->last_query());exit;
+
+            $db_error = $this->db->error();
+            if ($db_error['code']) {
+                throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
+            }
+
             if (!$insert_id)
             {
                 throw new Exception("Failure in insertion.");
@@ -149,6 +154,8 @@ class Missing_pet_model extends CI_Model
         }
         catch(Exception $e)
         {
+            $params_arr['db_query'] = $this->db->last_query();
+            $this->general->apiLogger($params_arr, $e);
             $success = 0;
             $message = $e->getMessage();
         }
