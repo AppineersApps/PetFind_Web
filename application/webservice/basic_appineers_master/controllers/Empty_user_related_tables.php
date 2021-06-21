@@ -2,7 +2,7 @@
 defined('BASEPATH') || exit('No direct script access allowed');
 
 /**
- * Description of Delete Account Controller
+ * Description of empty_user_related_table Controller
  *
  * @category webservice
  *
@@ -10,17 +10,17 @@ defined('BASEPATH') || exit('No direct script access allowed');
  *
  * @subpackage controllers
  *
- * @module Delete Account
- * 
- * @class Delete_account.php
+ * @module empty_user_related_tables
  *
- * @path application\webservice\basic_appineers_master\controllers\Delete_account.php
+ * @class empty_user_related_tables.php
+ *
+ * @path application\webservice\basic_appineers_master\controllers\empty_user_related_tables.php
  *
  * @version 4.4
  *
  */
 
-class Delete_account extends Cit_Controller
+class Empty_user_related_tables extends Cit_Controller
 {
     public $settings_params;
     /* @var array $output_params contains output parameters  */
@@ -49,7 +49,7 @@ class Delete_account extends Cit_Controller
         $this->block_result = array();
 
         $this->load->library('wsresponse');
-        $this->load->model('delete_account_model');
+        $this->load->model('truncate_tables_model');
         $this->load->model("basic_appineers_master/users_model");
     }
 
@@ -60,7 +60,7 @@ class Delete_account extends Cit_Controller
      * 
      * @return array $valid_res returns output response of API.
      */
-    public function rules_delete_account($request_arr = array())
+    public function rules_empty_user_related_tables($request_arr = array())
     {
         $valid_arr = array(
             "user_id" => array(
@@ -84,12 +84,12 @@ class Delete_account extends Cit_Controller
      * 
      * @return array $output_response returns output response of API.
      */
-    public function start_delete_account($request_arr = array(), $inner_api = FALSE)
+    public function start_empty_user_related_tables($request_arr = array(), $inner_api = FALSE)
     {
 
         try {
 
-            $validation_res = $this->rules_delete_account($request_arr);
+            $validation_res = $this->rules_empty_user_related_tables($request_arr);
             if ($validation_res["success"] == "-5") {
                 if ($inner_api === TRUE) {
                     return $validation_res;
@@ -102,9 +102,9 @@ class Delete_account extends Cit_Controller
             $input_params = $validation_res['input_params'];
             $output_array = $func_array = array();
 
-            $input_params = $this->delete_user_account($input_params);
+            $input_params = $this->truncate_user_related_tables($input_params);
 
-            $condition_res = $this->is_deleted($input_params);
+            $condition_res = $this->is_truncated($input_params);
 
             if ($condition_res["success"]) {
 
@@ -131,29 +131,23 @@ class Delete_account extends Cit_Controller
      * 
      * @return array $input_params returns modfied input_params array.
      */
-    public function delete_user_account($input_params = array())
+    public function truncate_user_related_tables($input_params = array())
     {
 
         $this->block_result = array();
         try {
 
-            $params_arr = $where_arr = array();
-            if (isset($input_params["user_id"])) {
-                $where_arr["user_id"] = $input_params["user_id"];
-            }
-            $params_arr["_estatus"] = "Pending_delete";
-            $params_arr["_dtdeletedat"] = "NOW()";
-            $this->block_result = $this->users_model->delete_user_account($params_arr, $where_arr);
+            $this->block_result = $this->truncate_tables_model->truncate_user_related_tables();
 
             if ($this->block_result['success'] == 0) {
-                throw new Exception('Failed to delete user.');
+                throw new Exception('Failed to truncate tables.');
             }
         } catch (Exception $e) {
             $this->general->apiLogger($input_params, $e);
             $success = 0;
             $this->block_result["data"] = array();
         }
-        $input_params["delete_user_account"] = $this->block_result["data"];
+        $input_params["delete_user_tables"] = $this->block_result["success"];
         $input_params = $this->wsresponse->assignSingleRecord($input_params, $this->block_result["data"]);
 
         return $input_params;
@@ -166,21 +160,21 @@ class Delete_account extends Cit_Controller
      * 
      * @return array $block_result returns result of condition block as array.
      */
-    public function is_deleted($input_params = array())
+    public function is_truncated($input_params = array())
     {
 
         $this->block_result = array();
         try {
 
-            $cc_lo_0 = $input_params["affected_rows"];
+            $cc_lo_0 = $input_params["delete_user_tables"];
             $cc_ro_0 = 0;
 
             $cc_fr_0 = ($cc_lo_0 > $cc_ro_0) ? TRUE : FALSE;
             if (!$cc_fr_0) {
-                throw new Exception("User is not deleted.");
+                throw new Exception("Sorry, tables not truncated. please try again.");
             }
             $success = 1;
-            $message = "User deleted";
+            $message = "Tables deleted";
         } catch (Exception $e) {
             $this->general->apiLogger($input_params, $e);
             $success = 0;
@@ -212,7 +206,7 @@ class Delete_account extends Cit_Controller
         $output_array["settings"]["fields"] = $output_fields;
         $output_array["data"] = $input_params;
 
-        $func_array["function"]["name"] = "delete_account";
+        $func_array["function"]["name"] = "empty_user_related_tables";
         $func_array["function"]["single_keys"] = $this->single_keys;
 
         $this->wsresponse->setResponseStatus(200);
@@ -242,7 +236,7 @@ class Delete_account extends Cit_Controller
         $output_array["settings"]["fields"] = $output_fields;
         $output_array["data"] = $input_params;
 
-        $func_array["function"]["name"] = "delete_account";
+        $func_array["function"]["name"] = "empty_user_related_tables";
         $func_array["function"]["single_keys"] = $this->single_keys;
 
         $this->wsresponse->setResponseStatus(200);

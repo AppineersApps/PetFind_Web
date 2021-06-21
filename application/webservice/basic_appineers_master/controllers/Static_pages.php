@@ -15,20 +15,26 @@ defined('BASEPATH') || exit('No direct script access allowed');
  * @class Static_pages.php
  *
  * @path application\webservice\basic_appineers_master\controllers\Static_pages.php
- *
- * @version 4.4
- *
- * @author CIT Dev Team
- *
- * @since 18.09.2019
  */
 
 class Static_pages extends Cit_Controller
 {
+
+    /* @var array $settings_params contains setting parameters */
     public $settings_params;
+
+    /* @var array $output_params contains output parameters */
     public $output_params;
+
+    /* @var array $single_keys contains single array */
     public $single_keys;
+
+    /* @var array $multiple_keys contains multiple array */
+    public $multiple_keys;
+
+    /** @var array $block_result contains query returns result array*/
     public $block_result;
+
 
     /**
      * __construct method is used to set controller preferences while controller object initialization.
@@ -46,13 +52,13 @@ class Static_pages extends Cit_Controller
         $this->load->library('wsresponse');
         $this->load->model('static_pages_model');
         $this->load->model("tools/page_settings_model");
+        $this->load->library('lib_log');
     }
 
     /**
      * rules_static_pages method is used to validate api input params.
-     * @created priyanka chillakuru | 09.09.2019
-     * @modified priyanka chillakuru | 18.09.2019
      * @param array $request_arr request_arr array is used for api input.
+     * 
      * @return array $valid_res returns output response of API.
      */
     public function rules_static_pages($request_arr = array())
@@ -73,25 +79,18 @@ class Static_pages extends Cit_Controller
 
     /**
      * start_static_pages method is used to initiate api execution flow.
-     * @created priyanka chillakuru | 09.09.2019
-     * @modified priyanka chillakuru | 18.09.2019
      * @param array $request_arr request_arr array is used for api input.
      * @param bool $inner_api inner_api flag is used to idetify whether it is inner api request or general request.
      * @return array $output_response returns output response of API.
      */
     public function start_static_pages($request_arr = array(), $inner_api = FALSE)
     {
-        try
-        {
+        try {
             $validation_res = $this->rules_static_pages($request_arr);
-            if ($validation_res["success"] == "-5")
-            {
-                if ($inner_api === TRUE)
-                {
+            if ($validation_res["success"] == "-5") {
+                if ($inner_api === TRUE) {
                     return $validation_res;
-                }
-                else
-                {
+                } else {
                     $this->wsresponse->sendValidationResponse($validation_res);
                 }
             }
@@ -102,31 +101,26 @@ class Static_pages extends Cit_Controller
             $input_params = $this->get_page_details($input_params);
 
             $condition_res = $this->is_page_exists($input_params);
-            if ($condition_res["success"])
-            {
+            if ($condition_res["success"]) {
 
                 $output_response = $this->mod_page_settings_finish_success($input_params);
-                return $output_response;
-            }
 
-            else
-            {
+                return $output_response;
+            } else {
 
                 $output_response = $this->mod_page_settings_finish_success_1($input_params);
+
                 return $output_response;
             }
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
             $message = $e->getMessage();
+            $this->general->apiLogger($input_params, $e);
         }
         return $output_response;
     }
 
     /**
      * get_page_details method is used to process query block.
-     * @created CIT Dev Team
-     * @modified priyanka chillakuru | 09.09.2019
      * @param array $input_params input_params array to process loop flow.
      * @return array $input_params returns modfied input_params array.
      */
@@ -134,20 +128,17 @@ class Static_pages extends Cit_Controller
     {
 
         $this->block_result = array();
-        try
-        {
+        try {
 
             $page_code = isset($input_params["page_code"]) ? $input_params["page_code"] : "";
             $this->block_result = $this->page_settings_model->get_page_details($page_code);
-            if (!$this->block_result["success"])
-            {
+            if (!$this->block_result["success"]) {
                 throw new Exception("No records found.");
             }
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
             $success = 0;
             $this->block_result["data"] = array();
+            $this->general->apiLogger($input_params, $e);
         }
         $input_params["get_page_details"] = $this->block_result["data"];
         $input_params = $this->wsresponse->assignSingleRecord($input_params, $this->block_result["data"]);
@@ -157,8 +148,6 @@ class Static_pages extends Cit_Controller
 
     /**
      * is_page_exists method is used to process conditions.
-     * @created CIT Dev Team
-     * @modified priyanka chillakuru | 09.09.2019
      * @param array $input_params input_params array to process condition flow.
      * @return array $block_result returns result of condition block as array.
      */
@@ -166,34 +155,30 @@ class Static_pages extends Cit_Controller
     {
 
         $this->block_result = array();
-        try
-        {
+        try {
 
             $cc_lo_0 = (empty($input_params["get_page_details"]) ? 0 : 1);
             $cc_ro_0 = 1;
 
             $cc_fr_0 = ($cc_lo_0 == $cc_ro_0) ? TRUE : FALSE;
-            if (!$cc_fr_0)
-            {
-                throw new Exception("Some conditions does not match.");
+            if (!$cc_fr_0) {
+                throw new Exception("Page details not found.");
             }
             $success = 1;
             $message = "Conditions matched.";
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
             $success = 0;
             $message = $e->getMessage();
+            $this->general->apiLogger($input_params, $e);
         }
         $this->block_result["success"] = $success;
         $this->block_result["message"] = $message;
+
         return $this->block_result;
     }
 
     /**
      * mod_page_settings_finish_success method is used to process finish flow.
-     * @created CIT Dev Team
-     * @modified priyanka chillakuru | 09.09.2019
      * @param array $input_params input_params array to process loop flow.
      * @return array $responce_arr returns responce array of api.
      */
@@ -235,8 +220,6 @@ class Static_pages extends Cit_Controller
 
     /**
      * mod_page_settings_finish_success_1 method is used to process finish flow.
-     * @created CIT Dev Team
-     * @modified priyanka chillakuru | 09.09.2019
      * @param array $input_params input_params array to process loop flow.
      * @return array $responce_arr returns responce array of api.
      */

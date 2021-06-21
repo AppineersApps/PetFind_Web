@@ -28,71 +28,74 @@ class User_query_model extends CI_Model
     public $default_lang = 'EN';
 
     /**
-     * __construct method is used to set model preferences while model object initialization.
+     * To initialize class objects/variables.
      */
     public function __construct()
     {
         parent::__construct();
         $this->load->helper('listing');
+        $this->load->library('lib_log');
         $this->default_lang = $this->general->getLangRequestValue();
     }
 
     /**
-     * post_a_feedback method is used to execute database queries for Post a Feedback API.
-     * @created CIT Dev Team
-     * @modified priyanka chillakuru | 11.12.2019
+     * This method is used to execute database queries for Post a Feedback API.
+     * 
      * @param array $params_arr params_arr array to process query block.
+     * 
      * @return array $return_arr returns response of query block.
      */
     public function post_a_feedback($params_arr = array())
     {
-        try
-        {
+        try {
             $result_arr = array();
-            if (!is_array($params_arr) || count($params_arr) == 0)
-            {
+            if (!is_array($params_arr) || count($params_arr) == 0) {
                 throw new Exception("Insert data not found.");
             }
+            
+            $this->db->trans_begin();
 
             $this->db->set($this->db->protect("dtAddedAt"), $params_arr["_dtaddedat"], FALSE);
             $this->db->set("eStatus", $params_arr["_estatus"]);
-            if (isset($params_arr["user_id"]))
-            {
+            if (isset($params_arr["user_id"])) {
                 $this->db->set("iUserId", $params_arr["user_id"]);
             }
-            if (isset($params_arr["feedback"]))
-            {
+            if (isset($params_arr["feedback"])) {
                 $this->db->set("tFeedback", $params_arr["feedback"]);
             }
             $this->db->set($this->db->protect("dtUpdatedAt"), $params_arr["_dtupdatedat"], FALSE);
-            if (isset($params_arr["device_type"]))
-            {
+            if (isset($params_arr["device_type"])) {
                 $this->db->set("eDeviceType", $params_arr["device_type"]);
             }
-            if (isset($params_arr["device_model"]))
-            {
+            if (isset($params_arr["device_model"])) {
                 $this->db->set("vDeviceModel", $params_arr["device_model"]);
             }
-            if (isset($params_arr["device_os"]))
-            {
+            if (isset($params_arr["device_os"])) {
                 $this->db->set("vDeviceOS", $params_arr["device_os"]);
             }
-            if (isset($params_arr["app_version"]))
-            {
+            if (isset($params_arr["app_version"])) {
                 $this->db->set("vAppVersion", $params_arr["app_version"]);
             }
             $this->db->insert("user_query");
+
+            $db_error = $this->db->error();
+            if ($db_error['code']) {
+                throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
+            }
+            
             $insert_id = $this->db->insert_id();
-            if (!$insert_id)
-            {
+            if (!$insert_id) {
                 throw new Exception("Failure in insertion.");
             }
             $result_param = "query_id";
             $result_arr[0][$result_param] = $insert_id;
             $success = 1;
-        }
-        catch(Exception $e)
-        {
+            $message = "";
+
+            
+        } catch (Exception $e) {
+            $params_arr['db_query'] = $this->db->last_query();
+            $this->general->apiLogger($params_arr, $e);
             $success = 0;
             $message = $e->getMessage();
         }
@@ -102,20 +105,20 @@ class User_query_model extends CI_Model
         $return_arr["success"] = $success;
         $return_arr["message"] = $message;
         $return_arr["data"] = $result_arr;
+
         return $return_arr;
     }
 
     /**
-     * get_query_details method is used to execute database queries for Post a Feedback API.
-     * @created priyanka chillakuru | 16.09.2019
-     * @modified priyanka chillakuru | 11.12.2019
+     * This method is used to execute database queries for Post a Feedback API.
+     *
      * @param string $query_id query_id is used to process query block.
+     * 
      * @return array $return_arr returns response of query block.
      */
     public function get_query_details($query_id = '')
     {
-        try
-        {
+        try {
             $result_arr = array();
 
             $this->db->from("user_query AS uq");
@@ -129,10 +132,9 @@ class User_query_model extends CI_Model
             $this->db->select("uq.eStatus AS uq_status");
             $this->db->select("uq.dtAddedAt AS uq_added_at");
             $this->db->select("uq.dtUpdatedAt AS uq_updated_at");
-            $this->db->select("(".$this->db->escape("").") AS images", FALSE);
+            $this->db->select("(" . $this->db->escape("") . ") AS images", FALSE);
             $this->db->select("uq.vAppVersion AS uq_app_version");
-            if (isset($query_id) && $query_id != "")
-            {
+            if (isset($query_id) && $query_id != "") {
                 $this->db->where("uq.iUserQueryId =", $query_id);
             }
 
@@ -140,14 +142,20 @@ class User_query_model extends CI_Model
 
             $result_obj = $this->db->get();
             $result_arr = is_object($result_obj) ? $result_obj->result_array() : array();
-            if (!is_array($result_arr) || count($result_arr) == 0)
-            {
+            if (!is_array($result_arr) || count($result_arr) == 0) {
                 throw new Exception('No records found.');
             }
+
+            $db_error = $this->db->error();
+            if ($db_error['code']) {
+                throw new Exception('Database error! Error Code [' . $db_error['code'] . '] Error: ' . $db_error['message']);
+            }
+
             $success = 1;
-        }
-        catch(Exception $e)
-        {
+            $message = "";
+        } catch (Exception $e) {
+            $params_arr['db_query'] = $this->db->last_query();
+            $this->general->apiLogger($params_arr, $e);
             $success = 0;
             $message = $e->getMessage();
         }
@@ -157,6 +165,7 @@ class User_query_model extends CI_Model
         $return_arr["success"] = $success;
         $return_arr["message"] = $message;
         $return_arr["data"] = $result_arr;
+        
         return $return_arr;
     }
 }

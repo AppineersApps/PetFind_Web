@@ -16,18 +16,20 @@ defined('BASEPATH') || exit('No direct script access allowed');
  *
  * @path application\webservice\basic_appineers_master\controllers\Get_config_paramaters.php
  *
- * @version 4.4
- *
- * @author CIT Dev Team
- *
- * @since 23.12.2019
  */
 
 class Get_config_paramaters extends Cit_Controller
 {
-    public $settings_params;
+    /** @var array $output_params contains output parameters */
     public $output_params;
+
+    /** @var array $single_keys contains single array */
+    public $single_keys;
+
+    /** @var array $multiple_keys contains multiple array */
     public $multiple_keys;
+
+    /** @var array $block_result contains query returns result array*/
     public $block_result;
 
     /**
@@ -42,16 +44,16 @@ class Get_config_paramaters extends Cit_Controller
             "get_config_params",
         );
         $this->block_result = array();
-
+        $this->load->library('lib_log');
         $this->load->library('wsresponse');
         $this->load->model('get_config_paramaters_model');
     }
 
     /**
-     * rules_get_config_paramaters method is used to validate api input params.
-     * @created priyanka chillakuru | 19.09.2019
-     * @modified priyanka chillakuru | 23.12.2019
+     * This method is used to validate api input params.
+     *
      * @param array $request_arr request_arr array is used for api input.
+     *
      * @return array $valid_res returns output response of API.
      */
     public function rules_get_config_paramaters($request_arr = array())
@@ -63,26 +65,21 @@ class Get_config_paramaters extends Cit_Controller
     }
 
     /**
-     * start_get_config_paramaters method is used to initiate api execution flow.
-     * @created priyanka chillakuru | 19.09.2019
-     * @modified priyanka chillakuru | 23.12.2019
+     * This method is used to initiate api execution flow.
+     *
      * @param array $request_arr request_arr array is used for api input.
      * @param bool $inner_api inner_api flag is used to idetify whether it is inner api request or general request.
+     *
      * @return array $output_response returns output response of API.
      */
-    public function start_get_config_paramaters($request_arr = array(), $inner_api = FALSE)
+    public function start_get_config_paramaters($request_arr = array(), $inner_api = false)
     {
-        try
-        {
+        try {
             $validation_res = $this->rules_get_config_paramaters($request_arr);
-            if ($validation_res["success"] == "-5")
-            {
-                if ($inner_api === TRUE)
-                {
+            if ($validation_res["success"] == "-5") {
+                if ($inner_api === true) {
                     return $validation_res;
-                }
-                else
-                {
+                } else {
                     $this->wsresponse->sendValidationResponse($validation_res);
                 }
             }
@@ -94,29 +91,27 @@ class Get_config_paramaters extends Cit_Controller
 
             $output_response = $this->finish_success($input_params);
             return $output_response;
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
+            $this->general->apiLogger($input_params, $e);
+            $success = 0;
             $message = $e->getMessage();
         }
+
         return $output_response;
     }
 
     /**
-     * get_config_params method is used to process custom function.
-     * @created priyanka chillakuru | 19.09.2019
-     * @modified priyanka chillakuru | 23.12.2019
+     * This method is used to process custom function.
+     *
      * @param array $input_params input_params array to process loop flow.
+     *
      * @return array $input_params returns modfied input_params array.
      */
     public function get_config_params($input_params = array())
     {
-        if (!method_exists($this, "returnConfigParams"))
-        {
+        if (!method_exists($this, "returnConfigParams")) {
             $result_arr["data"] = array();
-        }
-        else
-        {
+        } else {
             $result_arr["data"] = $this->returnConfigParams($input_params);
         }
         $format_arr = $result_arr;
@@ -129,15 +124,14 @@ class Get_config_paramaters extends Cit_Controller
     }
 
     /**
-     * finish_success method is used to process finish flow.
-     * @created priyanka chillakuru | 19.09.2019
-     * @modified priyanka chillakuru | 23.12.2019
+     * This method is used to process finish flow.
+     *
      * @param array $input_params input_params array to process loop flow.
+     *
      * @return array $responce_arr returns responce array of api.
      */
     public function finish_success($input_params = array())
     {
-
         $setting_fields = array(
             "success" => "1",
             "message" => "finish_success",
@@ -151,21 +145,17 @@ class Get_config_paramaters extends Cit_Controller
             'privacy_policy_updated',
             'terms_conditions_updated',
             'log_status_updated',
-	        'ios_app_id',   
-            'ios_banner_id',    
-            'ios_interstitial_id',  
-            'ios_native_id',    
-            'ios_rewarded_id',  
-            'premium_status',
-            'subscription',
-            'premium_subscription_id',
-            'android_app_id',   
-            'android_banner_id',    
-            'android_interstitial_id',  
-            'android_native_id',    
+            'ios_app_id',
+            'ios_banner_id',
+            'ios_interstitial_id',
+            'ios_native_id',
+            'ios_rewarded_id',
+            'android_app_id',
+            'android_banner_id',
+            'android_interstitial_id',
+            'android_native_id',
             'android_rewarded_id',
             'project_debug_level'
-
         );
         $output_keys = array(
             'get_config_params',

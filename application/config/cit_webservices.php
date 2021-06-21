@@ -684,6 +684,22 @@ $config["delete_image"] = array(
     "target" => ""
 );
 
+// Api for get reason listing
+$config["reasons_list"] = array(
+    "title" => "reasons_list",
+    "folder" => "basic_appineers_master",
+    "method" => "GET_POST",
+    "params" => array(
+        "user_id",
+        "user_access_token",
+        "reason_type"
+    ),
+    "token" => "",
+    "payload" => array(
+    ),
+    "target" => ""
+);
+
 
 #####GENERATED_CONFIG_SETTINGS_END#####
 

@@ -143,7 +143,7 @@ else {
       'cache_on' => FALSE,
       'cachedir' => '',
       'char_set' => 'utf8mb4',
-      'dbcollat' => 'utf8mb4_unicode_ci',
+      'dbcollat' => 'utf8mb4_general_ci',
       'swap_pre' => '',
       'encrypt' => FALSE,
       'compress' => FALSE,

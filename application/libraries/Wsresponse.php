@@ -413,6 +413,7 @@ class Wsresponse
 
     public function validateInputParams($param_array = array(), $request_arr = array(), $ws_func = '', $message_arr = array())
     {
+       
         if (is_array($request_arr) && array_key_exists("_", $request_arr)) {
             unset($request_arr['_']);
         }
@@ -438,26 +439,44 @@ class Wsresponse
                     }
                 }
             }
+            
             foreach ((array) $param_array as $prKey => $prVal) {
+                
                 if (is_array($prVal) && count($prVal) > 0) {
+                   
+                    
+
+
                     $validRuleArr = $validaData = $ruleArr = $msgArr = array();
                     $isRequired = false;
                     foreach ((array) $prVal as $ruKey => $ruVal) {
+
+                        
+
+
                         if ($ruVal['rule'] != "regex") {
+                          
                             $ruleArr[$ruVal['rule']] = $ruVal['value'];
                             $msgArr[$ruVal['rule']] = $ruVal['message'];
                             if (in_array($ruVal['rule'], array("minlength", "maxlength", "rangelength"))) {
                                 $request_arr[$prKey] = (string) $request_arr[$prKey];
                             }
+
                         } else {
+                            
                             $ruleArr['regex'][] = $ruVal['value'];
                             $msgArr['regex'][] = $ruVal['message'];
                         }
                         if ($ruVal['rule'] == 'required') {
+                           
                             $isRequired = true;
                         }
+                        
+                        
                         $validRuleArr['rules'][$prKey] = $ruleArr;
                         $validRuleArr['messages'][$prKey] = $msgArr;
+
+                       
                     }
                     $validator_php = new validator($validRuleArr);
                     $validaData[$prKey] = $request_arr[$prKey];

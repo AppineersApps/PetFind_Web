@@ -16,23 +16,23 @@ defined('BASEPATH') || exit('No direct script access allowed');
  *
  * @path application\webservice\basic_appineers_master\controllers\Forgot_password_phone.php
  *
- * @version 4.4
- *
- * @author CIT Dev Team
- *
- * @since 12.02.2020
  */
-
 class Forgot_password_phone extends Cit_Controller
 {
-    public $settings_params;
+    /** @var array $output_params contains output parameters */
     public $output_params;
+
+    /** @var array $single_keys contains single array */
     public $single_keys;
+
+    /** @var array $multiple_keys contains multiple array */
     public $multiple_keys;
+
+    /** @var array $block_result contains query returns result array*/
     public $block_result;
 
     /**
-     * __construct method is used to set controller preferences while controller object initialization.
+     * To initialize class objects/variables.
      */
     public function __construct()
     {
@@ -53,15 +53,16 @@ class Forgot_password_phone extends Cit_Controller
         $this->block_result = array();
 
         $this->load->library('wsresponse');
+        $this->load->library('lib_log');
         $this->load->model('forgot_password_phone_model');
         $this->load->model("basic_appineers_master/users_model");
     }
 
     /**
-     * rules_forgot_password_phone method is used to validate api input params.
-     * @created priyanka chillakuru | 17.09.2019
-     * @modified priyanka chillakuru | 12.02.2020
+     * This method is used to validate api input params.
+     * 
      * @param array $request_arr request_arr array is used for api input.
+     * 
      * @return array $valid_res returns output response of API.
      */
     public function rules_forgot_password_phone($request_arr = array())
@@ -96,26 +97,21 @@ class Forgot_password_phone extends Cit_Controller
     }
 
     /**
-     * start_forgot_password_phone method is used to initiate api execution flow.
-     * @created priyanka chillakuru | 17.09.2019
-     * @modified priyanka chillakuru | 12.02.2020
+     * This method is used to initiate api execution flow.
+     * 
      * @param array $request_arr request_arr array is used for api input.
      * @param bool $inner_api inner_api flag is used to idetify whether it is inner api request or general request.
+     * 
      * @return array $output_response returns output response of API.
      */
     public function start_forgot_password_phone($request_arr = array(), $inner_api = FALSE)
     {
-        try
-        {
+        try {
             $validation_res = $this->rules_forgot_password_phone($request_arr);
-            if ($validation_res["success"] == "-5")
-            {
-                if ($inner_api === TRUE)
-                {
+            if ($validation_res["success"] == "-5") {
+                if ($inner_api === TRUE) {
                     return $validation_res;
-                }
-                else
-                {
+                } else {
                     $this->wsresponse->sendValidationResponse($validation_res);
                 }
             }
@@ -126,8 +122,7 @@ class Forgot_password_phone extends Cit_Controller
             $input_params = $this->get_user_by_mobile_number($input_params);
 
             $condition_res = $this->is_user_exists($input_params);
-            if ($condition_res["success"])
-            {
+            if ($condition_res["success"]) {
 
                 $input_params = $this->generate_reset_key($input_params);
 
@@ -143,69 +138,56 @@ class Forgot_password_phone extends Cit_Controller
 
                 $output_response = $this->users_finish_success_2($input_params);
                 return $output_response;
-            }
-
-            else
-            {
+            } else {
 
                 $condition_res = $this->is_archived($input_params);
-                if ($condition_res["success"])
-                {
+                if ($condition_res["success"]) {
 
                     $output_response = $this->users_finish_success_3($input_params);
                     return $output_response;
-                }
-
-                else
-                {
+                } else {
 
                     $condition_res = $this->check_for_user_inactive($input_params);
-                    if ($condition_res["success"])
-                    {
+                    if ($condition_res["success"]) {
 
                         $output_response = $this->users_finish_success($input_params);
                         return $output_response;
-                    }
-
-                    else
-                    {
+                    } else {
 
                         $output_response = $this->users_finish_success_1($input_params);
                         return $output_response;
                     }
                 }
             }
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
+            $this->general->apiLogger($input_params, $e);
+            $success = 0;
             $message = $e->getMessage();
         }
+
         return $output_response;
     }
 
     /**
-     * get_user_by_mobile_number method is used to process query block.
-     * @created priyanka chillakuru | 17.09.2019
-     * @modified priyanka chillakuru | 01.10.2019
+     * This method is used to process query block.
+     * 
      * @param array $input_params input_params array to process loop flow.
+     * 
      * @return array $input_params returns modfied input_params array.
      */
     public function get_user_by_mobile_number($input_params = array())
     {
 
         $this->block_result = array();
-        try
-        {
+        try {
 
             $mobile_number = isset($input_params["mobile_number"]) ? $input_params["mobile_number"] : "";
             $this->block_result = $this->users_model->get_user_by_mobile_number($mobile_number);
-            if (!$this->block_result["success"])
-            {
+            if (!$this->block_result["success"]) {
                 throw new Exception("No records found.");
             }
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
+            $this->general->apiLogger($input_params, $e);
             $success = 0;
             $this->block_result["data"] = array();
         }
@@ -216,63 +198,57 @@ class Forgot_password_phone extends Cit_Controller
     }
 
     /**
-     * is_user_exists method is used to process conditions.
-     * @created priyanka chillakuru | 17.09.2019
-     * @modified priyanka chillakuru | 17.09.2019
+     * This method is used to process conditions.
+     * 
      * @param array $input_params input_params array to process condition flow.
+     * 
      * @return array $block_result returns result of condition block as array.
      */
     public function is_user_exists($input_params = array())
     {
 
         $this->block_result = array();
-        try
-        {
+        try {
 
             $cc_lo_0 = (empty($input_params["get_user_by_mobile_number"]) ? 0 : 1);
             $cc_ro_0 = 1;
 
             $cc_fr_0 = ($cc_lo_0 == $cc_ro_0) ? TRUE : FALSE;
-            if (!$cc_fr_0)
-            {
-                throw new Exception("Some conditions does not match.");
+            if (!$cc_fr_0) {
+                throw new Exception("User is not exists.");
             }
             $cc_lo_1 = $input_params["u_status"];
             $cc_ro_1 = "Active";
 
             $cc_fr_1 = ($cc_lo_1 == $cc_ro_1) ? TRUE : FALSE;
-            if (!$cc_fr_1)
-            {
-                throw new Exception("Some conditions does not match.");
+            if (!$cc_fr_1) {
+                throw new Exception("User Status is not active.");
             }
             $success = 1;
             $message = "Conditions matched.";
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
+            $this->general->apiLogger($input_params, $e);
             $success = 0;
             $message = $e->getMessage();
         }
         $this->block_result["success"] = $success;
         $this->block_result["message"] = $message;
+
         return $this->block_result;
     }
 
     /**
-     * generate_reset_key method is used to process custom function.
-     * @created priyanka chillakuru | 17.09.2019
-     * @modified saikumar anantham | 25.10.2019
+     * This method is used to process custom function.
+     * 
      * @param array $input_params input_params array to process loop flow.
+     * 
      * @return array $input_params returns modfied input_params array.
      */
     public function generate_reset_key($input_params = array())
     {
-        if (!method_exists($this, "prepareResetPasswordKey"))
-        {
+        if (!method_exists($this, "prepareResetPasswordKey")) {
             $result_arr["data"] = array();
-        }
-        else
-        {
+        } else {
             $result_arr["data"] = $this->prepareResetPasswordKey($input_params);
         }
         $format_arr = $result_arr;
@@ -281,36 +257,33 @@ class Forgot_password_phone extends Cit_Controller
         $input_params["generate_reset_key"] = $format_arr;
 
         $input_params = $this->wsresponse->assignSingleRecord($input_params, $format_arr);
+
         return $input_params;
     }
 
     /**
-     * update_reset_key_phone method is used to process query block.
-     * @created priyanka chillakuru | 17.09.2019
-     * @modified priyanka chillakuru | 17.09.2019
+     * This method is used to process query block.
+     * 
      * @param array $input_params input_params array to process loop flow.
+     * 
      * @return array $input_params returns modfied input_params array.
      */
     public function update_reset_key_phone($input_params = array())
     {
 
         $this->block_result = array();
-        try
-        {
+        try {
 
             $params_arr = $where_arr = array();
-            if (isset($input_params["mobile_number"]))
-            {
+            if (isset($input_params["mobile_number"])) {
                 $where_arr["mobile_number"] = $input_params["mobile_number"];
             }
-            if (isset($input_params["reset_key"]))
-            {
+            if (isset($input_params["reset_key"])) {
                 $params_arr["reset_key"] = $input_params["reset_key"];
             }
             $this->block_result = $this->users_model->update_reset_key_phone($params_arr, $where_arr);
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
+            $this->general->apiLogger($input_params, $e);
             $success = 0;
             $this->block_result["data"] = array();
         }
@@ -321,20 +294,17 @@ class Forgot_password_phone extends Cit_Controller
     }
 
     /**
-     * otp_generation method is used to process custom function.
-     * @created priyanka chillakuru | 17.09.2019
-     * @modified priyanka chillakuru | 17.09.2019
+     * This method is used to process custom function.
+     * 
      * @param array $input_params input_params array to process loop flow.
+     * 
      * @return array $input_params returns modfied input_params array.
      */
     public function otp_generation($input_params = array())
     {
-        if (!method_exists($this->general, "generateOtp"))
-        {
+        if (!method_exists($this->general, "generateOtp")) {
             $result_arr["data"] = array();
-        }
-        else
-        {
+        } else {
             $result_arr["data"] = $this->general->generateOtp($input_params);
         }
         $format_arr = $result_arr;
@@ -343,14 +313,15 @@ class Forgot_password_phone extends Cit_Controller
         $input_params["otp_generation"] = $format_arr;
 
         $input_params = $this->wsresponse->assignSingleRecord($input_params, $format_arr);
+
         return $input_params;
     }
 
     /**
-     * call_get_message_api method is used to process custom function.
-     * @created priyanka chillakuru | 17.09.2019
-     * @modified priyanka chillakuru | 17.09.2019
+     * This method is used to process custom function.
+     * 
      * @param array $input_params input_params array to process loop flow.
+     * 
      * @return array $input_params returns modfied input_params array.
      */
     public function call_get_message_api($input_params = array())
@@ -360,25 +331,20 @@ class Forgot_password_phone extends Cit_Controller
         $api_params = array();
 
         $api_params["template_code"] = "forgot_password_otp";
-        if (array_key_exists("msg_user_name", $input_params))
-        {
+        if (array_key_exists("msg_user_name", $input_params)) {
             $api_params["user_name"] = $input_params["msg_user_name"];
         }
-        if (array_key_exists("otp", $input_params))
-        {
+        if (array_key_exists("otp", $input_params)) {
             $api_params["otp"] = $input_params["otp"];
         }
         $maping_arr = array();
         $result_arr = $this->get_template_message->start_get_template_message($api_params, TRUE);
         $result_keys = is_array($result_arr) ? array_keys($result_arr) : array();
-        if ($result_arr["success"] == "-5")
-        {
+        if ($result_arr["success"] == "-5") {
             $input_params["call_get_message_api_success"] = $result_arr["success"];
             $input_params["call_get_message_api_message"] = $result_arr["message"];
             $result_arr["data"] = array();
-        }
-        else
-        {
+        } else {
             $input_params["call_get_message_api_success"] = $result_arr["settings"]["success"];
             $input_params["call_get_message_api_message"] = $result_arr["settings"]["message"];
         }
@@ -388,14 +354,15 @@ class Forgot_password_phone extends Cit_Controller
         $input_params["call_get_message_api"] = $format_arr;
 
         $input_params = $this->wsresponse->assignSingleRecord($input_params, $format_arr);
+
         return $input_params;
     }
 
     /**
-     * call_send_sms_api method is used to process custom function.
-     * @created priyanka chillakuru | 17.09.2019
-     * @modified priyanka chillakuru | 17.09.2019
+     * This method is used to process custom function.
+     * 
      * @param array $input_params input_params array to process loop flow.
+     * 
      * @return array $input_params returns modfied input_params array.
      */
     public function call_send_sms_api($input_params = array())
@@ -403,25 +370,20 @@ class Forgot_password_phone extends Cit_Controller
 
         $this->load->module("basic_appineers_master/send_sms");
         $api_params = array();
-        if (array_key_exists("mobile_number", $input_params))
-        {
+        if (array_key_exists("mobile_number", $input_params)) {
             $api_params["mobile_number"] = $input_params["mobile_number"];
         }
-        if (array_key_exists("message", $input_params))
-        {
+        if (array_key_exists("message", $input_params)) {
             $api_params["message"] = $input_params["message"];
         }
         $maping_arr = array();
         $result_arr = $this->send_sms->start_send_sms($api_params, TRUE);
         $result_keys = is_array($result_arr) ? array_keys($result_arr) : array();
-        if ($result_arr["success"] == "-5")
-        {
+        if ($result_arr["success"] == "-5") {
             $input_params["call_send_sms_api_success"] = $result_arr["success"];
             $input_params["call_send_sms_api_message"] = $result_arr["message"];
             $result_arr["data"] = array();
-        }
-        else
-        {
+        } else {
             $input_params["call_send_sms_api_success"] = $result_arr["settings"]["success"];
             $input_params["call_send_sms_api_message"] = $result_arr["settings"]["message"];
         }
@@ -431,24 +393,22 @@ class Forgot_password_phone extends Cit_Controller
         $input_params["call_send_sms_api"] = $format_arr;
 
         $input_params = $this->wsresponse->assignSingleRecord($input_params, $format_arr);
+
         return $input_params;
     }
 
     /**
-     * format_forgot_response method is used to process custom function.
-     * @created priyanka chillakuru | 17.09.2019
-     * @modified priyanka chillakuru | 17.09.2019
+     * This method is used to process custom function.
+     * 
      * @param array $input_params input_params array to process loop flow.
+     * 
      * @return array $input_params returns modfied input_params array.
      */
     public function format_forgot_response($input_params = array())
     {
-        if (!method_exists($this, "formatForgotPhoneResponse"))
-        {
+        if (!method_exists($this, "formatForgotPhoneResponse")) {
             $result_arr["data"] = array();
-        }
-        else
-        {
+        } else {
             $result_arr["data"] = $this->formatForgotPhoneResponse($input_params);
         }
         $format_arr = $result_arr;
@@ -457,14 +417,15 @@ class Forgot_password_phone extends Cit_Controller
         $input_params["format_forgot_response"] = $format_arr;
 
         $input_params = $this->wsresponse->assignSingleRecord($input_params, $format_arr);
+        
         return $input_params;
     }
 
     /**
-     * users_finish_success_2 method is used to process finish flow.
-     * @created priyanka chillakuru | 17.09.2019
-     * @modified Devangi Nirmal | 06.02.2020
+     * This method is used to process finish flow.
+     * 
      * @param array $input_params input_params array to process loop flow.
+     * 
      * @return array $responce_arr returns responce array of api.
      */
     public function users_finish_success_2($input_params = array())
@@ -504,45 +465,43 @@ class Forgot_password_phone extends Cit_Controller
     }
 
     /**
-     * is_archived method is used to process conditions.
-     * @created priyanka chillakuru | 01.10.2019
-     * @modified priyanka chillakuru | 01.10.2019
+     * This method is used to process conditions.
+     * 
      * @param array $input_params input_params array to process condition flow.
+     * 
      * @return array $block_result returns result of condition block as array.
      */
     public function is_archived($input_params = array())
     {
 
         $this->block_result = array();
-        try
-        {
+        try {
 
             $cc_lo_0 = $input_params["u_status"];
             $cc_ro_0 = "Archived";
 
             $cc_fr_0 = ($cc_lo_0 == $cc_ro_0) ? TRUE : FALSE;
-            if (!$cc_fr_0)
-            {
-                throw new Exception("Some conditions does not match.");
+            if (!$cc_fr_0) {
+                throw new Exception("User is not archived.");
             }
             $success = 1;
             $message = "Conditions matched.";
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
+            $this->general->apiLogger($input_params, $e);
             $success = 0;
             $message = $e->getMessage();
         }
         $this->block_result["success"] = $success;
         $this->block_result["message"] = $message;
+
         return $this->block_result;
     }
 
     /**
-     * users_finish_success_3 method is used to process finish flow.
-     * @created priyanka chillakuru | 01.10.2019
-     * @modified priyanka chillakuru | 01.10.2019
+     * This method is used to process finish flow.
+     * 
      * @param array $input_params input_params array to process loop flow.
+     * 
      * @return array $responce_arr returns responce array of api.
      */
     public function users_finish_success_3($input_params = array())
@@ -570,45 +529,43 @@ class Forgot_password_phone extends Cit_Controller
     }
 
     /**
-     * check_for_user_inactive method is used to process conditions.
-     * @created priyanka chillakuru | 17.09.2019
-     * @modified priyanka chillakuru | 01.10.2019
+     * This method is used to process conditions.
+     * 
      * @param array $input_params input_params array to process condition flow.
+     * 
      * @return array $block_result returns result of condition block as array.
      */
     public function check_for_user_inactive($input_params = array())
     {
 
         $this->block_result = array();
-        try
-        {
+        try {
 
             $cc_lo_0 = $input_params["u_status"];
             $cc_ro_0 = "Inactive";
 
             $cc_fr_0 = ($cc_lo_0 == $cc_ro_0) ? TRUE : FALSE;
-            if (!$cc_fr_0)
-            {
-                throw new Exception("Some conditions does not match.");
+            if (!$cc_fr_0) {
+                throw new Exception("user is not inactive.");
             }
             $success = 1;
             $message = "Conditions matched.";
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
+            $this->general->apiLogger($input_params, $e);
             $success = 0;
             $message = $e->getMessage();
         }
         $this->block_result["success"] = $success;
         $this->block_result["message"] = $message;
+        
         return $this->block_result;
     }
 
     /**
-     * users_finish_success method is used to process finish flow.
-     * @created priyanka chillakuru | 17.09.2019
-     * @modified priyanka chillakuru | 01.10.2019
+     * This method is used to process finish flow.
+     * 
      * @param array $input_params input_params array to process loop flow.
+     * 
      * @return array $responce_arr returns responce array of api.
      */
     public function users_finish_success($input_params = array())
@@ -636,10 +593,10 @@ class Forgot_password_phone extends Cit_Controller
     }
 
     /**
-     * users_finish_success_1 method is used to process finish flow.
-     * @created priyanka chillakuru | 17.09.2019
-     * @modified Devangi Nirmal | 10.02.2020
+     * This method is used to process finish flow.
+     * 
      * @param array $input_params input_params array to process loop flow.
+     * 
      * @return array $responce_arr returns responce array of api.
      */
     public function users_finish_success_1($input_params = array())

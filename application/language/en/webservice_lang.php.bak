@@ -17,12 +17,10 @@
     $lang["update_push_notification_settings"]["users_finish_success_1"] = "Failed to update. Please contact admin." ;
 
 //Post a Feedback Messages
-    $lang["post_a_feedback"]["feedback_is_required"] = "Please enter a value for the feedback field." ;
-    $lang["post_a_feedback"]["device_type_required"] = "Please enter a value for the device type field." ;
-    $lang["post_a_feedback"]["device_model_required"] = "Please enter a value for the device model field." ;
-    $lang["post_a_feedback"]["device_os_required"] = "Please enter a value for the device os field." ;
-    $lang["post_a_feedback"]["images_count_required"] = "Please enter a value for the images count field." ;
-    $lang["post_a_feedback"]["images_count_number"] = "Please enter valid value for the images count field." ;
+    $lang["post_a_feedback"]["device_type_required"] = "Please enter a value for the device_type field." ;
+    $lang["post_a_feedback"]["device_model_required"] = "Please enter a value for the device_model field." ;
+    $lang["post_a_feedback"]["device_os_required"] = "Please enter a value for the device_os field." ;
+    $lang["post_a_feedback"]["images_count_required"] = "Please enter a value for the images_count field." ;
     $lang["post_a_feedback"]["user_query_finish_success_1"] = "Failed to create query. Please contact admin." ;
     $lang["post_a_feedback"]["user_query_finish_success"] = "You have successfully posted your feedback." ;
 
@@ -57,18 +55,13 @@
     $lang["user_email_confirmation"]["users_finish_success"] = "Verification link is invalid. Please contact to {%SYSTEM.COMPANY_NAME%} administrator!" ;
 
 //User Sign Up Email Messages
-
-    $lang["user_sign_up_email"]["first_name_required"] = "Please enter a value for the first name field." ;
-    $lang["user_sign_up_email"]["last_name_required"] = "Please enter a value for the last name field." ;
     $lang["user_sign_up_email"]["first_name_minlength"] = "Please enter minimum 1 character for the first name field." ;
     $lang["user_sign_up_email"]["first_name_maxlength"] = "Please enter maximum 80 character for the first name field." ;
     $lang["user_sign_up_email"]["last_name_minlength"] = "Please enter minimum 1 character for the last name field." ;
     $lang["user_sign_up_email"]["last_name_maxlength"] = "Please enter maximum 80 character for the last name field." ;
-    $lang["user_sign_up_email"]["user_name_required"] = "Please enter a value for the user name field." ;
     $lang["user_sign_up_email"]["user_name_alpha_numeric_without_spaces"] = "Please only enter letters and numbers without space for the user name field." ;
     $lang["user_sign_up_email"]["user_name_minlength"] = "Please enter minimum 5 characters for the user name field." ;
     $lang["user_sign_up_email"]["user_name_maxlength"] = "Please enter maximum 80 characters for the user name field." ;
-    $lang["user_sign_up_email"]["email_required"] = "Please enter a value for the email field." ;
     $lang["user_sign_up_email"]["email_email"] = "Please enter valid email address for the email field." ;
     $lang["user_sign_up_email"]["mobile_number_number"] = "Please enter valid number for the phone number field." ;
     $lang["user_sign_up_email"]["mobile_number_minlength"] = "Please enter minimum 10 digits for the phone number field." ;
@@ -85,9 +78,6 @@
     $lang["user_sign_up_email"]["users_finish_success"] = "You have successfully registered. Please check your email and confirm your registration." ;
     $lang["user_sign_up_email"]["dob_formate"] = "Please enter valid date formate (Y-m-d) for the dob field." ;
 //User Sign Up Phone Messages
-
-    $lang["user_sign_up_phone"]["first_name_required"] = "Please enter a value for the first name field." ;
-    $lang["user_sign_up_phone"]["last_name_required"] = "Please enter a value for the last name field." ;
     $lang["user_sign_up_phone"]["first_name_minlength"] = "Please enter minimum 1 character for the first name field." ;
     $lang["user_sign_up_phone"]["first_name_maxlength"] = "Please enter maximum 80 character for the first name field." ;
     $lang["user_sign_up_phone"]["last_name_minlength"] = "Please enter minimum 1 character for the last name field." ;
@@ -96,7 +86,6 @@
     $lang["user_sign_up_phone"]["user_name_minlength"] = "Please enter minimum 5 characters for the user name field." ;
     $lang["user_sign_up_phone"]["user_name_maxlength"] = "Please enter maximum 20 characters for the user name field." ;
     $lang["user_sign_up_phone"]["email_email"] = "Please enter valid email address for the email field." ;
-    $lang["user_sign_up_phone"]["mobile_number_required"] = "Please enter a value for the mobile number field." ;
     $lang["user_sign_up_phone"]["mobile_number_number"] = "Please enter valid number for the phone number field." ;
     $lang["user_sign_up_phone"]["mobile_number_minlength"] = "Please enter minimum 10 digits for the phone number field." ;
     $lang["user_sign_up_phone"]["mobile_number_maxlength"] = "Please enter maximum 13 digits for the phone number field." ;
@@ -113,10 +102,8 @@
     $lang["user_sign_up_phone"]["dob_formate"] = "Please enter valid date formate (Y-m-d) for the dob field." ;
 
 //Social Sign Up Messages
-    $lang["social_sign_up"]["first_name_required"] = "Please enter a value for the first name field." ;
     $lang["social_sign_up"]["first_name_minlength"] = "Please enter minimum 1 character for the first name field." ;
     $lang["social_sign_up"]["first_name_maxlength"] = "Please enter maximum 80 character for the first name field." ;
-    $lang["social_sign_up"]["last_name_required"] = "Please enter a value for the last name field." ;
     $lang["social_sign_up"]["last_name_minlength"] = "Please enter minimum 1 character for the last name field." ;
     $lang["social_sign_up"]["last_name_maxlength"] = "Please enter maximum 80 character for the last name field." ;
     $lang["social_sign_up"]["user_name_alpha_numeric_without_spaces"] = "Please only enter letters and numbers without space for the user name field." ;
@@ -132,7 +119,6 @@
     $lang["social_sign_up"]["device_model_required"] = "Please enter a value for the device_model field." ;
     $lang["social_sign_up"]["device_os_required"] = "Please enter a value for the device_os field." ;
     $lang["social_sign_up"]["social_login_type_required"] = "Please enter a value for the social_login_type field." ;
-      $lang["social_sign_up"]["social_login_id_number"] = "Please enter valid number for the social login id field." ;
     $lang["social_sign_up"]["social_login_id_required"] = "Please enter a value for the social_login_id field." ;
     $lang["social_sign_up"]["users_finish_success_1"] = "Failed to create user. Please contact admin." ;
     $lang["social_sign_up"]["finish_success_1"] = "#message# " ;
@@ -299,23 +285,11 @@
     $lang["get_config_paramaters"]["finish_success"] = "success." ;
 
 //Go Ad Free Messages
-    $lang["go_ad_free"]["users_finish_success"] = "Go Ad Free purchased successfully." ;
-    $lang["go_ad_free"]["users_finish_success_1"] = "Go Ad Free not updated successfully." ;
-    $lang["go_ad_free"]["one_time_transaction_data_required"] = "Please enter a value for the one_time_transaction_data field." ;
+    $lang["go_ad_free"]["users_finish_success"] = "Ads are removed successfully." ;
 
 //delete_api_log Messages
     $lang["delete_api_log"]["api_accesslogs_finish_success"] = "Success" ;
 
-//empty_user_related_tables 
-    $lang["empty_user_related_tables"]["users_finish_success_1"] = "Tables truncated successfully." ;
-    $lang["empty_user_related_tables"]["users_finish_success"] = "Tables not truncated successfully." ;
-
-//Reasons_list Messages
-    $lang["reasons_list"]["user_id_required"] = "User id is required" ;
-    $lang["reasons_list"]["reason_type_required"] = "Reason type is required" ;
-    $lang["reasons_list"]["mod_state_finish_success"] = "Reasons fetched successfully." ;
-    $lang["reasons_list"]["mod_state_finish_success_1"] = "Sorry, Reasons are not available." ;
-    
 //  Abusive report messages
 $lang["report_abusive_user"]["user_id_required"] = "User Id is required." ;  
 $lang["report_abusive_user"]["report_on_required"] = "Reporter ID is required." ;    

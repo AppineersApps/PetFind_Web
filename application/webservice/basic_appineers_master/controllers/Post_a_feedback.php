@@ -26,14 +26,23 @@ defined('BASEPATH') || exit('No direct script access allowed');
 class Post_a_feedback extends Cit_Controller
 {
     public $settings_params;
+
+    /* @var array $output_params contains output parameters */
     public $output_params;
+
+    /* @var array $single_keys contains single array */
     public $single_keys;
+
+    /* @var array $multiple_keys contains multiple array */
     public $multiple_keys;
+
+    /** @var array $block_result contains query returns result array*/
     public $block_result;
 
     /**
-     * __construct method is used to set controller preferences while controller object initialization.
+     * To initialize class objects/variables.
      */
+
     public function __construct()
     {
         parent::__construct();
@@ -51,47 +60,60 @@ class Post_a_feedback extends Cit_Controller
         $this->block_result = array();
 
         $this->load->library('wsresponse');
+        $this->load->library('lib_log');
         $this->load->model('post_a_feedback_model');
         $this->load->model("basic_appineers_master/user_query_model");
         $this->load->model("basic_appineers_master/user_query_images_model");
     }
 
     /**
-     * rules_post_a_feedback method is used to validate api input params.
-     * @created priyanka chillakuru | 09.09.2019
-     * @modified priyanka chillakuru | 11.12.2019
+     * This method is used to validate api input params.
+     *
      * @param array $request_arr request_arr array is used for api input.
+     *
      * @return array $valid_res returns output response of API.
      */
     public function rules_post_a_feedback($request_arr = array())
     {
         $valid_arr = array(
+            "feedback" => array(
+                array(
+                    "rule" => "required",
+                    "value" => true,
+                    "message" => "feedback_is_required",
+                )
+            ),
             "device_type" => array(
                 array(
                     "rule" => "required",
-                    "value" => TRUE,
+                    "value" => true,
                     "message" => "device_type_required",
                 )
             ),
             "device_model" => array(
                 array(
                     "rule" => "required",
-                    "value" => TRUE,
+                    "value" => true,
                     "message" => "device_model_required",
                 )
             ),
             "device_os" => array(
                 array(
                     "rule" => "required",
-                    "value" => TRUE,
+                    "value" => true, 
                     "message" => "device_os_required",
                 )
             ),
             "images_count" => array(
                 array(
                     "rule" => "required",
-                    "value" => TRUE,
+                    "value" => true,
                     "message" => "images_count_required",
+                ),
+                array(
+                    "rule" => "number",
+                    "value" => true,
+                    "message" => "images_count_number",
                 )
             )
         );
@@ -101,26 +123,22 @@ class Post_a_feedback extends Cit_Controller
     }
 
     /**
-     * start_post_a_feedback method is used to initiate api execution flow.
-     * @created priyanka chillakuru | 09.09.2019
-     * @modified priyanka chillakuru | 11.12.2019
+     * This method is used to initiate api execution flow.
+     *
      * @param array $request_arr request_arr array is used for api input.
+     *
      * @param bool $inner_api inner_api flag is used to idetify whether it is inner api request or general request.
+     *
      * @return array $output_response returns output response of API.
      */
-    public function start_post_a_feedback($request_arr = array(), $inner_api = FALSE)
+    public function start_post_a_feedback($request_arr = array(), $inner_api = false)
     {
-        try
-        {
+        try {
             $validation_res = $this->rules_post_a_feedback($request_arr);
-            if ($validation_res["success"] == "-5")
-            {
-                if ($inner_api === TRUE)
-                {
+            if ($validation_res["success"] == "-5") {
+                if ($inner_api === true) {
                     return $validation_res;
-                }
-                else
-                {
+                } else {
                     $this->wsresponse->sendValidationResponse($validation_res);
                 }
             }
@@ -128,84 +146,79 @@ class Post_a_feedback extends Cit_Controller
             $input_params = $validation_res['input_params'];
             $output_array = $func_array = array();
 
+            //****** insert user feedback ****/
             $input_params = $this->post_a_feedback($input_params);
 
+            //****** verify feedback inserted ****/
             $condition_res = $this->is_posted($input_params);
-            if ($condition_res["success"])
-            {
+            if ($condition_res["success"]) {
 
+                //****** upload feedback images ****/
                 $input_params = $this->custom_function($input_params);
+                
+                $condition_res = $this->is_query_images($input_params);
+                if ($condition_res["success"]) {
 
-                $input_params = $this->get_query_details($input_params);
+                    //****** get recently inserted feedback details ****/
+                    $input_params = $this->get_query_details($input_params);
 
-                $input_params = $this->query_images($input_params);
+                    //****** fetch recently inserted feedback images ****/
+                    $input_params = $this->query_images($input_params);
 
-                $input_params = $this->formatting_images($input_params);
+                    $input_params = $this->formatting_images($input_params);
 
-                $output_response = $this->user_query_finish_success($input_params);
-                return $output_response;
-            }
-
-            else
-            {
-
+                    $output_response = $this->user_query_finish_success($input_params);
+                    return $output_response;
+                } else {
+                    $output_response = $this->user_query_finish_success_1($input_params);
+                    return $output_response;
+                }
+            } else {
                 $output_response = $this->user_query_finish_success_1($input_params);
                 return $output_response;
             }
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
             $message = $e->getMessage();
         }
+
         return $output_response;
     }
 
     /**
-     * post_a_feedback method is used to process query block.
-     * @created CIT Dev Team
-     * @modified priyanka chillakuru | 11.12.2019
+     * This method is used to process query block.
+     *
      * @param array $input_params input_params array to process loop flow.
+     *
      * @return array $input_params returns modfied input_params array.
      */
     public function post_a_feedback($input_params = array())
     {
-
         $this->block_result = array();
-        try
-        {
-
+        try {
             $params_arr = array();
             $params_arr["_dtaddedat"] = "NOW()";
             $params_arr["_estatus"] = "Pending";
-            if (isset($input_params["user_id"]))
-            {
+            if (isset($input_params["user_id"])) {
                 $params_arr["user_id"] = $input_params["user_id"];
             }
-            if (isset($input_params["feedback"]))
-            {
+            if (isset($input_params["feedback"])) {
                 $params_arr["feedback"] = $input_params["feedback"];
             }
             $params_arr["_dtupdatedat"] = "''";
-            if (isset($input_params["device_type"]))
-            {
+            if (isset($input_params["device_type"])) {
                 $params_arr["device_type"] = $input_params["device_type"];
             }
-            if (isset($input_params["device_model"]))
-            {
+            if (isset($input_params["device_model"])) {
                 $params_arr["device_model"] = $input_params["device_model"];
             }
-            if (isset($input_params["device_os"]))
-            {
+            if (isset($input_params["device_os"])) {
                 $params_arr["device_os"] = $input_params["device_os"];
             }
-            if (isset($input_params["app_version"]))
-            {
+            if (isset($input_params["app_version"])) {
                 $params_arr["app_version"] = $input_params["app_version"];
             }
             $this->block_result = $this->user_query_model->post_a_feedback($params_arr);
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
             $success = 0;
             $this->block_result["data"] = array();
         }
@@ -216,55 +229,79 @@ class Post_a_feedback extends Cit_Controller
     }
 
     /**
-     * is_posted method is used to process conditions.
-     * @created CIT Dev Team
-     * @modified priyanka chillakuru | 18.09.2019
+     * This method is used to process conditions.
+     *
      * @param array $input_params input_params array to process condition flow.
+     *
      * @return array $block_result returns result of condition block as array.
      */
     public function is_posted($input_params = array())
     {
-
         $this->block_result = array();
-        try
-        {
-
+        try {
             $cc_lo_0 = $input_params["query_id"];
             $cc_ro_0 = 0;
 
-            $cc_fr_0 = ($cc_lo_0 > $cc_ro_0) ? TRUE : FALSE;
-            if (!$cc_fr_0)
-            {
-                throw new Exception("Some conditions does not match.");
+            $cc_fr_0 = ($cc_lo_0 > $cc_ro_0) ? true : false;
+            if (!$cc_fr_0) {
+                throw new Exception("Sorry, feedback not posted.");
             }
             $success = 1;
             $message = "Conditions matched.";
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
+            $this->general->apiLogger($input_params, $e);
             $success = 0;
             $message = $e->getMessage();
         }
         $this->block_result["success"] = $success;
         $this->block_result["message"] = $message;
+
         return $this->block_result;
     }
 
     /**
-     * custom_function method is used to process custom function.
-     * @created priyanka chillakuru | 16.09.2019
-     * @modified priyanka chillakuru | 31.10.2019
+     * This method is used to process conditions.
+     *
+     * @param array $input_params input_params array to process condition flow.
+     *
+     * @return array $block_result returns result of condition block as array.
+     */
+    public function is_query_images($input_params = array())
+    {
+        $this->block_result = array();
+        try {
+            $cc_lo_0 = $input_params["success"];
+            $cc_ro_0 = 0;
+
+            $cc_fr_0 = ($cc_lo_0 == $cc_ro_0) ? true : false;
+            if ($cc_fr_0) {
+                throw new Exception("Query image not inserted");
+            }
+            $success = 1;
+            $message = "Conditions matched.";
+        } catch (Exception $e) {
+            $this->general->apiLogger($input_params, $e);
+            $success = 0;
+            $message = $e->getMessage();
+        }
+        $this->block_result["success"] = $success;
+        $this->block_result["message"] = $message;
+
+        return $this->block_result;
+    }
+
+    /**
+     * This method is used to process custom function.
+     *
      * @param array $input_params input_params array to process loop flow.
+     *
      * @return array $input_params returns modfied input_params array.
      */
     public function custom_function($input_params = array())
     {
-        if (!method_exists($this, "uploadQueryImages"))
-        {
+        if (!method_exists($this, "uploadQueryImages")) {
             $result_arr["data"] = array();
-        }
-        else
-        {
+        } else {
             $result_arr["data"] = $this->uploadQueryImages($input_params);
         }
         $format_arr = $result_arr;
@@ -273,39 +310,32 @@ class Post_a_feedback extends Cit_Controller
         $input_params["custom_function"] = $format_arr;
 
         $input_params = $this->wsresponse->assignSingleRecord($input_params, $format_arr);
+
         return $input_params;
     }
 
     /**
-     * get_query_details method is used to process query block.
-     * @created priyanka chillakuru | 16.09.2019
-     * @modified priyanka chillakuru | 11.12.2019
+     * This method is used to process query block.
+     *
      * @param array $input_params input_params array to process loop flow.
+     *
      * @return array $input_params returns modfied input_params array.
      */
     public function get_query_details($input_params = array())
     {
-
         $this->block_result = array();
-        try
-        {
-
+        try {
             $query_id = isset($input_params["query_id"]) ? $input_params["query_id"] : "";
             $this->block_result = $this->user_query_model->get_query_details($query_id);
-            if (!$this->block_result["success"])
-            {
+            if (!$this->block_result["success"]) {
                 throw new Exception("No records found.");
             }
             $result_arr = $this->block_result["data"];
-            if (is_array($result_arr) && count($result_arr) > 0)
-            {
+            if (is_array($result_arr) && count($result_arr) > 0) {
                 $i = 0;
-                foreach ($result_arr as $data_key => $data_arr)
-                {
-
+                foreach ($result_arr as $data_key => $data_arr) {
                     $data = $data_arr["uq_note"];
-                    if (method_exists($this, "get_Limit_characters_feedback"))
-                    {
+                    if (method_exists($this, "get_Limit_characters_feedback")) {
                         $data = $this->get_Limit_characters_feedback($data, $result_arr[$data_key], $i, $input_params);
                     }
                     $result_arr[$data_key]["uq_note"] = $data;
@@ -314,9 +344,8 @@ class Post_a_feedback extends Cit_Controller
                 }
                 $this->block_result["data"] = $result_arr;
             }
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
+            $this->general->apiLogger($input_params, $e);
             $success = 0;
             $this->block_result["data"] = array();
         }
@@ -327,32 +356,25 @@ class Post_a_feedback extends Cit_Controller
     }
 
     /**
-     * query_images method is used to process query block.
-     * @created priyanka chillakuru | 16.09.2019
-     * @modified priyanka chillakuru | 16.09.2019
+     * This method is used to process query block.
+     *
      * @param array $input_params input_params array to process loop flow.
+     *
      * @return array $input_params returns modfied input_params array.
      */
     public function query_images($input_params = array())
     {
-
         $this->block_result = array();
-        try
-        {
-
+        try {
             $query_id = isset($input_params["query_id"]) ? $input_params["query_id"] : "";
             $this->block_result = $this->user_query_images_model->query_images($query_id);
-            if (!$this->block_result["success"])
-            {
+            if (!$this->block_result["success"]) {
                 throw new Exception("No records found.");
             }
             $result_arr = $this->block_result["data"];
-            if (is_array($result_arr) && count($result_arr) > 0)
-            {
+            if (is_array($result_arr) && count($result_arr) > 0) {
                 $i = 0;
-                foreach ($result_arr as $data_key => $data_arr)
-                {
-
+                foreach ($result_arr as $data_key => $data_arr) {
                     $data = $data_arr["uqi_query_image"];
                     $image_arr = array();
                     $image_arr["image_name"] = $data;
@@ -360,23 +382,29 @@ class Post_a_feedback extends Cit_Controller
                     $p_key = ($data_arr["uqi_user_query_id"] != "") ? $data_arr["uqi_user_query_id"] : $input_params["uqi_user_query_id"];
                     $image_arr["pk"] = $p_key;
                     $image_arr["color"] = "FFFFFF";
-                    $image_arr["no_img"] = FALSE;
+                    $image_arr["no_img"] = false;
                     $dest_path = "query_images";
-                   /* $image_arr["path"] = $this->general->getImageNestedFolders($dest_path);
+                    /* $image_arr["path"] = $this->general->getImageNestedFolders($dest_path);
                     $data = $this->general->get_image($image_arr);*/
-                    $image_arr["path"] ="pet_find/query_images";
-                    $data = $this->general->get_image_aws($image_arr);
+                    $aws_folder_name = $this->config->item("AWS_FOLDER_NAME");
 
+                    $image_arr["path"] = $aws_folder_name . "/query_images/" . $query_id;
+                    //$data = $this->general->get_image_aws($image_arr);
 
-                    $result_arr[$data_key]["uqi_query_image"] =(false == empty($data)) ? $data : "";
+                    $folder_name = $aws_folder_name . "/query_images/" . $query_id;
+
+                    $data11 = $this->general->getFileFromAWS('', $folder_name, $data);
+
+                    $data = $data11['@metadata']['effectiveUri'];
+
+                    $result_arr[$data_key]["uqi_query_image"] = (false == empty($data)) ? $data : "";
 
                     $i++;
                 }
                 $this->block_result["data"] = $result_arr;
             }
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
+            $this->general->apiLogger($input_params, $e);
             $success = 0;
             $this->block_result["data"] = array();
         }
@@ -386,20 +414,17 @@ class Post_a_feedback extends Cit_Controller
     }
 
     /**
-     * formatting_images method is used to process custom function.
-     * @created priyanka chillakuru | 16.09.2019
-     * @modified priyanka chillakuru | 16.09.2019
+     * This method is used to process custom function.
+     *
      * @param array $input_params input_params array to process loop flow.
+     *
      * @return array $input_params returns modfied input_params array.
      */
     public function formatting_images($input_params = array())
     {
-        if (!method_exists($this->general, "add_query_format_output"))
-        {
+        if (!method_exists($this->general, "add_query_format_output")) {
             $result_arr["data"] = array();
-        }
-        else
-        {
+        } else {
             $result_arr["data"] = $this->general->add_query_format_output($input_params);
         }
         $format_arr = $result_arr;
@@ -408,19 +433,19 @@ class Post_a_feedback extends Cit_Controller
         $input_params["formatting_images"] = $format_arr;
 
         $input_params = $this->wsresponse->assignSingleRecord($input_params, $format_arr);
+
         return $input_params;
     }
 
     /**
-     * user_query_finish_success method is used to process finish flow.
-     * @created CIT Dev Team
-     * @modified priyanka chillakuru | 11.12.2019
+     * This method is used to process finish flow.
+     *
      * @param array $input_params input_params array to process loop flow.
+     *
      * @return array $responce_arr returns responce array of api.
      */
     public function user_query_finish_success($input_params = array())
     {
-
         $setting_fields = array(
             "success" => "1",
             "message" => "user_query_finish_success",
@@ -472,15 +497,14 @@ class Post_a_feedback extends Cit_Controller
     }
 
     /**
-     * user_query_finish_success_1 method is used to process finish flow.
-     * @created CIT Dev Team
-     * @modified priyanka chillakuru | 13.09.2019
+     * This method is used to process finish flow.
+     *
      * @param array $input_params input_params array to process loop flow.
+     *
      * @return array $responce_arr returns responce array of api.
      */
     public function user_query_finish_success_1($input_params = array())
     {
-
         $setting_fields = array(
             "success" => "0",
             "message" => "user_query_finish_success_1",
